@@ -12,6 +12,10 @@
   transition: all .15s ease;
 }
 
+* .no-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 235, 235, 235;

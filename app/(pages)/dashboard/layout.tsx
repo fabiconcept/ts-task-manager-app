@@ -1,4 +1,4 @@
-import GroupChat from "./components/GroupChat"
+import GroupChat from "./components/GroupChatSection"
 import SideBar from "./components/SideBar"
 
 export default function RootLayout({
@@ -8,10 +8,12 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={`layout`}>
-                <SideBar />
-                {children}
-                <GroupChat />
+            <body>
+                <div className="flex flex-row gap-4">
+                    <SideBar />
+                    {children}
+                    <GroupChat />
+                </div>
             </body>
         </html>
     )
