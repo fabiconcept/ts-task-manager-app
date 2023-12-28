@@ -9,7 +9,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <div className="flex flex-row gap-4">
+                <div className="flex flex-row">
                     <SideBar />
                     {children}
                     <GroupChat />
