@@ -38,7 +38,7 @@ const Items = ({ id, title }: ItemsType) => {
             className={clsx(
                 'p-4 dark:bg-theme-white-dark/50 bg-theme-white/50 shadow-md rounded-md w-full border border-transparent hover:border-theme-main/50 relative overflow-hidden',
                 isDragging && 'rounded-none border-black opacity-25',
-                !isDragging && 'dark:custom-radial-gradient',
+                !isDragging && 'dark:custom-radial-gradient backdrop-blur',
             )}
         >
             <div className={clsx("flex flex-col gap-4", isDragging && 'opacity-0',)}>
@@ -52,16 +52,29 @@ const Items = ({ id, title }: ItemsType) => {
                         Website Animation
                     </div>
                     <div className='relative z-60 mx-2'>
-                        <div className='cursor-pointer hover:bg-theme-text/50 bg-theme-text/5 active:scale-90 p-2 rounded-full'><FaEllipsis /></div>
-                        <div className="absolute z-20 top-5 right-3 rounded-md p-2 dark:bg-theme-white-dark/90 bg-theme-white/90">
-                            <div className='flex items-center gap-2'>
-                                <div className="content">
+                        <div className='relative z-10 cursor-pointer hover:bg-theme-text/50 bg-theme-text/5 active:scale-90 p-2 rounded-full'><FaEllipsis /></div>
+
+                        <div className="origin-top-right scale-0 absolute z-20 top-5 right-3 text-sm rounded-md p-2 dark:bg-theme-white-dark/90 bg-theme-white/90 grid gap-2 backdrop-blur">
+                            <div className='flex items-center gap-2 w-[6rem] px-2'>
+                                <div className="content scale-75">
                                     <label className="checkBox">
                                         <input id="ch1" type="checkbox" />
                                         <div className="transition"></div>
                                     </label>
                                 </div>
                                 Edit
+                            </div>
+                            <div className='flex items-center gap-2 w-[6rem] px-2'>
+                                <div className="content scale-75">
+                                    <label className="checkBox">
+                                        <input id="ch1" type="checkbox" />
+                                        <div className="transition"></div>
+                                    </label>
+                                </div>
+                                move
+                            </div>
+                            <div className='flex items-center gap-2 w-[6rem] px-2 text-red-600'>
+                                Delete
                             </div>
                         </div>
                     </div>
