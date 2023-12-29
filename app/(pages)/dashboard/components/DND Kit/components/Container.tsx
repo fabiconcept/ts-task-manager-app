@@ -41,13 +41,13 @@ const Container = ({
             <div className="flex items-center justify-between">
                 <div className="flex items-center rounded-md justify-between p-2 dark:bg-white/10 bg-black/10 w-full">
                     <h1 className="font-semibold px-2">{title}</h1>
-                    <div className='w-7 h-7 grid place-items-center rounded bg-black dark:invert'>{itemsCount}</div>
+                    <div className='w-7 h-7 grid place-items-center rounded text-white bg-black dark:invert'>{itemsCount}</div>
                 </div>
             </div>
 
             {children}
-            {title === "Upcoming" && <div className='grid place-items-center diagonal-gradient dark:bg-theme-white-dark/25 bg-theme-white/25 rounded-md active:scale-90 active:opacity-50 select-none cursor-pointer'>
-                <span className='p-4 text-theme-text text-xl'>+</span>
+            {title === "Upcoming" && <div className='grid place-items-center dark:diagonal-gradient-dark font-semibold diagonal-gradient dark:bg-theme-white-dark/25 bg-theme-white/25 rounded-md active:scale-90 active:opacity-50 select-none cursor-pointer'>
+                <span className='p-4 text-theme-text text-xl'>+ <span className='text-sm'>New</span></span>
             </div>}
         </div>
     );

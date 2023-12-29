@@ -1,5 +1,4 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
-import React from "react";
 
 export type DNDType = {
     id: UniqueIdentifier;
@@ -7,9 +6,8 @@ export type DNDType = {
     items: { id: UniqueIdentifier, title: string }[];
 };
 
-export default interface ContainerProps {
+export default interface ContainerProps extends UiWithChildren {
     id: UniqueIdentifier;
-    children: React.ReactNode;
     title?: string;
     description?: string;
     itemsCount: number;
