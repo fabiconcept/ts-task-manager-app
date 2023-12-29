@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .custom-radial-gradient {
+    background-image: radial-gradient(hsl(0, 0%, 70%) 5%, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .custom-radial-gradient {
+      background-image: radial-gradient(hsl(0, 1%, 31%) 5%, transparent 0);
+    }
+  }
+}
+
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

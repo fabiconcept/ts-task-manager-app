@@ -1,11 +1,11 @@
 import { CiSearch } from "react-icons/ci";
 import { GoBell } from "react-icons/go";
 import { GiCheckMark } from "react-icons/gi";
-import DemoGrid from "./components/Demo-Grid";
+import Home from "./components/DND Kit/Home";
 
 export default function DashboardPage() {
     return (
-        <div className="flex-1 p-8 pt-6 dark:bg-black/20 bg-white/50">
+        <div className="flex-1 p-8 pt-6 dark:bg-black/20 bg-white/70">
             <div className="py-6 flex items-center justify-between">
                 <h1 className="text-3xl font-semibold flex items-center gap-3"><span className="text-theme-main"><GiCheckMark /></span> Daily Task</h1>
                 <div className="flex gap-3 items-center">
@@ -24,7 +24,7 @@ export default function DashboardPage() {
             </div>
 
             <div>
-                <DemoGrid />
+                <Home />
             </div>
         </div>
     );
