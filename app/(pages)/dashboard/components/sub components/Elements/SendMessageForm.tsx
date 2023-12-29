@@ -9,10 +9,10 @@ export default function SendMessageForm() {
                 placeholder="write here..." 
                 className="flex-1 p-3 py-2 border border-transparent dark:bg-white/20 outline-none rounded-md focus:border-theme-main/50"
             />
-            <span className="text-2xl font-semibold cursor-pointer active:scale-90 hover:text-theme-main">
+            <span className="text-2xl font-semibold cursor-pointer active:scale-90 hover:text-theme-text">
                 <CiMicrophoneOn />
             </span>
-            <span className="cursor-pointer active:scale-90 hover:text-theme-main">
+            <span className="cursor-pointer active:scale-90 hover:text-theme-text">
                 <FaEllipsis />
             </span>
         </form>

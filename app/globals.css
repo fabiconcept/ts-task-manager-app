@@ -8,6 +8,12 @@
     background-size: 20px 20px;
   }
 
+  .diagonal-gradient {
+    background-image: repeating-linear-gradient(-45deg, 
+    transparent, transparent 10px, 
+    rgb(55, 55, 55, 0.35) 0, rgb(55, 55, 55, 0.35) 20px);
+  }
+
   @media (prefers-color-scheme: dark) {
     .custom-radial-gradient {
       background-image: radial-gradient(hsl(0, 1%, 31%) 5%, transparent 0);
@@ -40,16 +46,76 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
+  background: linear-gradient(to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
 
 /* Custom css */
 .layout {
   display: flex;
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #00db96 ;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+  cursor: grab;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(to bottom, #00db96, transparent);
+}
+
+.clear {
+  clear: both;
+}
+
+.checkBox {
+  display: block;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  border: 3px solid rgba(255, 255, 255, 0);
+  border-radius: 2.5px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0px 0px 0px 2px #fff;
+}
+
+.checkBox div {
+  width: 60px;
+  height: 60px;
+  background-color: #fff;
+  top: -52px;
+  left: -52px;
+  position: absolute;
+  transform: rotateZ(45deg);
+  z-index: 100;
+}
+
+.checkBox input[type=checkbox]:checked + div {
+  left: -10px;
+  top: -10px;
+}
+
+.checkBox input[type=checkbox] {
+  position: absolute;
+  left: 50px;
+  visibility: hidden;
+}
+
+.transition {
+  transition: 300ms ease;
 }

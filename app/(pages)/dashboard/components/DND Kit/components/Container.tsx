@@ -46,6 +46,9 @@ const Container = ({
             </div>
 
             {children}
+            {title === "Upcoming" && <div className='grid place-items-center diagonal-gradient dark:bg-theme-white-dark/25 bg-theme-white/25 rounded-md active:scale-90 active:opacity-50 select-none cursor-pointer'>
+                <span className='p-4 text-theme-text text-xl'>+</span>
+            </div>}
         </div>
     );
 };

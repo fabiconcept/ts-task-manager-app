@@ -12,7 +12,7 @@ export default function MessageElement(props:MessageProp) {
                 <div className="self-end flex flex-col items-end gap-1">
                 <div className="flex flex-row-reverse gap-2 items-end w-fit">
                     <ActiveMember type="small" />
-                    <div className="p-3 rounded-tl-lg rounded-tr-lg rounded-bl-lg bg-theme-main/5 border border-theme-main max-w-[15rem]">
+                    <div className="p-3 rounded-tl-lg rounded-tr-lg rounded-bl-lg bg-gray-600 max-w-[15rem]">
                         Lorem ipsum dolor sit amet.
                     </div>
                 </div>
@@ -21,8 +21,8 @@ export default function MessageElement(props:MessageProp) {
             :
             <div className="flex flex-col items-start gap-1">
                 <div className="flex flex-row gap-2 items-end w-fit">
-                    <ActiveMember type="small" active={false} />
-                    <div className="p-3 rounded-tl-lg rounded-tr-lg rounded-br-lg bg-theme-main/5 border border-theme-main max-w-[15rem]">
+                    <ActiveMember type="small" active={true} />
+                    <div className="p-3 rounded-tl-lg rounded-tr-lg rounded-br-lg bg-theme-main text-theme-white-dark font-semibold max-w-[15rem]">
                         Lorem, ipsum dolor.
                     </div>
                 </div>
