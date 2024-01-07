@@ -1,4 +1,5 @@
 // import { TestSchema } from "@/lib/Database/schemas";
+import connectDatabase from "@/lib/Database";
 import mongoose from "mongoose";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
@@ -18,7 +19,20 @@ const GET = async (req: Request) => {
 }
 
 const POST = async (res: Response, req: Request) => {
-    return NextResponse.json({res, req});
+    try {
+        const client = await connectDatabase();
+        const db = client.db("taskify");
+
+        const usersCollection = await db.collection("users").insertOne({
+            name: "Fabian Ajokubi",
+            email: "favourajokubi@gmail.com",
+            password: "aloha8520**"
+        })
+
+        return NextResponse.json(usersCollection);
+    } catch (error) {
+        return new NextResponse(`An error occured ${error}`);
+    }
 }
 
 export { GET, POST }
