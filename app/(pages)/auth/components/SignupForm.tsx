@@ -1,7 +1,7 @@
 "use client"
 
 
-import { testSwitch } from "@/lib/Enums";
+import { AuthResponseType, testSwitch } from "@/lib/Enums";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
 import { RequestBody } from "@/lib/Types";
 import { validateFullName, validateEmail, validatePassword } from "@/lib/utilities";
@@ -99,14 +99,14 @@ export default function SignupForm() {
 
         setIsLoading(true);
 
-        const payload: RequestBody = {
+        const payload = {
             email: emailDebounce,
             name: nameDebounce,
             password: passwordDebounce
-        }
+        } satisfies RequestBody;
 
         try {
-            const sendRequest = await fetch("/api/authentication/register", {
+            await fetch("/api/authentication/register", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json"
@@ -114,24 +114,32 @@ export default function SignupForm() {
                 body: JSON.stringify(payload)
             })
             .then((res)=>{
+                if (!res.ok) {
+                    throw new Error("Something went wrong!");
+                }
                 return res.json();
             })
             .then((data)=>{
+                let unknownError : string | null = null;
                 const { status, message, type } = data;
 
                 if (status === 400) {
                     switch (type) {
-                        case 1:
+                        case AuthResponseType.EmailError:
                             setInputsValid((prev)=> ({...prev, email: {status:testSwitch.FAILED, errorMessage: message}}));
                             break;
-                        case 2:
+                        case AuthResponseType.NameError:
                             setInputsValid((prev)=> ({...prev, name: {status:testSwitch.FAILED, errorMessage: message}}));
                             break;
-                        case 3:
+                        case AuthResponseType.UnknownError:
                             setInputsValid((prev)=> ({...prev, password: {status:testSwitch.FAILED, errorMessage: message}}));
                             break;
+
+                        default: 
+                            unknownError = "An error occurred";
+                            throw new Error(message); 
                     }
-                    toast.error(message);
+                    toast.error(unknownError ?? message);
                 }else{
                     toast.success(message);
                 }
@@ -228,7 +236,7 @@ export default function SignupForm() {
                             alt="loading"
                             height={100}
                             width={100}
-                            className="object-contain w-6 h-auto py-2"
+                            className="object-contain w-6 h-auto py-2 dark:invert-0 invert"
                         />
                     </span>}
                 </button>

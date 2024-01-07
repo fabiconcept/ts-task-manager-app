@@ -1,15 +1,22 @@
 "use client"
 
-import { testSwitch } from "@/lib/Enums";
+import { AuthResponseType, testSwitch } from "@/lib/Enums";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
+import { RequestBody } from "@/lib/Types";
+import { setSessionCookie } from "@/lib/session";
 import { validateEmail } from "@/lib/utilities";
 import { clsx } from "clsx";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
     const errorInputClass = 'bg-red-300/10 border-red-500 focus:border-red-500';
     const generalInputClass= "p-4 flex-1 border outline-none rounded-lg relative";
     const idleClass = "bg-theme-white/25 dark:border-theme-white/25 border-theme-white-dark/25 focus:border-theme-main"
+
+    const router = useRouter();
 
     const [inputsValid, setInputsValid] = useState({
         email: {
@@ -23,6 +30,7 @@ export default function LoginForm() {
     });
     const [emailText, setEmailText] = useState("");
     const [passwordText, setPasswordText] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const [checkBoxState, setCheckBoxState] = useState<boolean>(false);
     const emailDebounce = useDebounce<string>(emailText, 500);
@@ -48,10 +56,93 @@ export default function LoginForm() {
         setInputsValid((prev) => ({ ...prev, email: { status: testSwitch.PASSED, errorMessage: "" } }));
     }, [emailDebounce]);
 
+    useEffect(() => {
+        if(passwordDebounce === "") {
+            setInputsValid((prev)=> ({...prev, password: {status:testSwitch.IDLE, errorMessage: ""}}));
+            return;
+        }
 
-    const handleSubmit = (e: FormEvent) => {
+        if (passwordDebounce.length < 8) {
+            setInputsValid((prev) => ({ ...prev, password: { status: testSwitch.FAILED, errorMessage: "Password too short!" } }));
+            return;
+        }
+        setInputsValid((prev) => ({ ...prev, password: { status: testSwitch.PASSED, errorMessage: "" } }));
+    }, [passwordDebounce]);
+
+
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if(!canSubmit) return;
+        if(!canSubmit || isLoading) return;
+
+        setIsLoading(true);
+
+        const payload = {
+            email: emailDebounce,
+            password: passwordDebounce
+        } satisfies Pick<RequestBody, "email" | "password">;
+
+        await fetch("/api/authentication/login", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        })
+        .then((res)=>{
+            if (!res.ok) {
+                console.log(res)
+                throw new Error("Something went wrong!");
+            }
+            return res.json();
+        })
+        .then((data)=>{
+            let unknownError : string | null = null;
+            const { status, message, type } = data;
+
+            if (status === 400) {
+                switch (type) {
+                    case AuthResponseType.EmailError:
+                        setInputsValid((prev) => ({ ...prev, email: { status: testSwitch.FAILED, errorMessage: message } }));
+                        break;
+                    case AuthResponseType.PasswordError:
+                        setInputsValid((prev) => ({ ...prev, password: { status: testSwitch.FAILED, errorMessage: message } }));
+                        break;
+                    case AuthResponseType.InvalidError:
+                        setInputsValid((prev) => ({ ...prev, 
+                            password: { status: testSwitch.FAILED, errorMessage: "Invalid credentials!" },
+                            email: { status: testSwitch.FAILED, errorMessage: "Invalid credentials!" },
+                        }));
+                        break;
+                    default:
+                        setInputsValid((prev) => ({ ...prev, 
+                            password: { status: testSwitch.FAILED, errorMessage: "something went wrong." },
+                            email: { status: testSwitch.FAILED, errorMessage: "something went wrong." },
+                        }));
+
+                        unknownError = "Oops! Something went wrong."
+                        break;
+                }
+
+                toast.error(unknownError ?? message);
+            } else {
+                toast.success("Welcome back!");
+                const expirationDate = checkBoxState ? 24 * 60 : 60;
+                setSessionCookie("taskerId", message, expirationDate);
+
+                setTimeout(() => {
+                    router.push("/dashboard");
+                }, 1000);
+
+            }
+        })
+        .catch((error)=>{
+            console.error(error);
+        })
+        .finally(()=>{
+            setIsLoading(false);
+        })
+
+
     }
 
     return (
@@ -107,10 +198,19 @@ export default function LoginForm() {
                 </div>
 
                 <button type={`${canSubmit ? "submit": "button"}`} className={clsx(
-                    "p-4 rounded-lg border cursor-default border-theme-text w-full font-semibold opacity-60",
-                    canSubmit && "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90"
+                    "p-4 rounded-lg border cursor-default border-theme-text w-full font-semibold opacity-60 grid place-items-center",
+                    (canSubmit && !isLoading) && "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90"
                 )}>
-                    Sign Up
+                    {!isLoading && <span>Login</span>}
+                    {isLoading && <span>
+                        <Image
+                            src={"https://taskify.sirv.com/three-dots.svg"}
+                            alt="loading"
+                            height={100}
+                            width={100}
+                            className="object-contain w-6 h-auto py-2 dark:invert-0 invert"
+                        />
+                    </span>}
                 </button>
             </section>
         </form>

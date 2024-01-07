@@ -13,6 +13,8 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@reduxjs/toolkit": "^2.0.1",
     "clsx": "^2.1.0",
+    "crypto-js": "^4.2.0",
+    "js-cookie": "^3.0.5",
     "mongoose": "^8.0.3",
     "next": "14.0.4",
     "nextjs-toploader": "^1.6.4",
@@ -25,6 +27,8 @@
     "react-redux": "^9.0.4"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.1",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-beautiful-dnd": "^13.1.7",

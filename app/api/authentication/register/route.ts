@@ -1,4 +1,5 @@
 import connectDatabase from "@/lib/Database";
+import { AuthResponseType } from "@/lib/Enums";
 import { UserAccount } from "@/lib/Interfaces";
 import { RequestBody } from "@/lib/Types";
 import { generateSalt, hashPassword } from "@/lib/encryption";
@@ -14,7 +15,7 @@ export const POST = async (request: Request) => {
     if (!validateEmail(email)) {
         return NextResponse.json({
             status: 400,
-            type: 1,
+            type: AuthResponseType.EmailError,
             message: "Invalid Email"
         });
     }
@@ -22,7 +23,7 @@ export const POST = async (request: Request) => {
     if (!validateFullName(name)[0]) {
         return NextResponse.json({
             status: 400,
-            type: 2,
+            type: AuthResponseType.NameError,
             message: "Invalid name"
         });
     }
@@ -30,7 +31,7 @@ export const POST = async (request: Request) => {
     if (!validatePassword(password)[0]) {
         return NextResponse.json({
             status: 400,
-            type: 3,
+            type: AuthResponseType.PasswordError,
             message: "Invalid password format"
         });
     }
@@ -64,7 +65,7 @@ export const POST = async (request: Request) => {
         if (emailExist) {
             return NextResponse.json({
                 status: 400,
-                type: 1,
+                type: AuthResponseType.EmailError,
                 message: "User already exist!"
             });
         }
@@ -80,13 +81,13 @@ export const POST = async (request: Request) => {
         });
         return NextResponse.json({ 
             status: 200, 
-            type: 0,
+            type: AuthResponseType.NoError,
             message: "Account successfully created ✨!" 
         });
     } catch (error) {
         return NextResponse.json({ 
             status: 400, 
-            type: 4,
+            type: AuthResponseType.UnknownError,
             message: `An error occurred! ${error}` 
         });
     }   

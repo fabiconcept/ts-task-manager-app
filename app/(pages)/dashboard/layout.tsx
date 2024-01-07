@@ -10,14 +10,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="en">
-            <body className={quicksand.className}>
-                <div className="flex flex-row">
-                    <SideBar />
-                    {children}
-                    <GroupChat />
-                </div>
-            </body>
-        </html>
+        <div className="flex flex-row">
+            <SideBar />
+            {children}
+            <GroupChat />
+        </div>
     )
 }
