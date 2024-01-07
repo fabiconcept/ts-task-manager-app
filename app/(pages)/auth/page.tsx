@@ -26,6 +26,7 @@ export default function AuthPage() {
                                     src={"https://taskify.sirv.com/google-ico.png"}
                                     alt="google logo"
                                     height={512}
+                                    priority
                                     width={512}
                                     className="h-auto w-8 pointer-events-none"
                                 />
@@ -35,6 +36,7 @@ export default function AuthPage() {
                                     src={"https://taskify.sirv.com/github-ico.svg"}
                                     alt="google logo"
                                     height={512}
+                                    priority
                                     width={512}
                                     className="h-auto w-8 pointer-events-none dark:invert"
                                 />
@@ -47,6 +49,7 @@ export default function AuthPage() {
                         <Image
                             src={"https://taskify.sirv.com/dddepth-222.jpg"}
                             alt="google logo"
+                            priority
                             height={1024}
                             width={1024}
                             className="h-full w-auto object-cover pointer-events-none dark:invert"

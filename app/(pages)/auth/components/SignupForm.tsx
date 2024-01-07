@@ -1,4 +1,6 @@
 "use client"
+
+
 import { testSwitch } from "@/lib/Enums";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
 import { validateFullName, validateEmail, validatePassword } from "@/lib/utilities";
@@ -89,9 +91,10 @@ export default function SignupForm() {
 
 
     const handleSubmit = (e:FormEvent) => {
-        console.log(canSubmit);
         e.preventDefault();
+        if(!canSubmit) return;
     }
+    
     return (
         <form method="post" onSubmit={handleSubmit}>
             <section className="flex flex-wrap gap-8">
