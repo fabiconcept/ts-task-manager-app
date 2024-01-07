@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google'; 
 import './globals.css';
 import connectDatabase from '@/lib/Database';
+import { Toaster } from 'react-hot-toast';
 
 const quicksand = Quicksand({ subsets: ['latin'] });
 
@@ -18,7 +19,12 @@ export default function RootLayout({
     connectDatabase();
     return (
         <html lang="en">
-            <body className={quicksand.className}>{children}</body>
+            <body className={quicksand.className}>
+                <Toaster
+                    position='top-center'
+                />
+                {children}
+            </body>
         </html>
     )
 }

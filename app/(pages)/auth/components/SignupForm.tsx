@@ -3,10 +3,13 @@
 
 import { testSwitch } from "@/lib/Enums";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
+import { RequestBody } from "@/lib/Types";
 import { validateFullName, validateEmail, validatePassword } from "@/lib/utilities";
 import { clsx } from "clsx";
+import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function SignupForm() {
     const errorInputClass = 'bg-red-300/10 border-red-500 focus:border-red-500';
@@ -27,7 +30,7 @@ export default function SignupForm() {
             errorMessage:"",
         }
     });
-
+    const [isLoading, setIsLoading] = useState(false);
     const [checkBoxState, setCheckBoxState] = useState<boolean>(false);
 
     const [nameText, setNameText] = useState("");
@@ -90,11 +93,57 @@ export default function SignupForm() {
     }, [passwordDebounce]);
 
 
-    const handleSubmit = (e:FormEvent) => {
+    const handleSubmit = async (e:FormEvent) => {
         e.preventDefault();
-        if(!canSubmit) return;
+        if(!canSubmit || isLoading) return;
+
+        setIsLoading(true);
+
+        const payload: RequestBody = {
+            email: emailDebounce,
+            name: nameDebounce,
+            password: passwordDebounce
+        }
+
+        try {
+            const sendRequest = await fetch("/api/authentication/register", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then((res)=>{
+                return res.json();
+            })
+            .then((data)=>{
+                const { status, message, type } = data;
+
+                if (status === 400) {
+                    switch (type) {
+                        case 1:
+                            setInputsValid((prev)=> ({...prev, email: {status:testSwitch.FAILED, errorMessage: message}}));
+                            break;
+                        case 2:
+                            setInputsValid((prev)=> ({...prev, name: {status:testSwitch.FAILED, errorMessage: message}}));
+                            break;
+                        case 3:
+                            setInputsValid((prev)=> ({...prev, password: {status:testSwitch.FAILED, errorMessage: message}}));
+                            break;
+                    }
+                    toast.error(message);
+                }else{
+                    toast.success(message);
+                }
+            });
+
+        } catch (error) {
+            console.error(error);
+        }finally{
+            setIsLoading(false);
+        }
     }
-    
+
     return (
         <form method="post" onSubmit={handleSubmit}>
             <section className="flex flex-wrap gap-8">
@@ -169,10 +218,19 @@ export default function SignupForm() {
                 </div>
                 
                 <button type={`${canSubmit ? "submit": "button"}`} className={clsx(
-                    "p-4 rounded-lg border cursor-default border-theme-text w-full font-semibold opacity-60",
-                    canSubmit && "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90"
+                    "p-4 rounded-lg border border-theme-text w-full font-semibold opacity-60 grid place-items-center",
+                    (canSubmit && !isLoading) ? "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90" : "cursor-default",
                 )}>
-                    Sign Up
+                    {!isLoading && <span>Sign Up</span>}
+                    {isLoading && <span>
+                        <Image
+                            src={"https://taskify.sirv.com/three-dots.svg"}
+                            alt="loading"
+                            height={100}
+                            width={100}
+                            className="object-contain w-6 h-auto py-2"
+                        />
+                    </span>}
                 </button>
             </section>
         </form>

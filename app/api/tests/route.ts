@@ -1,21 +1,21 @@
-// import { TestSchema } from "@/lib/Database/schemas";
 import connectDatabase from "@/lib/Database";
-import mongoose from "mongoose";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 
 
 const GET = async (req: Request) => {
     const { searchParams } = new URL(req.url);
- 
-    // const name = searchParams.get("name");
-    // const instrument = searchParams.get("instrument");
 
-    const obj = Object.fromEntries(searchParams.entries());
+    const userId = searchParams.get("id")!;
 
-    return NextResponse.json(obj);
-    // return NextResponse.json({name, instrument});
+
+    const client = await connectDatabase();
+    const db = client.db("taskify");
+
+    const findUser = await db.collection("users").findOne({ _id: new ObjectId(userId) });
+
+    return NextResponse.json({findUser});
 }
 
 const POST = async (res: Response, req: Request) => {

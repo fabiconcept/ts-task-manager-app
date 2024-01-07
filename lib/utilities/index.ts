@@ -79,3 +79,27 @@ export function validatePassword(password: string): [boolean, string] {
 
     return [condition, errorMessage];
 }
+
+export function generateUniqueId(): string {
+    const timestamp = new Date().getTime();
+    const randomString = Math.random().toString(25).substring(2, 15);
+    return `${randomString}${timestamp}`;
+}
+
+export function realEscapeString(str: string) {
+    // List of characters to escape
+    const escapeChars: Record<string, string> = {
+        '\x00': '\\0',
+        '\x08': '\\b',
+        '\x09': '\\t',
+        '\x1a': '\\Z',
+        '\n': '\\n',
+        '\r': '\\r',
+        '\"': '\\"',
+        '\'': '\\\'',
+        '\\': '\\\\',
+    };
+
+    // Replace special characters with their escaped counterparts
+    return str.replace(/[\x00\x08\x09\x1a\n\r"\'\\]/g, (char) => escapeChars[char]);
+}
