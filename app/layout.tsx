@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google'; 
 import './globals.css';
+import connectDatabase from '@/lib/Database';
 
 const quicksand = Quicksand({ subsets: ['latin'] });
 
@@ -14,6 +15,7 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
 }) {
+    connectDatabase();
     return (
         <html lang="en">
             <body className={quicksand.className}>{children}</body>
