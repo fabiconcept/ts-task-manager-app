@@ -47,6 +47,14 @@ export const POST = async (request: Request) => {
         const cleanEmail = realEscapeString(email);
         const cleanName = realEscapeString(name);
         const userSalt = generateSalt();
+        const loginAuthKey = generateSalt();
+        const loginExpTime = (new Date()).getTime() + (60 * 60 * 1000);
+
+        const authentication = {
+            key: loginAuthKey,
+            exp: loginExpTime
+        }
+
         const hashedPassword = hashPassword(password, userSalt);
 
         const payload = {
@@ -54,7 +62,8 @@ export const POST = async (request: Request) => {
             name: cleanName,
             email: cleanEmail,
             password: hashedPassword,
-            userSalt: userSalt
+            userSalt: userSalt,
+            authentication: authentication
         } satisfies UserAccount;
 
         const splitName = payload.name.split(" ");
@@ -77,7 +86,9 @@ export const POST = async (request: Request) => {
         await accountsDetailsCollection.insertOne({
             userId: payload.userId,
             displayName: `${splitName[0][0]}${splitName[1][0]}`,
-            profileAvatar: ""
+            profileAvatar: "",
+            name: payload.name,
+            email: payload.email,
         });
         return NextResponse.json({ 
             status: 200, 

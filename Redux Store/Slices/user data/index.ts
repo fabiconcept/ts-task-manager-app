@@ -2,12 +2,20 @@ import { RootState } from "@/Redux Store";
 import { UserDetails } from "@/lib/Interfaces";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const initialState: UserDetails = {
-    displayName: "",
-    email: "",
-    name: "",
-    profileAvatar: "",
-    userId: ""
+type InitialState = {
+    userStatus: "banned" | "good" | "suspended" | "unset",
+    userData: UserDetails,
+}
+
+const initialState: InitialState = {
+    userStatus: "unset",
+    userData: {
+        displayName: "",
+        email: "",
+        name: "",
+        profileAvatar: "",
+        userId: ""
+    }
 }
 
 const userDataState = createSlice({
@@ -16,13 +24,13 @@ const userDataState = createSlice({
     reducers: {
         setUserData: (state, payload:PayloadAction<UserDetails>) =>{
             const details = payload.payload;
-            state = details;
+            state.userData = details
         },
         updateDisplayName: (state, payload:PayloadAction<string>) =>{
-            state.displayName = payload.payload;
+            state.userData.displayName = payload.payload;
         },
         updateProfileAvatar: (state, payload:PayloadAction<string>) =>{
-            state.profileAvatar = payload.payload;
+            state.userData.profileAvatar = payload.payload;
         },
     }
 })

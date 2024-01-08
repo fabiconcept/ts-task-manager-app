@@ -8,6 +8,14 @@ export interface UserAccount {
     userId: string;
     userSalt: string;
     password: string;
+    authentication: {
+        key: string;
+        exp: number
+    }
+}
+
+export interface UserAccountWithId extends UserAccount {
+    id: string
 }
 
 export interface UserDetails extends Pick<UserAccount, "name" | "email" | "userId" > {

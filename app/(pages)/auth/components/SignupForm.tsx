@@ -226,8 +226,8 @@ export default function SignupForm() {
                 </div>
                 
                 <button type={`${canSubmit ? "submit": "button"}`} className={clsx(
-                    "p-4 rounded-lg border border-theme-text w-full font-semibold opacity-60 grid place-items-center",
-                    (canSubmit && !isLoading) ? "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90" : "cursor-default",
+                    "p-4 rounded-lg border border-theme-text w-full font-semibold grid place-items-center",
+                    (canSubmit && !isLoading) ? "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90" : "cursor-default opacity-60",
                 )}>
                     {!isLoading && <span>Sign Up</span>}
                     {isLoading && <span>

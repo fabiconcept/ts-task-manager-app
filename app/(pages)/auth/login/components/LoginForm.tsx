@@ -2,7 +2,7 @@
 
 import { AuthResponseType, testSwitch } from "@/lib/Enums";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
-import { RequestBody } from "@/lib/Types";
+import { RequestBody, ResponseWithError, ResponseWithoutError } from "@/lib/Types";
 import { setSessionCookie } from "@/lib/session";
 import { validateEmail } from "@/lib/utilities";
 import { clsx } from "clsx";
@@ -10,6 +10,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+
+interface ReqBody extends Pick<RequestBody, "email" | "password"> {
+    exp?: number,
+}
 
 export default function LoginForm() {
     const errorInputClass = 'bg-red-300/10 border-red-500 focus:border-red-500';
@@ -76,10 +80,13 @@ export default function LoginForm() {
 
         setIsLoading(true);
 
+        const expirationDate = checkBoxState ? 24 : 1;
+
         const payload = {
             email: emailDebounce,
-            password: passwordDebounce
-        } satisfies Pick<RequestBody, "email" | "password">;
+            password: passwordDebounce,
+            exp: expirationDate * (60*60*1000)
+        } satisfies ReqBody;
 
         await fetch("/api/authentication/login", {
             method: "post",
@@ -95,7 +102,7 @@ export default function LoginForm() {
             }
             return res.json();
         })
-        .then((data)=>{
+        .then((data: ResponseWithError | ResponseWithoutError)=>{
             let unknownError : string | null = null;
             const { status, message, type } = data;
 
@@ -126,8 +133,7 @@ export default function LoginForm() {
                 toast.error(unknownError ?? message);
             } else {
                 toast.success("Welcome back!");
-                const expirationDate = checkBoxState ? 24 * 60 : 60;
-                setSessionCookie("taskerId", message, expirationDate);
+                setSessionCookie("taskerId", `${message.userId} ${message.auth}`, (expirationDate * 60));
 
                 setTimeout(() => {
                     router.push("/dashboard");
@@ -198,8 +204,8 @@ export default function LoginForm() {
                 </div>
 
                 <button type={`${canSubmit ? "submit": "button"}`} className={clsx(
-                    "p-4 rounded-lg border cursor-default border-theme-text w-full font-semibold opacity-60 grid place-items-center",
-                    (canSubmit && !isLoading) && "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90"
+                    "p-4 rounded-lg border border-theme-text w-full font-semibold grid place-items-center",
+                    (canSubmit && !isLoading) ? "shadow-black/5 bg-theme-text border-transparent select-none cursor-pointer shadow-lg opacity-100  active:scale-90": "cursor-default opacity-60"
                 )}>
                     {!isLoading && <span>Login</span>}
                     {isLoading && <span>
