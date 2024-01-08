@@ -3,6 +3,7 @@ import { Quicksand } from 'next/font/google';
 import './globals.css';
 import connectDatabase from '@/lib/Database';
 import { Toaster } from 'react-hot-toast';
+import ProviderWrapper from './components/ProviderWrapper';
 
 const quicksand = Quicksand({ subsets: ['latin'] });
 
@@ -23,7 +24,9 @@ export default function RootLayout({
                 <Toaster
                     position='top-center'
                 />
-                {children}
+                <ProviderWrapper>
+                    {children}
+                </ProviderWrapper>
             </body>
         </html>
     )

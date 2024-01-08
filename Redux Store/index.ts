@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { sessionStateSlice } from "./Slices/session";
+import { UserDataStateSlice } from "./Slices/user data";
 
 const store = configureStore({
     reducer: {
-
+        session: sessionStateSlice,
+        userData: UserDataStateSlice
     }
 });
 

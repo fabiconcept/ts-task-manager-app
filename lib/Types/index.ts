@@ -3,3 +3,8 @@ export type RequestBody = {
     email: string;
     password: string;
 }
+
+export type SessionState = {
+    hasSession: boolean;
+    sessionId: string;
+}
