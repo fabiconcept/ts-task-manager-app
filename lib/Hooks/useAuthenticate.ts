@@ -22,6 +22,7 @@ export default function useAuthenticate(): void {
     useEffect(() => {
         if (sessionId === null) return;
         if (!hasSession || sessionId === "") {
+            console.error("Session data not found");
             router.push("/auth/login");
             return;
         }
