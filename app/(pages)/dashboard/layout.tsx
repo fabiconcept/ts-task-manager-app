@@ -1,8 +1,6 @@
+import SessionPolice from "@/app/components/SessionPolice";
 import GroupChat from "./components/GroupChatSection";
 import SideBar from "./components/SideBar";
-
-import { Quicksand } from 'next/font/google';
-const quicksand = Quicksand({ subsets: ['latin'] });
 
 export default function RootLayout({
     children,
@@ -12,6 +10,7 @@ export default function RootLayout({
     return (
         <div className="flex flex-row">
             <SideBar />
+            <SessionPolice />
             {children}
             <GroupChat />
         </div>
