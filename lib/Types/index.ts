@@ -1,4 +1,7 @@
+import { NextApiResponse } from "next";
 import { AuthResponseType } from "../Enums";
+import { Server as NetServer, Socket } from "net";
+import { Server as SocketIOServer } from "socket.io";
 
 export type RequestBody = {
     name: string;
@@ -38,3 +41,12 @@ export type ValidateAuthResponseWithError = {
     type: AuthResponseType.InvalidError,
     message: string,
 }
+
+// Socket.io
+export type NextApiResponseServerIO = NextApiResponse & {
+    socket: Socket & {
+        server: NetServer & {
+            io: SocketIOServer;
+        };
+    };
+};

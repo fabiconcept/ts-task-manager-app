@@ -15,7 +15,6 @@ const connectDatabase = async () => {
         return clientPromise;
     } catch (error) {
         console.error("En error occured while connecting to MongoDB", error);
-        throw error;
     }
 };
 

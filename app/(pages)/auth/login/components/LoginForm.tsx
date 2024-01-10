@@ -119,6 +119,7 @@ export default function LoginForm() {
                             password: { status: testSwitch.FAILED, errorMessage: "Invalid credentials!" },
                             email: { status: testSwitch.FAILED, errorMessage: "Invalid credentials!" },
                         }));
+                        setPasswordText("");
                         break;
                     default:
                         setInputsValid((prev) => ({ ...prev, 
@@ -129,6 +130,7 @@ export default function LoginForm() {
                         unknownError = "Oops! Something went wrong."
                         break;
                 }
+                setIsLoading(false);
 
                 toast.error(unknownError ?? message);
             } else {
@@ -142,10 +144,8 @@ export default function LoginForm() {
             }
         })
         .catch((error)=>{
-            console.error(error);
-        })
-        .finally(()=>{
             setIsLoading(false);
+            console.error(error);
         })
 
 

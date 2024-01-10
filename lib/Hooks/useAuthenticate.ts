@@ -16,11 +16,11 @@ export default function useAuthenticate(): void {
 
     useMemo(() => {
         if (!userDetails) return;
-        
     }, [userDetails]);
 
     useEffect(() => {
         if (sessionId === null) return;
+
         if (!hasSession || sessionId === "") {
             console.error("Session data not found");
             router.push("/auth/login");

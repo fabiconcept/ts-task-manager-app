@@ -38,7 +38,14 @@ export const POST = async (req: Request) => {
 
     try {
         const client = await connectDatabase();
+
+        if(!client) {
+            throw new Error("Failed to connect to Database");
+        }
+
         const db = client.db("taskity");
+
+
         const accountsCollection = db.collection("Accounts");
         const accountsDetailsCollection = db.collection("AccountsDetails");
 
@@ -97,10 +104,4 @@ export const POST = async (req: Request) => {
         }
         return NextResponse.json(apiResponse);
     }
-    
-
-    return NextResponse.json({
-        status: 200,
-        authenticationKey
-    })
 }

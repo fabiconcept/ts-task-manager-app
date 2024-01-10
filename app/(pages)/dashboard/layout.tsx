@@ -8,11 +8,13 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="flex flex-row">
-            <SideBar />
+        <>
             <SessionPolice />
-            {children}
-            <GroupChat />
-        </div>
+            <div className="flex flex-row">
+                <SideBar />
+                {children}
+                <GroupChat />
+            </div>
+        </>
     )
 }

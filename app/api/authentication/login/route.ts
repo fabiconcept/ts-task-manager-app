@@ -38,6 +38,11 @@ export const POST = async (request: Request) => {
 
     try {
         const client = await connectDatabase();
+        
+        if(!client) {
+            throw new Error("Failed to connect to Database");
+        }
+
         const db = client.db("taskity");
         const accountsCollection = db.collection("Accounts");
 
@@ -66,7 +71,7 @@ export const POST = async (request: Request) => {
         }
         const loginAuthKey = generateSalt();
         const loginExpTime = (new Date()).getTime() + (exp ? exp : (60 * 60 * 1000));
-
+        
         const authentication = {
             key: loginAuthKey,
             exp: loginExpTime

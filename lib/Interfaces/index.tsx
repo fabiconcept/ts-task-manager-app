@@ -22,3 +22,5 @@ export interface UserDetails extends Pick<UserAccount, "name" | "email" | "userI
     displayName: string;
     profileAvatar: string;
 }
+
+// web socket set up
