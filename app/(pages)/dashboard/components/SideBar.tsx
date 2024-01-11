@@ -21,8 +21,8 @@ export default function SideBar() {
             <div className="flex-1 flex flex-col my-6">
                 {/* Nav Links */}
                 <div className="grid h-fit font-semibold">
-                    <div className="flex items-center gap-3 p-4 text-sm opacity-65 active:scale-95 cursor-pointer hover:opacity-70">
-                        <span className="text-2xl">
+                    <div className="flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer">
+                        <span className="text-2xl text-theme-main">
                             <CiDesktop />
                         </span>
                         <span className="">Dashboard</span>
