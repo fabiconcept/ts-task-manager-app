@@ -36,6 +36,8 @@ const userDataState = createSlice({
     reducers: {
         clearUserData: (state) => {
             state.response.userStatus = "unset";
+            state.loading = loadingState.IDLE;
+            state.error =""
             state.response.userData = {
                 displayName: "",
                 email: "",
