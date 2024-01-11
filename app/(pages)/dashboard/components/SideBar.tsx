@@ -1,6 +1,6 @@
 "use client";
 
-import { FaAngleDown, FaAngleRight, FaAngleUp, FaPlus } from "react-icons/fa6";
+import { FaAngleRight, FaPlus } from "react-icons/fa6";
 import { CiBoxList, CiDesktop, CiSettings } from "react-icons/ci";
 import NameTag from "./sub components/side components/NameTag";
 import { echoUserData } from "@/Redux Store/Slices/user data";
@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { loadingState } from "@/lib/Enums";
 
 export default function SideBar() {
-    const { error, loading, response } = useSelector(echoUserData);
+    const { loading, response } = useSelector(echoUserData);
 
 
 
