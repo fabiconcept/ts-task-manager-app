@@ -7,7 +7,7 @@ type ReqBody = {
     authenticationKey: string
 }
 
-let apiResponse : ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<{}>
+let apiResponse : ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<string>
 
 export const POST = async (req: Request) => {
     const { authenticationKey }: ReqBody = await req.json();
@@ -47,7 +47,6 @@ export const POST = async (req: Request) => {
 
 
         const accountsCollection = db.collection("Accounts");
-        const accountsDetailsCollection = db.collection("AccountsDetails");
 
 
         const findUser = await accountsCollection.findOne({
@@ -83,16 +82,12 @@ export const POST = async (req: Request) => {
             return NextResponse.json(apiResponse);
         }
 
-        const getUserData = await accountsDetailsCollection.findOne({
-            userId: userId
-        });
-
 
         apiResponse = {
             status: 200,
             type: AuthResponseType.NoError,
             message: "Authentication successful",
-            data: {...getUserData}
+            data: userId
         }
         return NextResponse.json(apiResponse);
 

@@ -32,7 +32,7 @@ export type ResponseWithoutError = {
 export type ValidateAuthResponseWithoutError<T> = {
     status: 200,
     type: AuthResponseType.NoError,
-    message: "Authentication successful",
+    message: string,
     data: T
 }
 

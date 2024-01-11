@@ -1,7 +1,9 @@
 import connectDatabase from '@/lib/Database';
 import { AuthResponseType } from '@/lib/Enums';
+import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from '@/lib/Types';
 import { NextResponse } from 'next/server';
 
+let apiResponse : ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<any>
 
 export const POST = async (req: Request, res: Response) => {
     const { key }: { key: string } = await req.json();
@@ -21,8 +23,6 @@ export const POST = async (req: Request, res: Response) => {
         const db = client.db('taskity');
         const accountsDetailsCollection = db.collection('AccountsDetails');
 
-        const testPip = accountsDetailsCollection.find()
-
         const getUserData = await accountsDetailsCollection.findOne({
             userId: key
         });
@@ -31,18 +31,21 @@ export const POST = async (req: Request, res: Response) => {
             throw new Error("User not found");
         }
 
-        return NextResponse.json({
+        apiResponse = {
             status: 200,
-            type: 0,
-            message: getUserData,
-        });
+            type: AuthResponseType.NoError,
+            message: "Fetch complete",
+            data: getUserData
+        }
+        return NextResponse.json(apiResponse);
         
     } catch (error) {
         console.error('An error Occured', error);
-        return NextResponse.json({
+        apiResponse = {
             status: 400,
             type: AuthResponseType.InvalidError,
             message: `Ewo! no vex`,
-        });
+        }
+        return NextResponse.json(apiResponse);
     }
 };

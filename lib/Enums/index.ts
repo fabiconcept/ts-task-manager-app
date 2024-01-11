@@ -12,3 +12,10 @@ export enum AuthResponseType {
     UnknownError= 4,
     InvalidError = 5,
 }
+
+export enum loadingState {
+    IDLE =  "idle",
+    PENDING = "pending",
+    SUCCESS = "success",
+    FAILED = "failed"
+}

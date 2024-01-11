@@ -1,17 +1,23 @@
-import { FaAngleDown, FaAngleRight, FaAngleUp, FaPlus } from "react-icons/fa6"
-import { CiBoxList, CiDesktop, CiSettings } from "react-icons/ci"
+"use client";
+
+import { FaAngleDown, FaAngleRight, FaAngleUp, FaPlus } from "react-icons/fa6";
+import { CiBoxList, CiDesktop, CiSettings } from "react-icons/ci";
+import NameTag from "./sub components/side components/NameTag";
+import { echoUserData } from "@/Redux Store/Slices/user data";
+import { useSelector } from "react-redux";
+import { loadingState } from "@/lib/Enums";
 
 export default function SideBar() {
+    const { error, loading, response } = useSelector(echoUserData);
+
+
+
     return (
         <section className="w-[15rem] h-screen p-4 flex flex-col">
-            <div className="mt-8 flex py-2 px-3 rounded-md bg-white/10 gap-3 items-center text-sm cursor-pointer hover:bg-white/25 active:scale-90 dark:shadow-[0_2.5px_25px_rgba(255,255,255,0.05)] hover:dark:shadow-[0_2.5px_25px_rgba(255,255,255,0.1)] shadow-[0_2.5px_25px_rgba(0,0,0,0.05)] hover:shadow-[0_2.5px_25px_rgba(0,0,0,0.1)] border dark:border-white/10 border-black/10">
-                <div className="p-1 h-8 w-8 bg-theme-main text-theme-white-dark rounded grid place-items-center font-bold">Ta.</div>
-                <span className="flex-1 select-none truncate">Taskify</span>
-                <span className="flex flex-col text-xs pr-2">
-                    <FaAngleUp />
-                    <FaAngleDown />
-                </span>
-            </div>
+            {loading === loadingState.SUCCESS && <NameTag 
+                username={response.userData?.name ?? ""}
+                abbr={(response.userData.name).split("").splice(0, 2).join("")}
+            />}
             <div className="flex-1 flex flex-col my-6">
                 {/* Nav Links */}
                 <div className="grid h-fit font-semibold">
