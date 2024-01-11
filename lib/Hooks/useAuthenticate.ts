@@ -13,6 +13,7 @@ export default function useAuthenticate(): void {
     const [hasSession, sessionId] = retrieveActiveSession();
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
+    const apiURL = "http://localhost:3000/api/authentication/validateAuth";
 
     useEffect(() => {
         if (sessionId === null) return;
@@ -22,9 +23,10 @@ export default function useAuthenticate(): void {
             router.push("/auth/login");
             return;
         }
+
         async function getData () {
             try {
-                const req = await fetch("api/authentication/validateAuth", {
+                const req = await fetch(apiURL, {
                     method: "post",
                     headers: {
                         "Content-Type": "application/json"
@@ -33,7 +35,7 @@ export default function useAuthenticate(): void {
                         authenticationKey: sessionId
                     })
                 })
-    
+
                 const res: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<string> = await req.json();
                 const { status, message } = res;
     
