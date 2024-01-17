@@ -117,9 +117,7 @@ export default function LoginForm() {
                     case AuthResponseType.InvalidError:
                         setInputsValid((prev) => ({ ...prev, 
                             password: { status: testSwitch.FAILED, errorMessage: "Invalid credentials!" },
-                            email: { status: testSwitch.FAILED, errorMessage: "Invalid credentials!" },
                         }));
-                        setPasswordText("");
                         break;
                     default:
                         setInputsValid((prev) => ({ ...prev, 
@@ -130,6 +128,7 @@ export default function LoginForm() {
                         unknownError = "Oops! Something went wrong."
                         break;
                 }
+
                 setIsLoading(false);
 
                 toast.error(unknownError ?? message);

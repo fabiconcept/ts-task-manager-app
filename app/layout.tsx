@@ -4,7 +4,6 @@ import './globals.css';
 import connectDatabase from '@/lib/Database';
 import { Toaster } from 'react-hot-toast';
 import ProviderWrapper from './components/ProviderWrapper';
-import { ThemeProvider } from "next-themes";
 
 const quicksand = Quicksand({ subsets: ['latin'] });
 
@@ -26,13 +25,7 @@ export default function RootLayout({
                     position='top-center'
                 />
                 <ProviderWrapper>
-                    <ThemeProvider
-                        attribute='class'
-                        defaultTheme='system'
-                        enableSystem
-                    >
-                        {children}
-                    </ThemeProvider>
+                    {children}
                 </ProviderWrapper>
             </body>
         </html>
