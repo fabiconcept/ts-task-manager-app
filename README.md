@@ -54,10 +54,6 @@ We welcome contributions from developers of all skill levels. Here's how you can
 - **Task Manager Quests:** Embark on fun quests within the codebase. Discover hidden gems and share your findings!
 - **Task Manager Stories:** Share your Task Manager journey on social media using #TaskManagerAdventures.
 
-## License
-
-This project is licensed under the MIT License - see the [#](LICENSE) file for details.
-
 Let's make task management not just productive but downright enjoyable! 🎉
 
 Happy coding,
