@@ -11,7 +11,7 @@ import SearchFeature from "./sub components/side components/SearchFeature";
 import ProjectList from "./sub components/side components/ProjectList";
 
 export default function SideBar() {
-    const { loading, response } = useSelector(echoUserData);
+    const { loading } = useSelector(echoUserData);
     const [collapseSide, setCollapseSide] = useState(false);
 
     return (
@@ -20,10 +20,7 @@ export default function SideBar() {
                 "h-screen p-4 flex flex-col gap-6 py-6 overflow-hidden shadow-md border-r border-transparent group-hover:dark:border-white/10 group-hover:border-black/10",
                 collapseSide ? "w-0 opacity-30" : "w-[15rem]"
             )}>
-                {loading === loadingState.SUCCESS && <NameTag
-                    username={response.userData?.name ?? ""}
-                    abbr={(response.userData.name).split("").splice(0, 2).join("")}
-                />}
+                {loading === loadingState.SUCCESS && <NameTag />}
 
                 <SearchFeature />
                 <ProjectList />

@@ -1,12 +1,12 @@
 import { RootState } from "@/Redux Store";
 import { fetchUserData } from "@/Redux Store/Thunk";
 import { loadingState } from "@/lib/Enums";
-import { UserDetails } from "@/lib/Interfaces";
+import { UserAccountDetails } from "@/lib/Interfaces";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type ResponseTpe = {
     userStatus: "banned" | "good" | "suspended" | "unset",
-    userData: UserDetails,
+    userData: UserAccountDetails,
 }
 
 type InitialState = {
@@ -25,7 +25,10 @@ const initialState: InitialState = {
             email: "",
             name: "",
             profileAvatar: "",
-            userId: ""
+            userId: "",
+            created_on: "",
+            defaultProject: "",
+            projects: [],
         }
     }
 }
@@ -43,7 +46,10 @@ const userDataState = createSlice({
                 email: "",
                 name: "",
                 profileAvatar: "",
-                userId: ""
+                userId: "",
+                created_on: "",
+                defaultProject: "",
+                projects: [],
             };
         },
     },
@@ -52,7 +58,7 @@ const userDataState = createSlice({
             state.loading = loadingState.PENDING;
         });
 
-        builder.addCase(fetchUserData.fulfilled, (state, action: PayloadAction<UserDetails>) => {
+        builder.addCase(fetchUserData.fulfilled, (state, action: PayloadAction<UserAccountDetails>) => {
             state.loading = loadingState.SUCCESS;
             state.response.userStatus = "good";
             state.response.userData = action.payload;
@@ -70,4 +76,4 @@ export const UserDataStateSlice = userDataState.reducer;
 
 
 
-export const echoUserData = (state: RootState) => state.userData;
+export const echoUserData = (state: RootState) => state.userData; 
