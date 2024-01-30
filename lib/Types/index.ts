@@ -20,14 +20,12 @@ export type ResponseWithError = {
     message: string
 }
 
-export type ResponseWithoutError = {
+export type ResponseWithoutError<T = { userId: string, auth: string }> = {
     status: 200,
     type: AuthResponseType,
-    message: {
-        userId: string,
-        auth: string
-    }
-}
+    message: T
+};
+
 
 export type ValidateAuthResponseWithoutError<T> = {
     status: 200,

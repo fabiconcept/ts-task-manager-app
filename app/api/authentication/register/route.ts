@@ -1,39 +1,42 @@
 import connectDatabase from "@/lib/Database";
 import { AuthResponseType } from "@/lib/Enums";
 import { UserAccount } from "@/lib/Interfaces";
-import { RequestBody } from "@/lib/Types";
+import { RequestBody, ResponseWithError, ResponseWithoutError } from "@/lib/Types";
 import { generateSalt, hashPassword } from "@/lib/encryption";
 import { generateUniqueId, realEscapeString, validateEmail, validateFullName, validatePassword } from "@/lib/utilities";
 import { NextResponse } from "next/server";
 
-
+let response: ResponseWithoutError<{toast: string, token: string}> | ResponseWithError;
 
 export const POST = async (request: Request) => {
     const reqBody: RequestBody = await request.json();
     const { email, name, password } = reqBody;
 
     if (!validateEmail(email)) {
-        return NextResponse.json({
+        response = {
             status: 400,
             type: AuthResponseType.EmailError,
             message: "Invalid Email"
-        });
+        }
+        return NextResponse.json(response);
     }
     
     if (!validateFullName(name)[0]) {
-        return NextResponse.json({
+        response = {
             status: 400,
             type: AuthResponseType.NameError,
             message: "Invalid name"
-        });
+        }
+        return NextResponse.json(response);
     }
     
     if (!validatePassword(password)[0]) {
-        return NextResponse.json({
+        response = {
             status: 400,
             type: AuthResponseType.PasswordError,
             message: "Invalid password format"
-        });
+        }
+        return NextResponse.json(response);
     }
 
     try {
@@ -77,11 +80,12 @@ export const POST = async (request: Request) => {
         const emailExist = await accountsCollection.findOne({email: payload.email});
 
         if (emailExist) {
-            return NextResponse.json({
+            response = {
                 status: 400,
                 type: AuthResponseType.EmailError,
                 message: "User already exist!"
-            });
+            }
+            return NextResponse.json(response);
         }
 
         // Create user account
@@ -95,11 +99,16 @@ export const POST = async (request: Request) => {
             name: payload.name,
             email: payload.email,
         });
-        return NextResponse.json({ 
+        
+        response = { 
             status: 200, 
             type: AuthResponseType.NoError,
-            message: "Account successfully created ✨!" 
-        });
+            message: { 
+                toast: "Account successfully created ✨!",
+                token: `${UserId} ${authentication}`
+            } 
+        }
+        return NextResponse.json(response);
     } catch (error) {
         return NextResponse.json({ 
             status: 400, 

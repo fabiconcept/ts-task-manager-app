@@ -3,7 +3,7 @@
 import { AuthResponseType, testSwitch } from "@/lib/Enums";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
 import { RequestBody, ResponseWithError, ResponseWithoutError } from "@/lib/Types";
-import { setSessionCookie } from "@/lib/session";
+import { performLogin } from "@/lib/session";
 import { validateEmail } from "@/lib/utilities";
 import { clsx } from "clsx";
 import Image from "next/image";
@@ -85,7 +85,7 @@ export default function LoginForm() {
         const payload = {
             email: emailDebounce,
             password: passwordDebounce,
-            exp: expirationDate * (60*60*1000)
+            exp: expirationDate * (60*60*1000),
         } satisfies ReqBody;
 
         await fetch("/api/authentication/login", {
@@ -133,8 +133,7 @@ export default function LoginForm() {
 
                 toast.error(unknownError ?? message);
             } else {
-                toast.success("Welcome back!");
-                setSessionCookie("taskerId", `${message.userId} ${message.auth}`, (expirationDate * 60));
+                performLogin(`${message.userId} ${message.auth}`);
 
                 setTimeout(() => {
                     router.push("/dashboard");

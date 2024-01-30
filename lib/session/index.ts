@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import CryptoJS from 'crypto-js';
+import toast from 'react-hot-toast';
 
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!;
 
@@ -16,25 +17,27 @@ const decryptValue = (encryptedValue: string) => {
     return decryptedValue;
 };
 
-// Function to set the session cookie
-export const setSessionCookie = (key: string, value: string, timeout: number) => {
-    const SESSION_DURATION = timeout ? timeout : 5; // Duration in minutes
-    const encryptedValue = encryptValue(value);
-    Cookies.set(key, encryptedValue, { expires: SESSION_DURATION / (24 * 60), secure: true }); // Convert duration to days
+// Function to set the session data in localStorage
+const setSessionData = (key: string, value: string) => {
+    localStorage.setItem(key, encryptValue(value));
     return true;
 };
 
-// Function to get the session cookie value
-export const getSessionCookie = (key: string) => {
-    const encryptedValue = Cookies.get(key);
+// Function to get the session data from localStorage
+export const getSessionData = (key: string) => {
+    const encryptedValue = localStorage.getItem(key);
     if (encryptedValue) {
-        const decryptedValue = decryptValue(encryptedValue);
-        return decryptedValue;
+        return decryptValue(encryptedValue);
     }
     return null;
 };
 
-// Function to remove the session cookie
-export const removeSessionCookie = (key: string) => {
-    Cookies.remove(key);
+// Function to remove the session data from localStorage
+export const removeSessionData = (key: string) => {
+    localStorage.removeItem(key);
 };
+
+export const performLogin = (value: string, toastText?: string) => {
+    toast.success(toastText ?? "Welcome back!");
+    setSessionData("taskerId", `${value}`);
+}

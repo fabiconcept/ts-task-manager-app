@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { retrieveActiveSession } from "../session/helper";
 import { useRouter } from "next/navigation";
 import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
-import { removeSessionCookie } from "../session";
+import { removeSessionData } from "../session";
 import { useDispatch } from "react-redux";
 import { fetchUserData } from "@/Redux Store/Thunk";
 import { AppDispatch } from "@/Redux Store";
@@ -46,7 +46,7 @@ export default function useAuthenticate(): void {
                 }
             } catch (error) {
                 console.error("Error:", error);
-                removeSessionCookie("taskerId");
+                removeSessionData("taskerId");
                 router.push("/auth/login");
             }
         }

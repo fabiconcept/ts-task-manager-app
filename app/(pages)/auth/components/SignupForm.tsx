@@ -3,13 +3,19 @@
 
 import { AuthResponseType, testSwitch } from "@/lib/Enums";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
-import { RequestBody } from "@/lib/Types";
+import { RequestBody, ResponseWithError, ResponseWithoutError } from "@/lib/Types";
+import { performLogin } from "@/lib/session";
 import { validateFullName, validateEmail, validatePassword } from "@/lib/utilities";
 import { clsx } from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+
+type SuccessSignUp = {
+    toast: string,
+    token: string
+}
 
 export default function SignupForm() {
     const errorInputClass = 'bg-red-300/10 border-red-500 focus:border-red-500';
@@ -119,7 +125,7 @@ export default function SignupForm() {
                 }
                 return res.json();
             })
-            .then((data)=>{
+            .then((data: ResponseWithError | ResponseWithoutError<{toast: string, token: string}>)=>{
                 let unknownError : string | null = null;
                 const { status, message, type } = data;
 
@@ -141,7 +147,10 @@ export default function SignupForm() {
                     }
                     toast.error(unknownError ?? message);
                 }else{
-                    toast.success(message);
+                    performLogin(
+                        `${message.token}`,
+                        message.toast
+                    )
                 }
             });
 

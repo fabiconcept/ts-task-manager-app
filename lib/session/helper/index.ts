@@ -1,9 +1,9 @@
-import { getSessionCookie } from "..";
+import { getSessionData } from "..";
 
 export const retrieveActiveSession = () : [boolean, string | null] => {
     let sessionIdString: string | null = null;
     let hasSession = true
-    const sessionId = getSessionCookie("taskerId");
+    const sessionId = getSessionData("taskerId");
     
     if (!sessionId) {
         hasSession = false;
