@@ -9,18 +9,16 @@ import { validateFullName, validateEmail, validatePassword } from "@/lib/utiliti
 import { clsx } from "clsx";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-
-type SuccessSignUp = {
-    toast: string,
-    token: string
-}
 
 export default function SignupForm() {
     const errorInputClass = 'bg-red-300/10 border-red-500 focus:border-red-500';
     const generalInputClass= "p-4 flex-1 border outline-none rounded-lg relative";
     const idleClass = "bg-theme-white/25 dark:border-theme-white/25 border-theme-white-dark/25 focus:border-theme-main"
+
+    const router = useRouter();
 
     const [inputsValid, setInputsValid] = useState({
         name: {
@@ -150,14 +148,16 @@ export default function SignupForm() {
                     performLogin(
                         `${message.token}`,
                         message.toast
-                    )
+                    );
+                    setTimeout(() => {
+                        router.push("/dashboard");
+                    }, 1000);
                 }
             });
 
         } catch (error) {
-            console.error(error);
-        }finally{
             setIsLoading(false);
+            console.error(error);
         }
     }
 

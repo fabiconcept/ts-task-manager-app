@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation";
-import { removeSessionCookie } from "../session";
+import { removeSessionData } from "../session";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
 import { clearUserData } from "@/Redux Store/Slices/user data";
@@ -12,10 +12,9 @@ const useLogout = () => {
 
     const logout = async () => {
         try {
-            removeSessionCookie("taskerId");
+            removeSessionData("taskerId");
             dispatch(clearUserData());
             router.push("/auth/login");
-            console.log("User logged out successfully");
         } catch (error) {
             console.error("Logout error", error);
         }

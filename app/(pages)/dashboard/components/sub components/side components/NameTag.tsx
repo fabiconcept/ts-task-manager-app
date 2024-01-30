@@ -14,7 +14,7 @@ export default function NameTag({ username, abbr, avatar }: CompanyTag) {
     const [expandDiv, setExpandDiv] = useState(false);
 
     return (
-        <section className="h-[3.15rem] relative">
+        <section className="h-[3.15rem] relative z-50">
             <div className={clsx(
                 "rounded-md grid overflow-hidden transition-[height] bg-white/10 text-sm cursor-pointer dark:shadow-[0_2.5px_25px_rgba(255,255,255,0.05)] hover:dark:shadow-[0_2.5px_25px_rgba(255,255,255,0.1)] shadow-[0_2.5px_25px_rgba(0,0,0,0.05)] hover:shadow-[0_2.5px_25px_rgba(0,0,0,0.1)] border dark:border-white/10 border-black/10 backdrop-blur",
                 expandDiv ? "h-[9.25rem]" : "h-[3.15rem]"

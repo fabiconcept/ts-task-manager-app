@@ -9,6 +9,11 @@ export default function ProjectList() {
             <Project />
             <Project />
             <Project />
+            <Project />
+            <Project />
+            <Project />
+            <Project />
+            <Project />
         </div>
     );
 }

@@ -48,3 +48,17 @@ export type NextApiResponseServerIO = NextApiResponse & {
         };
     };
 };
+
+
+export type TeamMember = {
+    user_id: string;
+    status: "active" | "suspended" | "blocked";
+    type: "editor" | "worker",
+    joined_on: string;
+}
+
+
+export type UserProject = {
+    profile_id: string;
+    last_used: string;
+}

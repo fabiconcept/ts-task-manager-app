@@ -1,6 +1,6 @@
 export default function SearchFeature() {
     return (
-        <form method="post" onSubmit={()=>{}} className="flex items-center gap-2">
+        <form method="post" onSubmit={()=>{}} className="flex items-center gap-2 w-full">
             <input 
                 type="search" 
                 placeholder="find project" 

@@ -40,4 +40,5 @@ export const removeSessionData = (key: string) => {
 export const performLogin = (value: string, toastText?: string) => {
     toast.success(toastText ?? "Welcome back!");
     setSessionData("taskerId", `${value}`);
+    return;
 }

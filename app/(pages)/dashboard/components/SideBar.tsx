@@ -18,7 +18,7 @@ export default function SideBar() {
         <div className="relative group">
             <section className={clsx(
                 "h-screen p-4 flex flex-col gap-6 py-6 overflow-hidden shadow-md border-r border-transparent group-hover:dark:border-white/10 group-hover:border-black/10",
-                collapseSide ? "w-[1rem]" : "w-[15rem]"
+                collapseSide ? "w-0 opacity-30" : "w-[15rem]"
             )}>
                 {loading === loadingState.SUCCESS && <NameTag
                     username={response.userData?.name ?? ""}

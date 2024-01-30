@@ -1,6 +1,6 @@
 import connectDatabase from "@/lib/Database";
 import { AuthResponseType } from "@/lib/Enums";
-import { UserAccount } from "@/lib/Interfaces";
+import { TaskerProfile, UserAccount, UserAccountDetails } from "@/lib/Interfaces";
 import { RequestBody, ResponseWithError, ResponseWithoutError } from "@/lib/Types";
 import { generateSalt, hashPassword } from "@/lib/encryption";
 import { generateUniqueId, realEscapeString, validateEmail, validateFullName, validatePassword } from "@/lib/utilities";
@@ -50,6 +50,7 @@ export const POST = async (request: Request) => {
 
         const accountsCollection = db.collection("Accounts");
         const accountsDetailsCollection = db.collection("AccountsDetails");
+        const TaskerProfileCollection = db.collection("TaskerProfiles");
 
         const UserId = generateUniqueId();
         const cleanEmail = realEscapeString(email);
@@ -57,6 +58,23 @@ export const POST = async (request: Request) => {
         const userSalt = generateSalt();
         const loginAuthKey = generateSalt();
         const loginExpTime = (new Date()).getTime() + (60 * 60 * 1000);
+
+        const myTaskerProfile:TaskerProfile = {
+            profile_id: generateUniqueId(),
+            name: cleanName,
+            avatar: "",
+            owner: UserId,
+            team: [
+                { 
+                    user_id: UserId, 
+                    type: "editor", 
+                    status: "active",
+                    joined_on: (new Date()).toDateString(),
+                }
+            ],
+            updated_on: (new Date()).toDateString(),
+            created_on: (new Date()).toDateString(),
+        }
 
         const authentication = {
             key: loginAuthKey,
@@ -71,7 +89,7 @@ export const POST = async (request: Request) => {
             email: cleanEmail,
             password: hashedPassword,
             userSalt: userSalt,
-            authentication: authentication
+            authentication: authentication,
         } satisfies UserAccount;
 
         const splitName = payload.name.split(" ");
@@ -90,22 +108,32 @@ export const POST = async (request: Request) => {
 
         // Create user account
         await accountsCollection.insertOne(payload);
+        await TaskerProfileCollection.insertOne(myTaskerProfile);
 
         // Create user account details
-        await accountsDetailsCollection.insertOne({
+        const accountsDetailsPayload: UserAccountDetails = {
             userId: payload.userId,
             displayName: `${splitName[0][0]}${splitName[1][0]}`,
             profileAvatar: "",
             name: payload.name,
             email: payload.email,
-        });
+            defaultProject: myTaskerProfile.profile_id,
+            projects: [
+                {
+                    profile_id: myTaskerProfile.profile_id, 
+                    last_used: (new Date()).toDateString(),
+                }
+            ],
+            created_on: (new Date).toDateString(),
+        }
+        await accountsDetailsCollection.insertOne(accountsDetailsPayload);
         
         response = { 
             status: 200, 
             type: AuthResponseType.NoError,
             message: { 
                 toast: "Account successfully created ✨!",
-                token: `${UserId} ${authentication}`
+                token: `${UserId} ${authentication.key}`
             } 
         }
         return NextResponse.json(response);
