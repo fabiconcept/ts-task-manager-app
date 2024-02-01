@@ -49,7 +49,8 @@ export async function getProfiles(taskerProfileIds: string[]): Promise<{ respons
             const companyProfile: CompanyTag = {
                 abbr: (profile.name).split("").splice(0, 2).join(""),
                 username: profile.name,
-                avatar: profile.avatar
+                avatar: profile.avatar,
+                id: profile.profile_id,
             }
 
             return companyProfile;

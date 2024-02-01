@@ -1,3 +1,5 @@
+import { CompanyTag } from "../Types/dashboard";
+
 export function validateEmail(email: string): boolean {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
@@ -102,4 +104,16 @@ export function realEscapeString(str: string) {
 
     // Replace special characters with their escaped counterparts
     return str.replace(/[\x00\x08\x09\x1a\n\r"\'\\]/g, (char) => escapeChars[char]);
+}
+
+export function sortByMatchingId(tags: CompanyTag[], targetId: string): CompanyTag[] {
+    const arr = [...tags];
+    const matchedIndex = arr.findIndex(tag => tag.id === targetId);
+    
+    if (matchedIndex !== -1 && matchedIndex !== 0) {
+        const matchedTag = arr.splice(matchedIndex, 1)[0];
+        arr.unshift(matchedTag);
+    }
+
+    return arr;
 }

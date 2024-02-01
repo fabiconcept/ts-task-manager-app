@@ -9,13 +9,9 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { fetchProfiles } from "@/Redux Store/Thunk";
 import { AppDispatch } from "@/Redux Store";
-import { echoTaskerProfilesError, echoTaskerProfilesLoading, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
+import { echoTaskerProfilesActiveId, echoTaskerProfilesError, echoTaskerProfilesLoading, echoTaskerProfilesResponse, switchProfile } from "@/Redux Store/Slices/profiles";
 import { loadingState } from "@/lib/Enums";
-
-const dummyCompanys: CompanyTag[] = [
-    { abbr: "G", username: "Google", avatar: "https://taskify.sirv.com/google-ico.png" },
-    { abbr: "FB", username: "Facebook", avatar: "https://taskify.sirv.com/facebook-color.svg" },
-]
+import { sortByMatchingId } from "@/lib/utilities";
 
 export default function NameTag() {
     const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +19,7 @@ export default function NameTag() {
     const { response } = useSelector(echoUserData);
     const isLoading = useSelector(echoTaskerProfilesLoading);
     const errorMsg = useSelector(echoTaskerProfilesError);
+    const activeId = useSelector(echoTaskerProfilesActiveId);
     const { tags } = useSelector(echoTaskerProfilesResponse);
     const [Companys, setCompanys] = useState<CompanyTag[]>([]);
 
@@ -38,12 +35,20 @@ export default function NameTag() {
     }, [response, dispatch]);
 
     useEffect(() => {
-        setCompanys([...tags, ...dummyCompanys]);
-    }, [tags]);
+        if (isLoading !== loadingState.SUCCESS) return;
+        const data = sortByMatchingId(tags, activeId);
+        setCompanys([...data]);
+    }, [tags, activeId, isLoading]);
 
     const handleCollapse =() => {
         if (Companys.length === 0) return;
         setExpandDiv(!expandDiv);
+    }
+
+    const switchTaskerProfile = (id: string) => {
+        handleCollapse();
+        dispatch(switchProfile(id));
+        return;
     }
 
     return (
@@ -69,14 +74,14 @@ export default function NameTag() {
                             className="w-6 invert"
                         />
                     </div>
-                    <span className="flex-1 select-none truncate">loading</span>
+                    <span className="flex-1 select-none truncate animate-pulse">loading</span>
                 </div>
                 }
 
                 {isLoading === loadingState.SUCCESS && Companys.map((company, index) => {
                     if (index === 0) {
                         return (
-                            <div key={company.username} className="flex gap-3 items-center py-2 px-3 active:scale-90 hover:bg-white/25" onClick={handleCollapse}>
+                            <div key={company.id} className="flex gap-3 items-center py-2 px-3 active:scale-90 hover:bg-white/25" onClick={handleCollapse}>
                                 <div className={clsx(
                                     "h-8 w-8 dark:text-theme-white-dark rounded-md grid place-items-center font-bold",
                                     !company.avatar ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
@@ -109,7 +114,8 @@ export default function NameTag() {
                     } else {
                         return (
                             <div
-                                key={company.username}
+                                key={company.id}
+                                onClick={() => switchTaskerProfile(company.id)}
                                 className="flex gap-3 items-center py-2 px-3 active:scale-90 hover:bg-white/25"
                             >
                                 <div className={clsx(

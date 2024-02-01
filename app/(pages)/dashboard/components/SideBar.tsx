@@ -7,11 +7,13 @@ import { useSelector } from "react-redux";
 import { loadingState } from "@/lib/Enums";
 import { useState } from "react";
 import clsx from "clsx";
-import SearchFeature from "./sub components/side components/SearchFeature";
 import ProjectList from "./sub components/side components/ProjectList";
+import { echoTaskerProfilesError, echoTaskerProfilesLoading } from "@/Redux Store/Slices/profiles";
 
 export default function SideBar() {
     const { loading } = useSelector(echoUserData);
+    const isTaskerProfilesLoading = useSelector(echoTaskerProfilesLoading);
+    const taskerProfilesErrorMsg = useSelector(echoTaskerProfilesError);
     const [collapseSide, setCollapseSide] = useState(false);
 
     return (
@@ -21,9 +23,9 @@ export default function SideBar() {
                 collapseSide ? "w-0 opacity-30" : "w-[15rem]"
             )}>
                 {loading === loadingState.SUCCESS && <NameTag />}
-
-                <SearchFeature />
-                <ProjectList />
+                {isTaskerProfilesLoading === loadingState.SUCCESS && <ProjectList />}
+                {isTaskerProfilesLoading === loadingState.PENDING && <span className="text-center animate-pulse">loading...</span>}
+                {isTaskerProfilesLoading === loadingState.FAILED && <span className="text-center text-red-500">{taskerProfilesErrorMsg}</span>}
 
             </section>
 
