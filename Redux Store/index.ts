@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { UserDataStateSlice } from "./Slices/user data";
+import { TaskerProfilesStateSlice } from "./Slices/profiles";
 
 const store = configureStore({
     reducer: {
-        userData: UserDataStateSlice
+        userData: UserDataStateSlice,
+        taskerProfiles: TaskerProfilesStateSlice,
     }
 });
 
