@@ -77,7 +77,7 @@ export const POST = async (req: Request) => {
             apiResponse = {
                 status: 400,
                 type: AuthResponseType.InvalidError,
-                message: `Bad request - Session expired ${now} ${getUserAuthObject.exp}`
+                message: `Bad request - Session expired`
             }
             return NextResponse.json(apiResponse);
         }
