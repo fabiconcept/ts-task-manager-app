@@ -10,12 +10,12 @@ import { fetchUserData } from "@/Redux Store/Thunk";
 import { AppDispatch } from "@/Redux Store";
 
 export default function useAuthenticate(): void {
-    const [hasSession, sessionId] = retrieveActiveSession();
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
     const apiURL = "http://localhost:3000/api/authentication/validateAuth";
 
     useEffect(() => {
+        const [hasSession, sessionId] = retrieveActiveSession();
         if (sessionId === null) return;
 
         if (!hasSession || sessionId === "") {
@@ -52,5 +52,5 @@ export default function useAuthenticate(): void {
         }
 
         getData();
-    }, [hasSession, sessionId, router, dispatch]);
+    }, [router, dispatch]);
 }
