@@ -19,3 +19,15 @@ export enum loadingState {
     SUCCESS = "success",
     FAILED = "failed"
 }
+
+export enum Priority {
+    LOW = "low",
+    MEDIUM = "medium",
+    HIGH = "high"
+}
+
+export enum TaskerProjectStatus {
+    UPCOMING = "upcoming",
+    PENDING = "pending",
+    COMPLETE = "complete"
+}

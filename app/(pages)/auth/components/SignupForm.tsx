@@ -143,6 +143,9 @@ export default function SignupForm() {
                             unknownError = "An error occurred";
                             throw new Error(message); 
                     }
+
+                    setIsLoading(false);
+
                     toast.error(unknownError ?? message);
                 }else{
                     performLogin(

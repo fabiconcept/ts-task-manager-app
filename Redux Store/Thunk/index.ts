@@ -1,4 +1,4 @@
-import { getProfiles, getUserData } from "@/lib/functions";
+import { getProfiles, getProjects, getUserData } from "@/lib/functions";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Users Data Operations
@@ -19,4 +19,10 @@ export const fetchProfiles = createAsyncThunk(
     }
 );
 
-
+export const fetchProjects = createAsyncThunk(
+    "taskerProjects/fetchProjects",
+    async (key: string[]) => {
+        const response = await getProjects(key);
+        return response;
+    }
+);

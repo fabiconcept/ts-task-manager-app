@@ -1,24 +1,65 @@
 "use client"
-import { echoTaskerProfilesActiveId } from "@/Redux Store/Slices/profiles";
+import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
 import Project from "./Project";
 import SearchFeature from "./SearchFeature";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/Redux Store";
+import { useEffect, useState } from "react";
+import { fetchProjects } from "@/Redux Store/Thunk";
+import { echoProjectListError, echoProjectListLoading, echoProjectListResponse } from "@/Redux Store/Slices/profiles/projects";
+import { loadingState } from "@/lib/Enums";
+import { TaskerProject } from "@/lib/Interfaces";
 
 export default function ProjectList() {
+    const dispatch = useDispatch<AppDispatch>();
     const activeId = useSelector(echoTaskerProfilesActiveId);
+    const { profiles } = useSelector(echoTaskerProfilesResponse);
+    const projectsList = useSelector(echoProjectListResponse);
+    const projectsLoading = useSelector(echoProjectListLoading);
+    const projectsError = useSelector(echoProjectListError);
+
+    const [projectListDisplay, setProjectListDisplay] = useState<TaskerProject[]>([]);
+
+    useEffect(() => {
+        if (!(projectsLoading === loadingState.SUCCESS)) return;
+        setProjectListDisplay(projectsList);
+    }, [projectsLoading, projectsList]);
     
+    useEffect(() => {
+        if (!activeId) return;
+        const activeProfile = profiles.find((profile)=> profile.profile_id === activeId);
+
+        if (!activeProfile) return;
+
+        const { projectsCount, projectsList } = activeProfile; 
+
+        if (projectsCount === 0) return;
+
+        dispatch(fetchProjects(projectsList));
+
+    }, [dispatch, activeId, profiles]);
 
     return (
         <>
             <SearchFeature />
             <div className="flex-1 h-full overflow-y-auto flex flex-col gap-1 relative">
                 <p className="text-sm opacity-50 sticky top-0 mb-2">Projects</p>
-                <Project />
-                <Project />
-                <Project />
-                <Project />
-                <Project />
-                <Project />
+                {projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0 && projectListDisplay.map((project)=> (
+                    <Project
+                        key={project.project_id}
+                        data={project}
+                    />
+                ))}
+                {projectsLoading === loadingState.SUCCESS && projectListDisplay.length === 0 && <span className="text-center opacity-60">
+                    No data.
+                </span>}
+                {projectsLoading === loadingState.PENDING && <span className="text-center animate-pulse">
+                    loading...
+                </span>}
+                {projectsLoading === loadingState.FAILED && <span className="text-center text-red-500">
+                    {projectsError}
+                </span>}
             </div>
         </>
     );

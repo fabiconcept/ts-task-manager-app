@@ -1,3 +1,4 @@
+import { Priority, TaskerProjectStatus } from "../Enums";
 import { TeamMember, UserProject } from "../Types";
 
 export interface UiWithChildren {
@@ -32,8 +33,24 @@ export interface TaskerProfile {
     avatar: string;
     owner: string;
     team: TeamMember[];
+    projectsList: string[],
+    projectsCount: number,
     updated_on: string;
     created_on: string;
+}
+
+export interface TaskerProject {
+    project_id: string;
+    title: string;
+    description?: string;
+    priority: Priority;
+    status: TaskerProjectStatus;
+    tasksCount: number | 0;
+    tasksList: string[];
+    membersList: string[];
+    membersCount: number;
+    created_on: string;
+    updated_on: string;
 }
 
 export interface UserAccountWithId extends UserAccount {

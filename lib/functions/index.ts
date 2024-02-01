@@ -1,4 +1,4 @@
-import { TaskerProfile, UserAccountDetails} from "../Interfaces";
+import { TaskerProfile, TaskerProject, UserAccountDetails} from "../Interfaces";
 import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
 import { CompanyTag } from "../Types/dashboard";
 // : UserDetails
@@ -63,4 +63,29 @@ export async function getProfiles(taskerProfileIds: string[]): Promise<{ respons
     
     
     return {response, resultTag, resultProfiles, message};
+}
+
+export async function getProjects(taskerProjectIds: string[]): Promise<{ response: boolean, resultProjects: TaskerProject[], message: string }> {
+    const sendRequest = await fetch("/api/dashboard/taskerProfiles/projects", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({project_ids: taskerProjectIds}),
+    });
+
+    const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProject[]> = await sendRequest.json();
+
+    const { status, message } = data;
+    let response = false;
+    let resultProjects: TaskerProject[] = [];
+
+    if (status === 200) {
+        resultProjects = data.data;
+        response = true;
+
+    }
+    
+    
+    return { response, resultProjects, message };
 }
