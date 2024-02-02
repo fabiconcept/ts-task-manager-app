@@ -32,11 +32,9 @@ export default function ProjectList() {
 
         if (!activeProfile) return;
 
-        const { projectsCount, projectsList } = activeProfile; 
+        const { profile_id } = activeProfile; 
 
-        if (projectsCount === 0) return;
-
-        dispatch(fetchProjects(projectsList));
+        dispatch(fetchProjects(profile_id));
 
     }, [dispatch, activeId, profiles]);
 

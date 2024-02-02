@@ -6,11 +6,9 @@ import { NextResponse } from "next/server";
 let apiResponse: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<any>
 
 export const POST = async (req: Request, res: Response) => {
-    const { project_ids }: { project_ids: string[] } = await req.json();
+    const { owner_id }: {  owner_id: string } = await req.json();
 
-    console.log(project_ids);
-
-    if (project_ids.length === 0) {
+    if (!owner_id || owner_id === "") {
         apiResponse = {
             status: 400, 
             message: "Invalid request - Please provide a Project project_id",
@@ -31,7 +29,7 @@ export const POST = async (req: Request, res: Response) => {
         const taskerProjectsCollection = db.collection('TaskerProjects');
 
         const taskerProjects = await taskerProjectsCollection.find({
-            project_id: { $in: project_ids }
+            from_id: `${owner_id}`
         }).toArray();
 
         apiResponse = {

@@ -21,7 +21,7 @@ export const fetchProfiles = createAsyncThunk(
 
 export const fetchProjects = createAsyncThunk(
     "taskerProjects/fetchProjects",
-    async (key: string[]) => {
+    async (key: string) => {
         const response = await getProjects(key);
         return response;
     }

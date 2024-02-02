@@ -72,8 +72,8 @@ export const POST = async (request: Request) => {
                     joined_on: (new Date()).toDateString(),
                 }
             ],
+            teamCount: 0,
             projectsCount: 0,
-            projectsList: [],
             updated_on: (new Date()).toDateString(),
             created_on: (new Date()).toDateString(),
         }

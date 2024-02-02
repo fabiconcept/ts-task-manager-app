@@ -65,25 +65,25 @@ export async function getProfiles(taskerProfileIds: string[]): Promise<{ respons
     return {response, resultTag, resultProfiles, message};
 }
 
-export async function getProjects(taskerProjectIds: string[]): Promise<{ response: boolean, resultProjects: TaskerProject[], message: string }> {
+export async function getProjects(taskerProfileId: string): Promise<{ response: boolean, resultProjects: TaskerProject[], message: string }> {
     const sendRequest = await fetch("/api/dashboard/taskerProfiles/projects", {
         method: "post",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({project_ids: taskerProjectIds}),
+        body: JSON.stringify({owner_id: taskerProfileId}),
     });
 
     const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProject[]> = await sendRequest.json();
 
     const { status, message } = data;
+
     let response = false;
     let resultProjects: TaskerProject[] = [];
 
     if (status === 200) {
         resultProjects = data.data;
         response = true;
-
     }
     
     

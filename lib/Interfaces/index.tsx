@@ -33,7 +33,7 @@ export interface TaskerProfile {
     avatar: string;
     owner: string;
     team: TeamMember[];
-    projectsList: string[],
+    teamCount?: number | 0;
     projectsCount: number,
     updated_on: string;
     created_on: string;
@@ -41,6 +41,7 @@ export interface TaskerProfile {
 
 export interface TaskerProject {
     project_id: string;
+    from_id: string;
     title: string;
     description?: string;
     priority: Priority;
