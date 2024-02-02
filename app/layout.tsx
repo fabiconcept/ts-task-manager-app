@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
 import './globals.css';
-import connectDatabase from '@/lib/Database';
 import { Toaster } from 'react-hot-toast';
 import ProviderWrapper from './components/ProviderWrapper';
+import NextTopLoader from 'nextjs-toploader';
 
 const quicksand = Quicksand({ subsets: ['latin'] });
 
@@ -17,13 +17,13 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
 }) {
-    connectDatabase();
     return (
         <html lang="en">
             <body className={quicksand.className}>
                 <Toaster
                     position='top-center'
                 />
+                <NextTopLoader color='#00db96' zIndex={9999} />
                 <ProviderWrapper>
                     {children}
                 </ProviderWrapper>
