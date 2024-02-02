@@ -81,7 +81,14 @@ export default function NameTag() {
                 {isLoading === loadingState.SUCCESS && Companys.map((company, index) => {
                     if (index === 0) {
                         return (
-                            <div key={company.id} className="flex gap-3 items-center py-2 px-3 active:scale-90 hover:bg-white/25" onClick={handleCollapse}>
+                            <div 
+                                key={company.id} 
+                                className={clsx(
+                                    "flex gap-3 items-center py-2 px-3 hover:bg-white/25",
+                                    Companys.length > 1 ? "active:scale-90" : ""
+                                )} 
+                                onClick={handleCollapse}
+                            >
                                 <div className={clsx(
                                     "h-8 w-8 dark:text-theme-white-dark rounded-md grid place-items-center font-bold",
                                     !company.avatar ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
