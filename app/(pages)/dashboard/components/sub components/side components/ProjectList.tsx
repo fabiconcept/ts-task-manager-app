@@ -34,6 +34,7 @@ export default function ProjectList() {
 
         const { profile_id } = activeProfile; 
 
+
         dispatch(fetchProjects(profile_id));
 
     }, [dispatch, activeId, profiles]);

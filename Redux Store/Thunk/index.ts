@@ -23,6 +23,7 @@ export const fetchProjects = createAsyncThunk(
     "taskerProjects/fetchProjects",
     async (key: string) => {
         const response = await getProjects(key);
+        console.log(response);
         return response;
     }
 );

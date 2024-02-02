@@ -5,11 +5,6 @@ import { TaskerProfile } from "@/lib/Interfaces";
 import { CompanyTag } from "@/lib/Types/dashboard";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const dummyCompanys: CompanyTag[] = [
-    { id: "b3fd2c48-6b45-5721-b1e6-9b29ec3e9632", abbr: "G", username: "Google", avatar: "https://taskify.sirv.com/google-ico.png" },
-    { id: "1c0706b0-202e-539a-b6e3-5e2e480820c7", abbr: "FB", username: "Facebook", avatar: "https://taskify.sirv.com/facebook-color.svg" },
-]
-
 type InitialState = {
     loading: loadingState,
     error: string,
@@ -70,7 +65,7 @@ const TaskerProfilesState = createSlice({
             state.loading = loadingState.SUCCESS;
             state.error = "";
             state.response.profiles = payload.resultProfiles;
-            state.response.tags = [...payload.resultTag, ...dummyCompanys];
+            state.response.tags = [...payload.resultTag];
             state.activeId = payload.resultTag[0].id;
 
         })

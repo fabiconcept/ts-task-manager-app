@@ -41,7 +41,7 @@ export default function NameTag() {
     }, [tags, activeId, isLoading]);
 
     const handleCollapse =() => {
-        if (Companys.length === 0) return;
+        if (Companys.length < 2) return; 
         setExpandDiv(!expandDiv);
     }
 
