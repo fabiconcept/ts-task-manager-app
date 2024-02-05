@@ -1,4 +1,4 @@
-import { Priority, TaskerProjectStatus } from "../Enums";
+import { Priority, TaskerStatus } from "../Enums";
 import { TeamMember, UserProject } from "../Types";
 
 export interface UiWithChildren {
@@ -45,13 +45,33 @@ export interface TaskerProject {
     title: string;
     description?: string;
     priority: Priority;
-    status: TaskerProjectStatus;
+    status: TaskerStatus;
     tasksCount: number | 0;
     tasksList: string[];
     membersList: string[];
     membersCount: number;
     created_on: string;
     updated_on: string;
+}
+
+export interface TaskerProjectTask {
+    task_id: string;
+    from_id: string;
+    title: string;
+    shortDesc: string;
+    desc: string;
+    priorityLevel: Priority;
+    status: TaskerStatus;
+    assigneeCount: number | 0;
+    assigneeList: TaskTeamProfile[];
+    created_on: string;
+    last_update: string;
+}
+
+export interface TaskTeamProfile {
+    user_id: string;
+    status: "";
+    assignmentDate: string;
 }
 
 export interface UserAccountWithId extends UserAccount {

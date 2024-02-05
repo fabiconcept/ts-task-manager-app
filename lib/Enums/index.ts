@@ -21,12 +21,13 @@ export enum loadingState {
 }
 
 export enum Priority {
+    NONE = "none",
     LOW = "low",
     MEDIUM = "medium",
     HIGH = "high"
 }
 
-export enum TaskerProjectStatus {
+export enum TaskerStatus {
     UPCOMING = "upcoming",
     PENDING = "pending",
     COMPLETE = "complete"

@@ -41,7 +41,7 @@ export default function ProjectList() {
 
     return (
         <>
-            <SearchFeature />
+            {projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0 && <SearchFeature />}
             <div className="flex-1 h-full overflow-y-auto flex flex-col gap-1 relative">
                 <p className="text-sm opacity-50 sticky top-0 mb-2">Projects</p>
                 {projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0 && projectListDisplay.map((project)=> (
@@ -51,7 +51,7 @@ export default function ProjectList() {
                     />
                 ))}
                 {projectsLoading === loadingState.SUCCESS && projectListDisplay.length === 0 && <span className="text-center opacity-60">
-                    No data.
+                    No project yet.
                 </span>}
                 {projectsLoading === loadingState.PENDING && <span className="text-center animate-pulse">
                     loading...

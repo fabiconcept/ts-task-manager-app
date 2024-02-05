@@ -97,7 +97,6 @@ export default function LoginForm() {
         })
         .then((res)=>{
             if (!res.ok) {
-                console.log(res)
                 throw new Error("Something went wrong!");
             }
             return res.json();
