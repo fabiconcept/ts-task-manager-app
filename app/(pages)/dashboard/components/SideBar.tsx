@@ -17,7 +17,7 @@ export default function SideBar() {
     const [collapseSide, setCollapseSide] = useState(false);
 
     return (
-        <div className="relative group">
+        <div className="relative group z-[40]">
             <section className={clsx(
                 "h-screen p-4 flex flex-col gap-6 py-6 overflow-hidden shadow-md border-r border-transparent group-hover:dark:border-white/10 group-hover:border-black/10",
                 collapseSide ? "w-0 opacity-30" : "w-[15rem]"
@@ -32,7 +32,7 @@ export default function SideBar() {
             {/* Collapse Handle */}
             <div
                 onClick={() => setCollapseSide(!collapseSide)}
-                className={"absolute opacity-0 group-hover:opacity-100 top-1/2 -translate-y-1/2 -right-6 h-6 w-6 overflow-hidden rounded-r-full border border-theme-text grid place-items-center cursor-pointer hover:scale-125 active:scale-90"}
+                className={"absolute opacity-0 group-hover:opacity-100 top-1/2 translate-y-1/2 -right-6 h-6 w-6 overflow-hidden rounded-r-full border border-theme-text grid place-items-center cursor-pointer hover:scale-125 active:scale-90"}
                 title={collapseSide ? "Expand sidebar" : "Collapse sidebar"}
             >
                 <span className={clsx(
