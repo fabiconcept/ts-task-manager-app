@@ -76,4 +76,5 @@ export const UserDataStateSlice = userDataState.reducer;
 
 
 
-export const echoUserData = (state: RootState) => state.userData; 
+export const echoUserData = (state: RootState) => state.userData;  
+export const {  } = (state: RootState) => state.userData;  

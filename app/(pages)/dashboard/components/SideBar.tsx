@@ -19,8 +19,8 @@ export default function SideBar() {
     return (
         <div className="relative group z-[40]">
             <section className={clsx(
-                "h-screen p-4 flex flex-col gap-6 py-6 overflow-hidden shadow-md border-r border-transparent group-hover:dark:border-white/10 group-hover:border-black/10",
-                collapseSide ? "w-0 opacity-30" : "w-[15rem]"
+                "h-screen flex flex-col gap-6 py-6 overflow-hidden shadow-md border-r border-transparent group-hover:dark:border-white/10 group-hover:border-black/10",
+                collapseSide ? "w-0 opacity-30 p-1" : "w-[15rem] p-4"
             )}>
                 {loading === loadingState.SUCCESS && <NameTag />}
                 {isTaskerProfilesLoading === loadingState.SUCCESS && <ProjectList />}

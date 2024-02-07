@@ -16,7 +16,7 @@ export default function NavBar() {
         logout();
     }
     return (
-        <nav className="px-4 py-6 flex flex-col items-center gap-8 border-r dark:border-white/10 border-/10">
+        <nav className="px-4 py-6 flex flex-col items-center gap-8 border-r dark:border-white/10 border-/10 relative z-50">
             <div className="text-4xl">
                 <GiShotgun />
             </div>
