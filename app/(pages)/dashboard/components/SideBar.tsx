@@ -32,7 +32,10 @@ export default function SideBar() {
             {/* Collapse Handle */}
             <div
                 onClick={() => setCollapseSide(!collapseSide)}
-                className={"absolute opacity-0 group-hover:opacity-100 top-1/2 translate-y-1/2 -right-6 h-6 w-6 overflow-hidden rounded-r-full border border-theme-text grid place-items-center cursor-pointer hover:scale-125 active:scale-90"}
+                className={clsx(
+                    "absolute group-hover:opacity-100 top-1/2 translate-y-1/2 -right-6 h-6 w-6 overflow-hidden rounded-r-full border border-theme-text grid place-items-center cursor-pointer hover:scale-125 active:scale-90",
+                    collapseSide ? "" : "opacity-0"
+                )}
                 title={collapseSide ? "Expand sidebar" : "Collapse sidebar"}
             >
                 <span className={clsx(

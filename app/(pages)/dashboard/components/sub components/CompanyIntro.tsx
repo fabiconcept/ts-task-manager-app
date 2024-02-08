@@ -5,8 +5,9 @@ import { CompanyTag } from "@/lib/Types/dashboard";
 import clsx from "clsx";
 import Image from "next/image";
 import { useMemo } from "react";
-import { FaUserGroup, FaXmark } from "react-icons/fa6";
+import { FaPen, FaUserGroup, FaXmark } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import TeamViewer from "./Elements/TeamViewer";
 
 export default function CompanyIntro() {
     const activeId = useSelector(echoTaskerProfilesActiveId);
@@ -51,7 +52,7 @@ export default function CompanyIntro() {
                         </div>}
                 </div>
 
-                <section className="relative z-10 backdrop-blur-lg h-full w-full rounded-md">
+                <section className="relative overflow-y-auto z-10 backdrop-blur-lg h-full w-full rounded-md">
                     <div className="flex flex-col">
                         <div className="w-full flex items-center p-6 justify-between backdrop-blur-md  border-b dark:border-b-white/20 border-b-black/20">
                             <div className="flex items-center gap-4">
@@ -91,18 +92,23 @@ export default function CompanyIntro() {
                             {!isOwner && <div title={`Exit ${company[0].name}`} className="flex items-center gap-2 px-4 p-2 opacity-60 hover:opacity-100 hover:scale-110 active:scale-90 active:opacity-50 cursor-pointer rounded-3xl border border-transparent hover:border-red-500">
                                 <FaXmark /> leave
                             </div>}
+                            {isOwner && <div title={`Edit your Company profile`} className="flex items-center gap-2 px-4 p-2 opacity-60 hover:opacity-100 hover:scale-110 active:scale-90 active:opacity-50 cursor-pointer rounded-3xl border border-transparent hover:border-theme-main">
+                                <FaPen /> edit
+                            </div>}
                         </div>
-                        <div className="p-4 flex items-start justify-center border-b dark:border-b-white/20 border-b-black/20 dark:bg-black/30 bg-white/30">
-                            <div className="flex flex-col px-6 items-center  border-r dark:border-r-white/20 border-r-black/20">
-                                <span className="text-sm opacity-70 text-theme-text">Team Size</span>
+                        <div className="p-4 flex items-start justify-center border-b dark:border-b-white/10 border-b-black/10 dark:bg-black/10 bg-white/10">
+                            <div className="flex flex-col px-6 items-center  border-r dark:border-r-white/10 border-r-black/10">
+                                <span className="text-sm opacity-60">Team Size</span>
                                 <span className="text-2xl">{company[0].teamCount ?? 0}</span>
                             </div>
                             <div className="flex flex-col px-6 items-center">
-                                <span className="text-sm opacity-70 text-theme-text">Projects</span>
+                                <span className="text-sm opacity-60">Projects</span>
                                 <span className="text-2xl">{company[0].projectsCount ?? 0}</span>
                             </div>
                         </div>
-
+                        <div className="dark:bg-black/10 bg-white/10">
+                            <TeamViewer />
+                        </div>
                     </div>
                 </section>
             </div> :

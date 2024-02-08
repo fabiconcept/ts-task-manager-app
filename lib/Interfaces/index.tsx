@@ -1,5 +1,6 @@
 import { Priority, TaskerStatus } from "../Enums";
 import { TeamMember, UserProject } from "../Types";
+import { FunctionProp } from "../Types/dashboard";
 
 export interface UiWithChildren {
     children: React.ReactNode
@@ -81,6 +82,11 @@ export interface UserAccountWithId extends UserAccount {
 export interface UserDetails extends Pick<UserAccount, "name" | "email" | "userId" > {
     displayName: string;
     profileAvatar: string;
+}
+
+export interface SearchProp {
+    performFunction: FunctionProp;
+    placeholder: string
 }
 
 // web socket set up

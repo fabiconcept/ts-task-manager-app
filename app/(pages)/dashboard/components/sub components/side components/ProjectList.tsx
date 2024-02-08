@@ -41,7 +41,10 @@ export default function ProjectList() {
 
     return (
         <>
-            {projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0 && <SearchFeature />}
+            {projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0 && <SearchFeature 
+                performFunction={()=>{}} 
+                placeholder="find project"
+            />}
             <div className="flex-1 h-full overflow-y-auto flex flex-col gap-1 relative">
                 <p className="text-sm opacity-50 sticky top-0 mb-2">Projects</p>
                 {projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0 && projectListDisplay.map((project)=> (

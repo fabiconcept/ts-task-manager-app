@@ -4,3 +4,5 @@ export type CompanyTag = {
     abbr: string,
     avatar?: string;
 }
+
+export type FunctionProp = (prop?: any) => void;
