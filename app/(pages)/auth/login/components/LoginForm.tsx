@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 interface ReqBody extends Pick<RequestBody, "email" | "password"> {
     exp?: number,
@@ -21,6 +22,7 @@ export default function LoginForm() {
     const idleClass = "bg-theme-white/25 dark:border-theme-white/25 border-theme-white-dark/25 focus:border-theme-main"
 
     const router = useRouter();
+    const [showPassword, setShowPassword] = useState(false);
 
     const [inputsValid, setInputsValid] = useState({
         email: {
@@ -166,7 +168,7 @@ export default function LoginForm() {
                         className={clsx(generalInputClass, inputsValid.email.status === testSwitch.FAILED ? errorInputClass : idleClass)}
                     />
                 </div>
-                <div className="flex flex-col gap-3 flex-1 min-w-full">
+                <div className="flex flex-col gap-3 flex-1 min-w-full relative">
                     <p className="flex justify-between items-center">
                         <label htmlFor="passwordField">Password <span className="text-theme-main">*</span></label>
                         <span className="text-red-600">
@@ -174,7 +176,7 @@ export default function LoginForm() {
                         </span>
                     </p>
                     <input
-                        type="password"
+                        type={`${!showPassword ? "password": "text"}`}
                         placeholder="Password*"
                         name="passwordField"
                         value={passwordText}
@@ -184,6 +186,16 @@ export default function LoginForm() {
                             inputsValid.password.status === testSwitch.FAILED ? errorInputClass: idleClass
                         )}
                     />
+                    {passwordDebounce.length > 0 && <div className="absolute -translate-y-1/2 mt-4 top-1/2 right-4 p-2 grid place-items-center cursor-pointer hover:opacity-100 opacity-60 active:scale-90 active:opacity-40" onClick={()=>setShowPassword(!showPassword)}>
+                        <span className="relative flex items-center justify-center text-xl">
+                            <span className={clsx(
+                                showPassword ? "absolute opacity-100" : "opacity-0"
+                            )}><FaEye /></span>
+                            <span className={clsx(
+                                !showPassword ? "absolute opacity-100" : "opacity-0"
+                            )}><FaEyeSlash /></span>
+                        </span>
+                    </div>}
                 </div>
                 <div className="flex gap-4 p-2 items-center w-full">
                     <label className="container cursor-pointer w-fit">

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { useMemo } from 'react'
-import { FaCrown, FaRegMessage, FaStar } from 'react-icons/fa6'
+import React, { useMemo } from 'react';
+import { FaCrown, FaRegMessage, FaStar } from 'react-icons/fa6';
 
 export default function TeamMember() {
     const type = useMemo(() => {
