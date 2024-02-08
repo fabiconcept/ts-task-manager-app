@@ -29,7 +29,7 @@ export default function TeamMember() {
                 !"" ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
             )}>
                 {!"" ?
-                    `QH.`
+                    `JD.`
                     :
                     <div className="grid place-items-center h-full w-full overflow-hidden rounded">
                         <Image
@@ -64,12 +64,12 @@ export default function TeamMember() {
                             !"" ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
                         )}>
                             {!"" ?
-                                `QH.`
+                                `JD.`
                                 :
                                 <div className="grid place-items-center h-full w-full overflow-hidden rounded">
                                     <Image
                                         src={""}
-                                        alt="Queen Helen"
+                                        alt="Jeffrey Dahmer"
                                         height={250}
                                         width={250}
                                         className="w-full min-h-full object-contain"
@@ -77,7 +77,7 @@ export default function TeamMember() {
                                 </div>}
                         </div>
                     </div>
-                    <div className='max-w-full truncate text-sm font-semibold'>Queen Helen</div>
+                    <div className='max-w-full truncate text-sm font-semibold'>Jeffrey Dahmer</div>
                 </div>
             </div>
         </div>
