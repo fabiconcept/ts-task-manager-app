@@ -32,3 +32,15 @@ export enum TaskerStatus {
     PENDING = "pending",
     COMPLETE = "complete"
 }
+
+export enum ViewType {
+    BOX = "box",
+    LIST = "list",
+}
+
+export enum SortBy {
+    TYPE= "type",
+    AZ = "a-z",
+    ZA = "z-a",
+    JOIN = "join-date"
+}
