@@ -5,14 +5,17 @@ import { CompanyTag } from "@/lib/Types/dashboard";
 import clsx from "clsx";
 import Image from "next/image";
 import { useMemo } from "react";
-import { FaPen, FaUserGroup, FaXmark } from "react-icons/fa6";
+import { FaPen, FaXmark } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import TeamViewer from "./Elements/TeamViewer";
+import { useDispatch } from "react-redux";
+import { updateTaskerTeam } from "@/Redux Store/Slices/profiles/team";
 
 export default function CompanyIntro() {
     const activeId = useSelector(echoTaskerProfilesActiveId);
     const { response } = useSelector(echoUserData);
     const { tags, profiles } = useSelector(echoTaskerProfilesResponse);
+    const dispatch = useDispatch();
 
     const company = useMemo((): [activeProfile: TaskerProfile, activeCompanyProfile: CompanyTag] | undefined => {
         const activeProfile = profiles.find((profile) => profile.profile_id === activeId);
@@ -20,8 +23,13 @@ export default function CompanyIntro() {
 
         if (!activeProfile || !activeCompanyProfile) return;
 
+        dispatch(updateTaskerTeam({
+            arr: activeProfile.team,
+            id: activeProfile.owner
+        }));
+
         return [activeProfile, activeCompanyProfile];
-    }, [profiles, activeId, tags]);
+    }, [profiles, activeId, tags, dispatch]);
 
     const isOwner = useMemo(() => {
         if (!company) {

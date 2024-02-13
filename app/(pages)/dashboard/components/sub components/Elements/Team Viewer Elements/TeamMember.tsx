@@ -1,10 +1,17 @@
+import { echoOwnerOfActiveProfile, echoTeamFromActiveProfile } from '@/Redux Store/Slices/profiles/team';
+import { UserAccountDetails } from '@/lib/Interfaces';
 import clsx from 'clsx';
 import Image from 'next/image';
 import React, { useMemo } from 'react';
 import { FaCrown, FaRegMessage, FaStar } from 'react-icons/fa6';
+import { useSelector } from 'react-redux';
 
-export default function TeamMember() {
+export default function TeamMember({ data }: { data: UserAccountDetails }) {
+    const companyTeamList = useSelector(echoTeamFromActiveProfile);
+    const companyOwner = useSelector(echoOwnerOfActiveProfile);
+
     const type = useMemo(() => {
+        const user = companyTeamList.find((member) => member.user_id === data.userId );
         const owner = (
             <>
                 <span className='text-yellow-500'><FaCrown /></span>
@@ -17,24 +24,35 @@ export default function TeamMember() {
                 <span className='text-xs'>moderator</span>
             </>
         );
-        const memeber = (<span></span>);
+        const member = (<span></span>);
 
-        return moderator;
-    }, []);
+        if (!user) return member;
+
+        if (user.user_id === companyOwner) return owner;
+
+        switch(user.type) {
+            case "editor":
+                return moderator;
+            case "worker":
+                return member;
+            default:
+                return member;
+        }
+    }, [companyTeamList, data.userId, companyOwner]);
 
     return (
         <div className='rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] peer-active:opacity-40 peer-active:scale-90 hover:scale-105 border border-transparent hover:dark:border-white/30 hover:border-black/30 relative overflow-hidden'>
             <div className={clsx(
                 "absolute top-0 left-0 h-full w-full opacity-10 rounded-md grid place-items-center font-extrabold text-4xl",
-                !"" ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
+                !data.profileAvatar ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
             )}>
-                {!"" ?
-                    `JD.`
+                {!data.profileAvatar ?
+                    data.displayName
                     :
                     <div className="grid place-items-center h-full w-full overflow-hidden rounded">
                         <Image
-                            src={""}
-                            alt="Queen Helen"
+                            src={data.profileAvatar}
+                            alt={`${data.name}`}
                             height={250}
                             width={250}
                             className="w-full min-h-full object-contain"
@@ -61,15 +79,15 @@ export default function TeamMember() {
                     <div className='h-[4rem] w-[4rem] rounded-full overflow-hidden grid place-items-center border'>
                         <div className={clsx(
                             "h-full w-full rounded-md grid place-items-center",
-                            !"" ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
+                            !data.profileAvatar ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
                         )}>
-                            {!"" ?
-                                `JD.`
+                            {!data.profileAvatar ?
+                                data.displayName
                                 :
                                 <div className="grid place-items-center h-full w-full overflow-hidden rounded">
                                     <Image
-                                        src={""}
-                                        alt="Jeffrey Dahmer"
+                                        src={data.profileAvatar}
+                                        alt={`${data.name}`}
                                         height={250}
                                         width={250}
                                         className="w-full min-h-full object-contain"
@@ -77,7 +95,7 @@ export default function TeamMember() {
                                 </div>}
                         </div>
                     </div>
-                    <div className='max-w-full truncate text-sm font-semibold'>Jeffrey Dahmer</div>
+                    <div className='max-w-full truncate text-sm font-semibold'>{data.name}</div>
                 </div>
             </div>
         </div>
