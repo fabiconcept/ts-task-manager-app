@@ -41,25 +41,7 @@ export default function CompanyIntro() {
 
     return (
         company ?
-            <div className="w-full h-full relative">
-                <div className={clsx(
-                    "absolute top-0 left-0 h-full w-full opacity-10 rounded-md grid place-items-center font-extrabold text-4xl",
-                    !company[1].avatar ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
-                )}>
-                    {!company[1].avatar ?
-                        `${company[1].abbr}.`
-                        :
-                        <div className="grid place-items-center h-full w-full overflow-hidden rounded">
-                            <Image
-                                src={company[1].avatar}
-                                alt="spinner"
-                                height={250}
-                                width={250}
-                                className="w-full min-h-full object-contain"
-                            />
-                        </div>}
-                </div>
-
+            <div className="w-full h-full relative dark:bg-white/5 bg-black/5">
                 <section className="relative overflow-y-auto z-10 backdrop-blur-lg h-full w-full rounded-md">
                     <div className="flex flex-col">
                         <div className="w-full flex items-center p-6 justify-between backdrop-blur-md  border-b dark:border-b-white/20 border-b-black/20">

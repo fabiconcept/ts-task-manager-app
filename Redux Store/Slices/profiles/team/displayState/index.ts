@@ -135,13 +135,27 @@ const displayTeamState = createSlice({
         },
         updateViewType: (state, action: PayloadAction<ViewType>) => {
             state.viewType = action.payload;
+        },
+        performSearch: (state, action: PayloadAction<string>) => {
+            const searchString = action.payload;
+            const teamList = state.displayList;
+
+            const searchText = searchString.toLowerCase();
+
+            const newList = teamList.filter((member) => (
+                Object.values(member).some((value) => typeof value === "string" && value.toLowerCase().includes(searchText))
+            ));
+
+            console.log(newList.length);
+
+            // state.displayList = newList;
         }
     }
 });
 
 export const displayTeamStateSlice = displayTeamState.reducer;
 
-export const { cleanDisplayTeamMain, updateDisplayList, updateSortBy, updateViewType } = displayTeamState.actions;
+export const { cleanDisplayTeamMain, updateDisplayList, updateSortBy, updateViewType, performSearch } = displayTeamState.actions;
 
 export const echoDisplayList = (state:RootState) => state.teamDisplayList.displayList;
 export const echoSortBy = (state:RootState) => state.teamDisplayList.sortBy;

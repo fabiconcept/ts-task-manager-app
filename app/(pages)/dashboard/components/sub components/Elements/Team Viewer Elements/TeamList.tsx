@@ -8,6 +8,11 @@ import { ViewType } from "@/lib/Enums";
 
 export default function TeamList() {
     const teamList = useSelector(echoDisplayList);
+    
+    const DisplayList = useMemo(() => teamList, [teamList]);
+
+    console.log(DisplayList);
+
     const viewType = useSelector(echoViewType);
 
     const gridViewMode = useMemo(() => {
@@ -25,9 +30,9 @@ export default function TeamList() {
 
     return (
         <section className={clsx(`grid ${gridViewMode} gap-4 p-4`)}>
-            {teamList.map((member)=>(
+            {/* {teamList.map((member)=>(
                 <TeamMember key={member.userId} data={member} />
-            ))}
+            ))} */}
         </section>
     )
 }
