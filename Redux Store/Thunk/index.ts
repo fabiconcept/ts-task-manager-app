@@ -1,3 +1,4 @@
+import { UserAccountDetails } from "@/lib/Interfaces";
 import { getProfiles, getProjects, getUserData } from "@/lib/functions";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 

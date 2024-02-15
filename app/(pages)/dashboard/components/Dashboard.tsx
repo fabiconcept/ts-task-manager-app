@@ -7,6 +7,7 @@ import CompanyIntro from "./sub components/CompanyIntro";
 
 export default function Dashboard() {
     const isLoading = useSelector(echoTaskerProfilesLoading);
+    const activeId = useSelector(echoTaskerProfilesActiveId);
     const errorMsg = useSelector(echoTaskerProfilesError);
     const { profiles } = useSelector(echoTaskerProfilesResponse);
 
@@ -18,7 +19,7 @@ export default function Dashboard() {
             {(isLoading !== loadingState.SUCCESS || profiles.length === 0) && <div className="absolute h-full w-full backdrop-blur-lg top-0 left-0 grid place-items-center">
                 <span>loading</span>
             </div>}
-            {isLoading === loadingState.SUCCESS && profiles.length > 0 && <CompanyIntro />}
+            {isLoading === loadingState.SUCCESS && profiles.length > 0 && <CompanyIntro key={activeId} />}
         </>
     );
 }

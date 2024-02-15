@@ -2,30 +2,28 @@
 import { CiGrid2H, CiGrid41 } from "react-icons/ci";
 import SearchFeature from "../../side components/SearchFeature";
 import { FaArrowUpAZ } from "react-icons/fa6";
-import { useDispatch } from "react-redux";
-import { echoDisplayList, echoViewType, performSearch, updateDisplayList, updateViewType } from "@/Redux Store/Slices/profiles/team/displayState";
 import { ViewType } from "@/lib/Enums";
-import { useSelector } from "react-redux";
 import clsx from "clsx";
+import { useContext } from "react";
+import { teamContext } from "../TeamViewer";
+import { performSearch } from "@/lib/functions";
 
 export default function Filter() {
-    const teamList = useSelector(echoDisplayList);
-    const viewMode = useSelector(echoViewType);
-    const dispatch = useDispatch();
+    const { setSortBy, setViewType, teamList, setDisplayList, viewType: viewMode } = useContext(teamContext)!;
 
     const handleSwitchToBoxView = () => {
-        dispatch(updateViewType(ViewType.BOX));
+        setViewType(ViewType.BOX)
     }
     
     const handleSwitchToListView = () => { 
-        dispatch(updateViewType(ViewType.LIST));
+        setViewType(ViewType.LIST)
     } 
 
     const handleSearchFeature = (searchParam: string) : void => { 
         if (!searchParam) return;
 
-        console.log(searchParam);
-        dispatch(performSearch(searchParam));
+        const searchResults = performSearch(searchParam, teamList);
+        setDisplayList(searchResults);
     }
 
     return (

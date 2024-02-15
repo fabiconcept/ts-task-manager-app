@@ -1,19 +1,12 @@
 "use client"
 import clsx from "clsx";
-import { useMemo } from "react"
+import { useContext, useMemo } from "react"
 import TeamMember from "./TeamMember";
-import { useSelector } from "react-redux";
-import { echoDisplayList, echoViewType } from "@/Redux Store/Slices/profiles/team/displayState";
 import { ViewType } from "@/lib/Enums";
+import { teamContext } from "../TeamViewer";
 
 export default function TeamList() {
-    const teamList = useSelector(echoDisplayList);
-    
-    const DisplayList = useMemo(() => teamList, [teamList]);
-
-    console.log(DisplayList);
-
-    const viewType = useSelector(echoViewType);
+    const { viewType, displayList } = useContext(teamContext)!;
 
     const gridViewMode = useMemo(() => {
         const boxView= "grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]";
@@ -30,9 +23,9 @@ export default function TeamList() {
 
     return (
         <section className={clsx(`grid ${gridViewMode} gap-4 p-4`)}>
-            {/* {teamList.map((member)=>(
+            {displayList.map((member)=>(
                 <TeamMember key={member.userId} data={member} />
-            ))} */}
+            ))}
         </section>
     )
 }

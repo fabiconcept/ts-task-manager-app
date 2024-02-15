@@ -1,3 +1,4 @@
+import e from "cors";
 import { TaskerProfile, TaskerProject, UserAccountDetails} from "../Interfaces";
 import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
 import { CompanyTag } from "../Types/dashboard";
@@ -88,4 +89,14 @@ export async function getProjects(taskerProfileId: string): Promise<{ response: 
     
     
     return { response, resultProjects, message };
+}
+
+export const performSearch = (searchString: string, teamList: UserAccountDetails[]) => {
+    const searchText = searchString.toLowerCase();
+
+    const newList = teamList.filter((member) => (
+        Object.values(member).some((value) => typeof value === "string" && value.toLowerCase().includes(searchText))
+    ));
+
+    return newList;
 }
