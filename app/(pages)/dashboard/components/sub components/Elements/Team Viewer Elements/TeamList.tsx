@@ -6,7 +6,7 @@ import { ViewType } from "@/lib/Enums";
 import { teamContext } from "../TeamViewer";
 
 export default function TeamList() {
-    const { viewType, displayList } = useContext(teamContext)!;
+    const { viewType, sortedList } = useContext(teamContext)!;
 
     const gridViewMode = useMemo(() => {
         const boxView= "grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]";
@@ -23,7 +23,7 @@ export default function TeamList() {
 
     return (
         <section className={clsx(`grid ${gridViewMode} gap-4 p-4`)}>
-            {displayList.map((member)=>(
+            {sortedList.map((member)=>(
                 <TeamMember key={member.userId} data={member} />
             ))}
         </section>

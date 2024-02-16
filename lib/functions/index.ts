@@ -1,9 +1,9 @@
-import e from "cors";
+import { SortBy } from "../Enums";
 import { TaskerProfile, TaskerProject, UserAccountDetails} from "../Interfaces";
-import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
+import { TeamMember, ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
 import { CompanyTag } from "../Types/dashboard";
-// : UserDetails
 
+// : UserDetails
 export const getUserData = async (key: string) => {
     const getResponse: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<UserAccountDetails> = await fetch("/api/dashboard/userData", {
         method: "post",
@@ -100,3 +100,60 @@ export const performSearch = (searchString: string, teamList: UserAccountDetails
 
     return newList;
 }
+
+export const toggleSortBy = (currentSort: number): number => {
+    const sortByEnum = Object.values(SortBy);
+    if (currentSort === (sortByEnum.length - 1)) {
+        return 0;
+    }
+    currentSort++
+    return currentSort;
+}
+
+// Handle the sorting on the CompantIntro Team Page
+export const performSortingForTeamList = (sortBy: SortBy, arrayToSort: UserAccountDetails[], helperArray?: TeamMember[]): UserAccountDetails[] => {
+    const newArrayToSort = [...arrayToSort];
+
+    switch (sortBy) {
+        case SortBy.TYPE:
+            // Sort based on TYPE using helperArray
+            if (helperArray) {
+                return newArrayToSort.sort((a, b) => {
+                    // Find the TeamMember corresponding to each UserAccountDetails
+                    const typeA = helperArray.find((member) => member.user_id === a.userId)?.type || 'none';
+                    const typeB = helperArray.find((member) => member.user_id === b.userId)?.type || 'none';
+
+                    // Define the order in which types should appear
+                    const typeOrder = { editor: 0, worker: 1, none: 2 };
+
+                    // Use localeCompare for string comparison based on defined order
+                    return typeOrder[typeA] - typeOrder[typeB];
+                });
+            }
+            return newArrayToSort;
+
+        case SortBy.JOIN:
+            // Sort based on JOIN using helperArray
+            if (helperArray) {
+                return newArrayToSort.sort((a, b) => {
+                    const joinedA = helperArray.find((member) => member.user_id === a.userId)?.joined_on || '';
+                    const joinedB = helperArray.find((member) => member.user_id === b.userId)?.joined_on || '';
+                    return joinedA.localeCompare(joinedB);
+                });
+            }
+            return newArrayToSort;
+
+        case SortBy.AZ:
+            // Sort alphabetically A-Z based on name property
+            return newArrayToSort.sort((a, b) => a.name.localeCompare(b.name));
+
+        case SortBy.ZA:
+            // Sort alphabetically Z-A based on name property
+            return newArrayToSort.sort((a, b) => b.name.localeCompare(a.name));
+
+        default:
+            // Default: return the array as is
+            return newArrayToSort;
+    }
+};
+  

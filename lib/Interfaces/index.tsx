@@ -17,6 +17,7 @@ export interface UserAccount {
         exp: number
     }
 }
+
 export interface UserAccountDetails {
     userId: string,
     displayName: string,

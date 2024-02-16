@@ -41,10 +41,10 @@ export default function TeamMember({ data }: { data: UserAccountDetails }) {
     }, [companyTeamList, data.userId, companyOwner]);
 
     return (
-        <div className='rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] peer-active:opacity-40 peer-active:scale-90 hover:scale-105 border border-transparent hover:dark:border-white/30 hover:border-black/30 relative overflow-hidden'>
+        <div className='rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] peer-active:opacity-40 peer-active:scale-90 hover:scale-105 border border-transparent hover:dark:border-white/50 dark:border-white/10 hover:border-black/50 border-black/10 relative overflow-hidden'>
             <div className={clsx(
                 "absolute top-0 left-0 h-full w-full opacity-10 rounded-md grid place-items-center font-extrabold text-4xl",
-                !data.profileAvatar ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
+                !data.profileAvatar ? "bg-white/50 dark:text-theme-white-dark" : "bg-white"
             )}>
                 {!data.profileAvatar ?
                     data.displayName
@@ -59,7 +59,7 @@ export default function TeamMember({ data }: { data: UserAccountDetails }) {
                         />
                     </div>}
             </div>
-            <div className='relative z-10 backdrop-blur-md p-2 flex flex-col'>
+            <div className='relative z-10 p-2 flex flex-col'>
                 <div className="flex items-center justify-between">
                     <div className='flex items-center gap-1 capitalize cursor-text'>
                         {type}

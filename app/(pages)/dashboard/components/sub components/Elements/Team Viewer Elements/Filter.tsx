@@ -1,15 +1,30 @@
 "use client"
 import { CiGrid2H, CiGrid41 } from "react-icons/ci";
 import SearchFeature from "../../side components/SearchFeature";
-import { FaArrowUpAZ } from "react-icons/fa6";
-import { ViewType } from "@/lib/Enums";
+import { FaArrowDownWideShort, FaArrowUpAZ, FaArrowUpZA, FaSort } from "react-icons/fa6";
+import { SortBy, ViewType } from "@/lib/Enums";
 import clsx from "clsx";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { teamContext } from "../TeamViewer";
-import { performSearch } from "@/lib/functions";
+import { performSearch, toggleSortBy } from "@/lib/functions";
 
 export default function Filter() {
-    const { setSortBy, setViewType, teamList, setDisplayList, viewType: viewMode } = useContext(teamContext)!;
+    const { setSortBy, setViewType, teamList, setDisplayList, viewType: viewMode, sortBy } = useContext(teamContext)!;
+
+    const sortByOptions: SortBy[] = [SortBy.TYPE, SortBy.AZ, SortBy.ZA, SortBy.JOIN];
+
+    const sortIcon = useMemo(() => {
+        switch (sortBy) {
+            case SortBy.AZ:
+                return <FaArrowUpAZ />;
+            case SortBy.JOIN:
+                return <FaArrowDownWideShort />;
+            case SortBy.ZA:
+                return <FaArrowUpZA />;
+            default:
+                return <FaSort />;
+        }
+    }, [sortBy]);
 
     const handleSwitchToBoxView = () => {
         setViewType(ViewType.BOX)
@@ -20,10 +35,14 @@ export default function Filter() {
     } 
 
     const handleSearchFeature = (searchParam: string) : void => { 
-        if (!searchParam) return;
-
         const searchResults = performSearch(searchParam, teamList);
         setDisplayList(searchResults);
+    }
+
+    const handleToggleSortBy = () => {
+        const currentSortByType = sortByOptions.findIndex((option) => option === sortBy)!;
+        const nextSortBy = toggleSortBy(currentSortByType);
+        setSortBy(sortByOptions[nextSortBy]);
     }
 
     return (
@@ -45,7 +64,13 @@ export default function Filter() {
                         "cursor-pointer hover:scale-110 active:scale-90 active:opacity-50",
                         viewMode === ViewType.LIST ? "opacity-100 scale-125" : "opacity-50"
                     )} title="List view"><CiGrid2H /></span>
-                    <span className="cursor-pointer hover:scale-110 active:scale-90 active:opacity-50" title="Sort by"><FaArrowUpAZ /></span>
+                    <span 
+                        className="cursor-pointer hover:scale-110 active:scale-90 active:opacity-50" 
+                        title={`Sort by ${sortBy}`}
+                        onClick={handleToggleSortBy}
+                    >
+                        {sortIcon}
+                    </span>
                 </div>
             </div>
         </div>

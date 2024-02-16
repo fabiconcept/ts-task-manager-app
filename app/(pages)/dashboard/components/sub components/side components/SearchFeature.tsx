@@ -9,7 +9,7 @@ export default function SearchFeature( { performFunction, placeholder }: SearchP
     const debouceSearchString = useDebounce(searchString, 1000);
 
     useEffect(() => {
-        if (debouceSearchString === "") return;
+        if (typeof(debouceSearchString) !== "string") return;
         performFunction(debouceSearchString);
     }, [debouceSearchString, performFunction]);
 
