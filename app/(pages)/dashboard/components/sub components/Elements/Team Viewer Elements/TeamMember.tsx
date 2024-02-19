@@ -41,7 +41,7 @@ export default function TeamMember({ data }: { data: UserAccountDetails }) {
     }, [companyTeamList, data.userId, companyOwner]);
 
     return (
-        <div className='rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] peer-active:opacity-40 peer-active:scale-90 hover:scale-105 border border-transparent hover:dark:border-white/50 dark:border-white/10 hover:border-black/50 border-black/10 relative overflow-hidden'>
+        <div className='rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] peer-active:opacity-40 peer-active:scale-90 hover:scale-105 border hover:dark:border-white/80 dark:border-white/50 hover:border-black/80 border-black/50 relative overflow-hidden'>
             <div className={clsx(
                 "absolute top-0 left-0 h-full w-full opacity-10 rounded-md grid place-items-center font-extrabold text-4xl",
                 !data.profileAvatar ? "bg-white/50 dark:text-theme-white-dark" : "bg-white"

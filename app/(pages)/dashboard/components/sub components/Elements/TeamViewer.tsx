@@ -10,6 +10,7 @@ import { performSortingForTeamList } from "@/lib/functions";
 
 interface TeamContext {
     sortedList: UserAccountDetails[],
+    displayList: UserAccountDetails[],
     setDisplayList: React.Dispatch<React.SetStateAction<UserAccountDetails[]>>,
     viewType: ViewType,
     setViewType: React.Dispatch<React.SetStateAction<ViewType>>,
@@ -33,13 +34,14 @@ export default function TeamViewer() {
 
     const sortedList =  useMemo(()=> {
         if (!displayList || !companyTeamList) return [];
+        const copy = [...displayList]
 
-        const performSorting = performSortingForTeamList(sortBy, displayList, companyTeamList);
+        const performSorting = performSortingForTeamList(sortBy, copy, companyTeamList);
         return performSorting;
     }, [sortBy, displayList, companyTeamList]);
 
     return (
-        <teamContext.Provider value={{ teamList, sortedList, setDisplayList, viewType, setViewType, sortBy, setSortBy }}>
+        <teamContext.Provider value={{ teamList, sortedList, setDisplayList, viewType, setViewType, sortBy, setSortBy, displayList }}>
             <Filter />
             <TeamList />
         </teamContext.Provider>

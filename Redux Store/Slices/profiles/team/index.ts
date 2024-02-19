@@ -125,12 +125,13 @@ type teamStateWithData = {
 }
 
 const initialState: InitialState | teamStateWithData = {
-    loading: loadingState.IDLE,
+    loading: loadingState.SUCCESS,
     owner: "",
     error: "",
     taskerTeam: [],
-    team: dummyUserAccounts
+    team: [...dummyUserAccounts]
 }
+
 
 const teamMainState = createSlice({
     name: "teamMainState",
@@ -156,6 +157,8 @@ const teamMainState = createSlice({
 export const { cleanTeamMain, updateTaskerTeam } = teamMainState.actions;
 
 export const echoTeamFromActiveProfile = (state: RootState) => state.teamMain.taskerTeam;
+export const echoTeamFromActiveProfileLoadingState = (state: RootState) => state.teamMain.loading;
+export const echoTeamFromActiveProfileErrorState = (state: RootState) => state.teamMain.error;
 export const echoDisplayList = (state:RootState) => state.teamMain.team;
 export const echoOwnerOfActiveProfile = (state: RootState) => state.teamMain.owner;
 
