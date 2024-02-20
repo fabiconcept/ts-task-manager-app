@@ -8,6 +8,7 @@ import Image from "next/image";
 import TeamMemberLoading from "@/lib/loadingFrames/TeamMember";
 import { echoTeamFromActiveProfileLoadingState, echoTeamFromActiveProfileErrorState } from "@/Redux Store/Slices/profiles/team";
 import { useSelector } from "react-redux";
+import ShowElement from "@/lib/utilities/Show";
 
 export default function TeamList() {
     const { viewType, sortedList, displayList } = useContext(teamContext)!;
@@ -30,27 +31,37 @@ export default function TeamList() {
 
     return (
         <section className={clsx(`grid ${gridViewMode} gap-4 p-4 min-h-full`)}>
-            {loading === loadingState.SUCCESS && sortedList.length > 0 && sortedList.map((member)=>(
-                <TeamMember key={member.userId} data={member} />
-            ))}
-            {loading === loadingState.PENDING && Array.from({length: 5}).map((_, index)=>(
-                <TeamMemberLoading key={index} />
-            ))}
-                {displayList.length}
-                {sortedList.length}
-            {loading === loadingState.SUCCESS && sortedList.length === 0  && <div className={"h-full grid place-items-center p-24 gap-6"}>
-                <Image
-                    src={"https://taskify.sirv.com/404.svg"}
-                    alt=""
-                    height={500}
-                    width={500}
-                    className="xl:w-[30rem] sm:w-[20rem] w-[15rem]"
-                />
+            <ShowElement.when
+                isTrue={loading === loadingState.SUCCESS && sortedList.length > 0}
+            >
+                {sortedList.map((member) => (
+                    <TeamMember key={member.userId} data={member} />
+                ))}
+            </ShowElement.when>
 
-                <span className="md:text-base text-sm opacity-70">
-                    {displayList.length === 0 ? "Your team list is empty." : "No result from search."}
-                </span>
-            </div>}
+            <ShowElement.when
+                isTrue={loading === loadingState.SUCCESS && sortedList.length === 0}
+            >
+                <div className={"h-full grid place-items-center p-24 gap-6"}>
+                    <Image
+                        src={"https://taskify.sirv.com/404.svg"}
+                        alt=""
+                        height={500}
+                        width={500}
+                        className="xl:w-[30rem] sm:w-[20rem] w-[15rem]"
+                    />
+
+                    <span className="md:text-base text-sm opacity-70">
+                        {displayList.length === 0 ? "Your team list is empty." : "No result from search."}
+                    </span>
+                </div>
+            </ShowElement.when>
+
+            <ShowElement.else>
+                {Array.from({ length: 5 }).map((_, index) => (
+                    <TeamMemberLoading key={index} />
+                ))}
+            </ShowElement.else>
         </section>
     )
 }
