@@ -57,11 +57,21 @@ export default function TeamList() {
                 </div>
             </ShowElement.when>
 
-            <ShowElement.else>
+            <ShowElement.when
+                isTrue={loading === loadingState.PENDING}
+            >
                 {Array.from({ length: 5 }).map((_, index) => (
                     <TeamMemberLoading key={index} />
                 ))}
-            </ShowElement.else>
+            </ShowElement.when>
+            
+            <ShowElement.when
+                isTrue={loading === loadingState.FAILED}
+            >
+                <div className={"h-full grid place-items-center p-24 text-center text-lg dark:text-red-300 text-red-500"}>
+                    <span>{error}</span>
+                </div>
+            </ShowElement.when>
         </section>
     )
 }
