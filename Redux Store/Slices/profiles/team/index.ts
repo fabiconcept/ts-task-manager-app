@@ -125,11 +125,11 @@ type teamStateWithData = {
 }
 
 const initialState: InitialState | teamStateWithData = {
-    loading: loadingState.SUCCESS,
+    loading: loadingState.PENDING,
     owner: "",
     error: "",
     taskerTeam: [],
-    team: [...dummyUserAccounts]
+    team: []
 }
 
 

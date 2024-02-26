@@ -46,7 +46,7 @@ export default function Filter() {
     }
 
     return (
-        <div className="p-4 sticky top-0 backdrop-blur-md">
+        <div className="p-4 sticky top-0 backdrop-blur-md dark:bg-theme-white-dark bg-theme-white">
             <p className="py-3 opacity-60">Team members</p>
             <div className="flex items-center gap-4 ">
                 <div className="flex-1">
