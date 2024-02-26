@@ -9,6 +9,7 @@ import TeamMemberLoading from "@/lib/loadingFrames/TeamMember";
 import { echoTeamFromActiveProfileLoadingState, echoTeamFromActiveProfileErrorState } from "@/Redux Store/Slices/profiles/team";
 import { useSelector } from "react-redux";
 import ShowElement from "@/lib/utilities/Show";
+import { FaPlus } from "react-icons/fa6";
 
 export default function TeamList() {
     const { viewType, sortedList, displayList } = useContext(teamContext)!;
@@ -18,7 +19,7 @@ export default function TeamList() {
     const gridViewMode = useMemo(() => {
         const boxView= "grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]";
         const listView= "grid-cols-1";
-        if(!(loading === loadingState.SUCCESS && sortedList.length)) return "grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]";
+        if(!(loading === loadingState.SUCCESS && sortedList.length)) return "";
         switch(viewType) {
             case ViewType.BOX: 
                 return boxView;
@@ -35,6 +36,18 @@ export default function TeamList() {
             <ShowElement.when
                 isTrue={loading === loadingState.SUCCESS && sortedList.length > 0}
             >
+                <ShowElement.when 
+                    isTrue={sortedList.length === displayList.length}
+                >
+                    <div className={clsx(
+                        'rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] peer-active:opacity-40 peer-active:scale-90 border hover:dark:border-white/80 dark:border-white/50 hover:border-black/80 border-black/50 relative overflow-hidden grid place-items-center')
+                    }>
+                        <div className='h-[4rem] w-[4rem] rounded-full overflow-hidden grid place-items-center border text-lg hover:scale-105 active:scale-90 bg-theme-main text-theme-white-dark'>
+                            <FaPlus />
+                        </div>
+                    </div>
+                </ShowElement.when>
+
                 {sortedList.map((member) => (
                     <TeamMember key={member.userId} data={member} />
                 ))}
@@ -50,7 +63,7 @@ export default function TeamList() {
                         alt=""
                         height={500}
                         width={500}
-                        className="xl:w-[30rem] sm:w-[20rem] w-[15rem]"
+                        className="xl:w-[20rem] sm:w-[15rem] w-[10rem]"
                     />
 
                     <span className="md:text-base text-sm opacity-70">

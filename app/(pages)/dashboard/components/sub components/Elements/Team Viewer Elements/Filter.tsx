@@ -9,7 +9,7 @@ import { teamContext } from "../TeamViewer";
 import { performSearch, toggleSortBy } from "@/lib/functions";
 
 export default function Filter() {
-    const { setSortBy, setViewType, teamList, setDisplayList, viewType: viewMode, sortBy } = useContext(teamContext)!;
+    const { setSortBy, setViewType, teamList, setSearchResultList, viewType: viewMode, sortBy } = useContext(teamContext)!;
 
     const sortByOptions: SortBy[] = [SortBy.TYPE, SortBy.AZ, SortBy.ZA, SortBy.JOIN];
 
@@ -27,16 +27,16 @@ export default function Filter() {
     }, [sortBy]);
 
     const handleSwitchToBoxView = () => {
-        setViewType(ViewType.BOX)
+        setViewType(ViewType.BOX);
     }
     
     const handleSwitchToListView = () => { 
-        setViewType(ViewType.LIST)
+        setViewType(ViewType.LIST);
     } 
 
     const handleSearchFeature = (searchParam: string) : void => { 
         const searchResults = performSearch(searchParam, teamList);
-        setDisplayList(searchResults);
+        setSearchResultList(searchResults);
     }
 
     const handleToggleSortBy = () => {

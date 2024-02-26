@@ -11,7 +11,7 @@ import { performSortingForTeamList } from "@/lib/functions";
 interface TeamContext {
     sortedList: UserAccountDetails[],
     displayList: UserAccountDetails[],
-    setDisplayList: React.Dispatch<React.SetStateAction<UserAccountDetails[]>>,
+    setSearchResultList: React.Dispatch<React.SetStateAction<UserAccountDetails[]>>,
     viewType: ViewType,
     setViewType: React.Dispatch<React.SetStateAction<ViewType>>,
     sortBy: SortBy,
@@ -27,21 +27,22 @@ export default function TeamViewer() {
     const [displayList, setDisplayList] = useState<UserAccountDetails[]>([]);
     const [viewType, setViewType] = useState<ViewType>(ViewType.BOX);
     const [sortBy, setSortBy] = useState<SortBy>(SortBy.TYPE);
+    const [searchResultList, setSearchResultList] = useState<UserAccountDetails[]>([]);
 
     useMemo(() => {
         setDisplayList(teamList);
     }, [teamList]);
 
     const sortedList =  useMemo(()=> {
-        if (!displayList || !companyTeamList) return [];
-        const copy = [...displayList]
+        if (!searchResultList || !companyTeamList) return [];
+        const copy = [...searchResultList];
 
         const performSorting = performSortingForTeamList(sortBy, copy, companyTeamList);
         return performSorting;
-    }, [sortBy, displayList, companyTeamList]);
+    }, [sortBy, searchResultList, companyTeamList]);
 
     return (
-        <teamContext.Provider value={{ teamList, sortedList, setDisplayList, viewType, setViewType, sortBy, setSortBy, displayList }}>
+        <teamContext.Provider value={{ teamList, sortedList, setSearchResultList, viewType, setViewType, sortBy, setSortBy, displayList }}>
             <Filter />
             <TeamList />
         </teamContext.Provider>
