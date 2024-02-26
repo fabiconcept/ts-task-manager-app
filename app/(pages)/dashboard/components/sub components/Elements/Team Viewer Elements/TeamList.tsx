@@ -31,6 +31,7 @@ export default function TeamList() {
 
     return (
         <section className={clsx(`grid ${gridViewMode} gap-4 p-4 min-h-full`)}>
+            {/* If team is Loaded and sortedList has content */}
             <ShowElement.when
                 isTrue={loading === loadingState.SUCCESS && sortedList.length > 0}
             >
@@ -39,6 +40,7 @@ export default function TeamList() {
                 ))}
             </ShowElement.when>
 
+            {/* If team is Loaded and sortedList doesn't have content */}
             <ShowElement.when
                 isTrue={loading === loadingState.SUCCESS && sortedList.length === 0}
             >
@@ -57,6 +59,7 @@ export default function TeamList() {
                 </div>
             </ShowElement.when>
 
+            {/* If team is loading */}
             <ShowElement.when
                 isTrue={loading === loadingState.PENDING}
             >
@@ -65,6 +68,7 @@ export default function TeamList() {
                 ))}
             </ShowElement.when>
             
+            {/* If an error occurs */}
             <ShowElement.when
                 isTrue={loading === loadingState.FAILED}
             >
