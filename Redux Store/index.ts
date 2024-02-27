@@ -3,6 +3,7 @@ import { UserDataStateSlice } from "./Slices/user data";
 import { TaskerProfilesStateSlice } from "./Slices/profiles";
 import { projectsListStateSlice } from "./Slices/profiles/projects";
 import { teamMainStateSlice } from "./Slices/profiles/team";
+import { popUpSlice } from "./Slices/Popup Slice";
 
 const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
         taskerProfiles: TaskerProfilesStateSlice,
         projectsList: projectsListStateSlice,
         teamMain: teamMainStateSlice,
+        popUp: popUpSlice,
     }
 });
 

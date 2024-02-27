@@ -44,3 +44,9 @@ export enum SortBy {
     ZA = "z-a",
     JOIN = "join-date"
 }
+
+export enum PopupType {
+    AddTeam = "addTeam",
+    AreYouSure = "areYouSure",
+    EditProfile= "editProfile",
+}

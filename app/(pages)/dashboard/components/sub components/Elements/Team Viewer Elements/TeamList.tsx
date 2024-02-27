@@ -40,7 +40,7 @@ export default function TeamList() {
                     isTrue={sortedList.length === displayList.length}
                 >
                     <div className={clsx(
-                        'opacity-30 hover:opacity-100 rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] peer-active:opacity-40 peer-active:scale-90 border hover:dark:border-white/80 dark:border-white/50 hover:border-black/80 border-black/50 relative overflow-hidden grid place-items-center')}
+                        'opacity-60 hover:opacity-100 rounded-md h-[10rem] peer-active:opacity-40 peer-active:scale-90 relative overflow-hidden grid place-items-center')}
                         title="Add new Member"
                     >
                         <div className='h-[4rem] w-[4rem] rounded-full overflow-hidden grid place-items-center border text-lg hover:scale-105 active:scale-90 bg-theme-main text-theme-white-dark'>
