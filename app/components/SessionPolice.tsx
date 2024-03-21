@@ -15,8 +15,7 @@ const socket = io("http://localhost:2222", {
 
 export default function SessionPolice() {
     const { error, loading } = useSelector(echoUserData);
-    useAuthenticate();
-
+    
     useEffect(() => {
         // if(!socket) return;
         // // Example: Listening for server events

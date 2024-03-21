@@ -9,16 +9,13 @@ import { useDispatch } from "react-redux";
 import { fetchUserData } from "@/Redux Store/Thunk";
 import { AppDispatch } from "@/Redux Store";
 
-export default function useAuthenticate(): void {
+export default function useAuthenticate(cookieData: string): void {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
     const apiURL = "http://localhost:3000/api/authentication/validateAuth";
 
     useEffect(() => {
-        const [hasSession, sessionId] = retrieveActiveSession();
-        if (sessionId === null) return;
-
-        if (!hasSession || sessionId === "") {
+        if (!cookieData) {
             console.error("Session data not found");
             router.push("/auth/login");
             return;
@@ -32,7 +29,7 @@ export default function useAuthenticate(): void {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        authenticationKey: sessionId
+                        authenticationKey: cookieData
                     })
                 })
 
@@ -52,5 +49,5 @@ export default function useAuthenticate(): void {
         }
 
         getData();
-    }, [router, dispatch]);
+    }, [router, dispatch, cookieData]);
 }

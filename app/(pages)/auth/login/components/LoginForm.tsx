@@ -134,7 +134,7 @@ export default function LoginForm() {
 
                 toast.error(unknownError ?? message);
             } else {
-                performLogin(`${message.userId} ${message.auth}`);
+                performLogin(`${message.userId} ${message.auth}`, "Login successful", expirationDate);
 
                 setTimeout(() => {
                     router.push("/dashboard");

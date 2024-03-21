@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { retrieveActiveSession } from "./lib/session/helper";
 
 export function middleware(request: NextRequest) {
     const pathName = request.nextUrl.pathname;
+    const getCookie = request.cookies.get("taskerId");
+
+    if (!getCookie) {
+        return NextResponse.rewrite(new URL("/auth/login", request.url));
+    }else{
+        console.log(getCookie);
+    }
 
     if (pathName.startsWith("/login") || pathName.startsWith("/signin")) {
         return NextResponse.rewrite(new URL("/auth/login", request.url));
@@ -14,7 +20,7 @@ export function middleware(request: NextRequest) {
 
 
     return NextResponse.json({
-        request
+        cookie: getCookie,
     });
 }
 
