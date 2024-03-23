@@ -14,7 +14,7 @@ export default function RootLayout({
             <div className="flex flex-row">
                 <NavBar />
                 <SideBar />
-                <PopUpDiv />
+                {/* <PopUpDiv /> */}
                 {children}
             </div>
         </>

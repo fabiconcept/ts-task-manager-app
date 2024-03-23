@@ -5,13 +5,13 @@ import toast from 'react-hot-toast';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY!;
 
 // Function to encrypt the value
-const encryptValue = (value: string) => {
+export const encryptValue = (value: string) => {
     const encryptedValue = CryptoJS.AES.encrypt(value, SECRET_KEY).toString();
     return encryptedValue;
 };
 
 // Function to decrypt the value
-const decryptValue = (encryptedValue: string) => {
+export const decryptValue = (encryptedValue: string) => {
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedValue, SECRET_KEY);
     const decryptedValue = decryptedBytes.toString(CryptoJS.enc.Utf8);
     return decryptedValue;
