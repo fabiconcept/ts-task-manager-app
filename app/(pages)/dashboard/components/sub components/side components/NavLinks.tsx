@@ -35,7 +35,7 @@ export default function NavLinks() {
     return (
         <div className="grid h-fit py-8 border-y dark:border-white/5 border-black/5 font-semibold select-none">
             <Link onClick={()=>setActiveTab(1)} href={"/dashboard/"} className={clsx(
-                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer relative after:absolute after:content-['Dashboard'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[5.5rem] hover:after:-right-[7rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
+                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer relative after:absolute after:pointer-events-none after:select-none after:content-['Dashboard'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[5.5rem] hover:after:-right-[7rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
                 activeTab === 1 ? "border border-theme-text/25 text-theme-text" : "opacity-45 hover:opacity-80"
             )}>
                 <span className={clsx(
@@ -46,7 +46,7 @@ export default function NavLinks() {
             </Link>
 
             <Link onClick={()=>setActiveTab(2)} href={"/dashboard/settings"} className={clsx(
-                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer  relative after:absolute after:content-['Settings'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[4rem] hover:after:-right-[5.5rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
+                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer  relative after:absolute after:pointer-events-none after:select-none after:content-['Settings'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[4rem] hover:after:-right-[5.5rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
                 activeTab === 2 ? "border border-theme-text/25 text-theme-text" : "opacity-45 hover:opacity-80"
             )}>
                 <span className={clsx(
@@ -57,7 +57,7 @@ export default function NavLinks() {
             </Link>
 
             <Link onClick={()=>setActiveTab(3)} href={"/dashboard/activities"} className={clsx(
-                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer  relative after:absolute after:content-['Activites'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[4rem] hover:after:-right-[5.5rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
+                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer  relative after:absolute after:pointer-events-none after:select-none after:content-['Activites'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[4rem] hover:after:-right-[5.5rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
                 activeTab === 3 ? "border border-theme-text/25 text-theme-text" : "opacity-45 hover:opacity-80"
             )}>
                 <span className={clsx(
@@ -68,7 +68,7 @@ export default function NavLinks() {
             </Link>
 
             <Link onClick={()=>setActiveTab(4)} href={"/dashboard/activities"} className={clsx(
-                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer  relative after:absolute after:content-['My Profile'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[4rem] hover:after:-right-[5.5rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
+                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer relative after:absolute after:pointer-events-none after:select-none after:content-['My_profile'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[4rem] hover:after:-right-[5.5rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
                 activeTab === 4 ? "border border-theme-text/25 text-theme-text" : "opacity-45 hover:opacity-80"
             )}>
                 <span className={clsx(

@@ -20,6 +20,30 @@ const config: Config = {
         "theme-main": "#00db96",
         "theme-text": "#e66550",
       },
+      animation: {
+        'openModal': 'modal-open 0.25s ease forwards',
+        'closeModal': 'modal-close 0.25s ease forwards',
+        'md-openModal': 'md-modal-open 0.25s ease forwards',
+        'md-closeModal': 'md-modal-close 0.25s ease forwards',
+      },  
+      keyframes: {
+        "modal-open": {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        "modal-close": {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        "md-modal-open": {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+        "md-modal-close": {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+      },
     },
   },
   plugins: [],

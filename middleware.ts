@@ -52,7 +52,6 @@ export async function middleware(request: NextRequest) {
             if (test) {
                 const responseCookies= NextResponse.next();
                 responseCookies.cookies.set("taskerUser", encryptValue(response));
-                console.log(test, response);
 
                 return responseCookies;
             } else {

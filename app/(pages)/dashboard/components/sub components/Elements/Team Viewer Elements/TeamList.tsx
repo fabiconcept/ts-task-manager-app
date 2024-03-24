@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import { useContext, useMemo } from "react"
 import TeamMember from "./TeamMember";
-import { ViewType, loadingState } from "@/lib/Enums";
+import { PopupType, ViewType, loadingState } from "@/lib/Enums";
 import { teamContext } from "../TeamViewer";
 import Image from "next/image";
 import TeamMemberLoading from "@/lib/loadingFrames/TeamMember";
@@ -10,11 +10,15 @@ import { echoTeamFromActiveProfileLoadingState, echoTeamFromActiveProfileErrorSt
 import { useSelector } from "react-redux";
 import ShowElement from "@/lib/utilities/Show";
 import { FaPlus } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/Redux Store";
+import { openModal } from "@/Redux Store/Slices/Popup Slice";
 
 export default function TeamList() {
     const { viewType, sortedList, displayList } = useContext(teamContext)!;
     const loading = useSelector(echoTeamFromActiveProfileLoadingState);
     const error = useSelector(echoTeamFromActiveProfileErrorState);
+    const dispatch = useDispatch<AppDispatch>();
 
     const gridViewMode = useMemo(() => {
         const boxView= "grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]";
@@ -30,6 +34,11 @@ export default function TeamList() {
         }
     }, [viewType, loading, sortedList.length]);
 
+    const addTeamMember = () => {
+        const popUpType: PopupType = PopupType.AddTeam;
+        dispatch(openModal({popUpType}));
+    }
+
     return (
         <section className={clsx(`grid ${gridViewMode} gap-4 p-4 min-h-full`)}>
             {/* If team is Loaded and sortedList has content */}
@@ -42,6 +51,7 @@ export default function TeamList() {
                     <div className={clsx(
                         'opacity-60 hover:opacity-100 rounded-md h-[10rem] peer-active:opacity-40 peer-active:scale-90 relative overflow-hidden grid place-items-center')}
                         title="Add new Member"
+                        onClick={addTeamMember}
                     >
                         <div className='h-[4rem] w-[4rem] rounded-full overflow-hidden grid place-items-center border text-lg hover:scale-105 active:scale-90 bg-theme-main text-theme-white-dark'>
                             <FaPlus />
