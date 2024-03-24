@@ -4,7 +4,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CiBoxList, CiDesktop, CiSettings } from "react-icons/ci";
+import { CiBoxList, CiDesktop, CiSettings, CiUser } from "react-icons/ci";
 
 export default function NavLinks() {
     const [activeTab, setActiveTab] = useState(1);
@@ -20,6 +20,9 @@ export default function NavLinks() {
                 break
             case "/dashboard/activities" :
                 setActiveTab(3);
+                break
+            case "/dashboard/profile" :
+                setActiveTab(4);
                 break
             default:
                 setActiveTab(1);
@@ -61,6 +64,17 @@ export default function NavLinks() {
                     "text-2xl"
                 )}>
                     <CiBoxList />
+                </span>
+            </Link>
+
+            <Link onClick={()=>setActiveTab(4)} href={"/dashboard/activities"} className={clsx(
+                "flex items-center gap-3 p-4 text-sm active:scale-95 cursor-pointer  relative after:absolute after:content-['My Profile'] after:whitespace-nowrap after:top-1/2 after:-translate-y-1/2 after:-right-[4rem] hover:after:-right-[5.5rem] after:opacity-0 hover:after:opacity-100 after:duration-300 after:delay-150 after:text-base after:w-auto after:px-2 after:rounded after:bg-theme-main after:text-black after:font-semibold",
+                activeTab === 4 ? "border border-theme-text/25 text-theme-text" : "opacity-45 hover:opacity-80"
+            )}>
+                <span className={clsx(
+                    "text-2xl"
+                )}>
+                    <CiUser />
                 </span>
             </Link>
         </div>
