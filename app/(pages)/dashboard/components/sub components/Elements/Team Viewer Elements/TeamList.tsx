@@ -13,11 +13,13 @@ import { FaPlus } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
 import { openModal } from "@/Redux Store/Slices/Popup Slice";
+import { echoUserData } from "@/Redux Store/Slices/user data";
 
 export default function TeamList() {
-    const { viewType, sortedList, displayList } = useContext(teamContext)!;
+    const { viewType, sortedList, displayList, companyTeamList } = useContext(teamContext)!;
     const loading = useSelector(echoTeamFromActiveProfileLoadingState);
     const error = useSelector(echoTeamFromActiveProfileErrorState);
+    const user = useSelector(echoUserData);
     const dispatch = useDispatch<AppDispatch>();
 
     const gridViewMode = useMemo(() => {
@@ -46,21 +48,24 @@ export default function TeamList() {
                 isTrue={loading === loadingState.SUCCESS && sortedList.length > 0}
             >
                 <ShowElement.when 
-                    isTrue={sortedList.length === displayList.length}
+                    isTrue={sortedList.length === displayList.length && companyTeamList.find((teamMember)=> teamMember.user_id === user.userData.userId)?.type === "editor"}
                 >
                     <div className={clsx(
                         'opacity-60 hover:opacity-100 rounded-md h-[10rem] peer-active:opacity-40 peer-active:scale-90 relative overflow-hidden grid place-items-center')}
                         title="Add new Member"
                         onClick={addTeamMember}
                     >
-                        <div className='h-[4rem] w-[4rem] rounded-full overflow-hidden grid place-items-center border text-lg hover:scale-105 active:scale-90 bg-theme-main text-theme-white-dark'>
+                        <div className='h-[4rem] w-[4rem] rounded-full overflow-hidden grid place-items-center border text-lg hover:scale-105 active:scale-90 bg-theme-main text-theme-white-dark cursor-pointer'>
                             <FaPlus />
                         </div>
                     </div>
                 </ShowElement.when>
 
                 {sortedList.map((member) => (
-                    <TeamMember key={member.userId} data={member} />
+                    <TeamMember 
+                        key={member.userId} 
+                        data={member} 
+                    />
                 ))}
             </ShowElement.when>
 

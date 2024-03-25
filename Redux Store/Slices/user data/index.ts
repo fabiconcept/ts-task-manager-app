@@ -4,7 +4,7 @@ import { loadingState } from "@/lib/Enums";
 import { UserAccountDetails } from "@/lib/Interfaces";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-type ResponseTpe = {
+type ResponseType = {
     userStatus: "banned" | "good" | "suspended" | "unset",
     userData: UserAccountDetails,
 }
@@ -12,7 +12,7 @@ type ResponseTpe = {
 type InitialState = {
     loading: loadingState,
     error: string,
-    response: ResponseTpe
+    response: ResponseType
 }
 
 const initialState: InitialState = {
@@ -76,5 +76,7 @@ export const UserDataStateSlice = userDataState.reducer;
 
 
 
-export const echoUserData = (state: RootState) => state.userData;  
+export const echoUserData = (state: RootState) => state.userData.response;  
+export const echoUserDataLoadingState = (state: RootState) => state.userData.loading;  
+export const echoUserDataErrorState = (state: RootState) => state.userData.error;  
 export const {  } = (state: RootState) => state.userData;  

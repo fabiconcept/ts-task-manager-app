@@ -1,8 +1,16 @@
-import React from 'react';
-import ContainerProps from '@/lib/Types';
+import React from 'react'; 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
+
+type ContainerProps = {
+    id: string,
+    children: React.ReactNode,
+    title: string,
+    description: string,
+    itemsCount: number,
+    onAddItem: ()=>{}
+}
 
 const Container = ({
     id,

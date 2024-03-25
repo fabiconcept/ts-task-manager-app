@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import ProviderWrapper from './components/ProviderWrapper';
 import NextTopLoader from 'nextjs-toploader';
 
-const quicksand = Quicksand({ subsets: ['latin'] });
+const fontName = Quicksand({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={quicksand.className}>
+            <body className={fontName.className}>
                 <Toaster
                     position='top-center'
                 />

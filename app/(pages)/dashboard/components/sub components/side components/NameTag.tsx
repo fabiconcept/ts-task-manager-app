@@ -16,7 +16,7 @@ import { sortByMatchingId } from "@/lib/utilities";
 export default function NameTag() {
     const dispatch = useDispatch<AppDispatch>();
     const [expandDiv, setExpandDiv] = useState(false);
-    const { response } = useSelector(echoUserData);
+    const response = useSelector(echoUserData);
     const isLoading = useSelector(echoTaskerProfilesLoading);
     const errorMsg = useSelector(echoTaskerProfilesError);
     const activeId = useSelector(echoTaskerProfilesActiveId);

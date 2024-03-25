@@ -1,6 +1,6 @@
 "use client"
 
-import { echoUserData } from "@/Redux Store/Slices/user data";
+import { echoUserDataLoadingState, echoUserDataErrorState } from "@/Redux Store/Slices/user data";
 import { loadingState } from "@/lib/Enums";
 import useAuthenticate from "@/lib/Hooks/useAuthenticate";
 import clsx from "clsx";
@@ -14,7 +14,8 @@ const socket = io("http://localhost:2222", {
 });
 
 export default function SessionPolice() {
-    const { error, loading } = useSelector(echoUserData);
+    const loading = useSelector(echoUserDataLoadingState);
+    const error = useSelector(echoUserDataErrorState);
     useAuthenticate();
     
     useEffect(() => {

@@ -13,7 +13,7 @@ import { updateTaskerTeam } from "@/Redux Store/Slices/profiles/team";
 
 export default function CompanyIntro() {
     const activeId = useSelector(echoTaskerProfilesActiveId);
-    const { response } = useSelector(echoUserData);
+    const response = useSelector(echoUserData);
     const { tags, profiles } = useSelector(echoTaskerProfilesResponse);
     const dispatch = useDispatch();
 

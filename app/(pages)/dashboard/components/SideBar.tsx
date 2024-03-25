@@ -2,7 +2,7 @@
 
 import { FaAngleRight } from "react-icons/fa6";
 import NameTag from "./sub components/side components/NameTag";
-import { echoUserData } from "@/Redux Store/Slices/user data";
+import { echoUserDataLoadingState } from "@/Redux Store/Slices/user data";
 import { useSelector } from "react-redux";
 import { loadingState } from "@/lib/Enums";
 import { useState } from "react";
@@ -11,7 +11,7 @@ import ProjectList from "./sub components/side components/ProjectList";
 import { echoTaskerProfilesError, echoTaskerProfilesLoading } from "@/Redux Store/Slices/profiles";
 
 export default function SideBar() {
-    const { loading } = useSelector(echoUserData);
+    const loading = useSelector(echoUserDataLoadingState);
     const isTaskerProfilesLoading = useSelector(echoTaskerProfilesLoading);
     const taskerProfilesErrorMsg = useSelector(echoTaskerProfilesError);
     const [collapseSide, setCollapseSide] = useState(false);

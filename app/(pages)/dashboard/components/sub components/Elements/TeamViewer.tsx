@@ -7,6 +7,7 @@ import { SortBy, ViewType } from "@/lib/Enums";
 import { useSelector } from "react-redux";
 import { echoDisplayList, echoTeamFromActiveProfile } from "@/Redux Store/Slices/profiles/team";
 import { performSortingForTeamList } from "@/lib/functions";
+import { TeamMember } from "@/lib/Types";
 
 interface TeamContext {
     sortedList: UserAccountDetails[],
@@ -17,6 +18,7 @@ interface TeamContext {
     sortBy: SortBy,
     setSortBy: React.Dispatch<React.SetStateAction<SortBy>>,
     teamList: UserAccountDetails[],
+    companyTeamList: TeamMember[],
 }
 
 export const teamContext = React.createContext<TeamContext | undefined>(undefined);
@@ -42,7 +44,7 @@ export default function TeamViewer() {
     }, [sortBy, searchResultList, companyTeamList]);
 
     return (
-        <teamContext.Provider value={{ teamList, sortedList, setSearchResultList, viewType, setViewType, sortBy, setSortBy, displayList }}>
+        <teamContext.Provider value={{ teamList, sortedList, setSearchResultList, viewType, setViewType, sortBy, setSortBy, displayList, companyTeamList }}>
             <Filter />
             <TeamList />
         </teamContext.Provider>
