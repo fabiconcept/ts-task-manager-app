@@ -2,11 +2,12 @@
 import { closeModal, echoPopUpId, echoPopUpIsOpen, echoPopUpType } from "@/Redux Store/Slices/Popup Slice";
 import ShowElement from "@/lib/utilities/Show";
 import clsx from "clsx";
-import { FaX } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { PopupType } from "@/lib/Enums";
+import NewProjectForm from "./forms/NewProjectForm";
 
 
 export default function PopUpDiv() {
@@ -40,15 +41,9 @@ export default function PopUpDiv() {
                         "absolute z-20 sm:top-0 sm:bottom-auto sm:right-0 sm:h-full top-auto bottom-0 right-1/2 -translate-x-1/2 h-[90vh] rounded-tl-xl rounded-bl-xl p-6 sm:w-[25rem] w-full border-l-2 dark:border-l-white border-l-black dark:bg-theme-white-dark bg-theme-white shadow-xl sm:translate-x-[100%] translate-y-[100%]",
                         modalState ? "sm:animate-openModal animate-md-openModal": "sm:animate-closeModal animate-md-closeModal"
                     )}>
-                        <p>
-                            popUpType:  <span className={clsx("font-semibold", modalState ? "text-theme-main": "text-theme-text")}>{popUpType}</span>
-                        </p>
-                        <p>
-                            modalState: <span className={clsx("font-semibold", modalState ? "text-theme-main animate-pulse": "text-theme-text")}>{`${modalState}`}</span>
-                        </p>
-                        <p>
-                            Animation Class:  <span className={clsx("font-semibold", modalState ? "text-theme-main": "text-theme-text")}>{`${modalState ? "openModal": "closeModal"}`}</span>
-                        </p>
+                        <ShowElement.when isTrue={popUpType === PopupType.NewProject}>
+                            <NewProjectForm />
+                        </ShowElement.when>
                     </div>
                 </section>
             </ShowElement.when>

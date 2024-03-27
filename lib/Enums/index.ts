@@ -48,5 +48,6 @@ export enum SortBy {
 export enum PopupType {
     AddTeam = "addTeam",
     AreYouSure = "areYouSure",
-    EditProfile= "editProfile",
+    EditProfile = "editProfile",
+    NewProject = "newProject",
 }

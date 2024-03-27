@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 import TeamViewer from "./Elements/TeamViewer";
 import { useDispatch } from "react-redux";
 import { updateTaskerTeam } from "@/Redux Store/Slices/profiles/team";
+import { PopupType } from "@/lib/Enums";
+import { openModal } from "@/Redux Store/Slices/Popup Slice";
 
 export default function CompanyIntro() {
     const activeId = useSelector(echoTaskerProfilesActiveId);
@@ -38,6 +40,16 @@ export default function CompanyIntro() {
 
         return response.userData.userId === company[0].owner;
     }, [response, company]);
+
+    const openEditModal = () => {
+        const popUpType: PopupType = PopupType.EditProfile;
+        dispatch(openModal({popUpType}));
+    }
+    
+    const openAreYouSureModal = () => {
+        const popUpType: PopupType = PopupType.AreYouSure;
+        dispatch(openModal({popUpType}));
+    }
 
     return (
         company ?
@@ -79,10 +91,10 @@ export default function CompanyIntro() {
                                 </div>
                             </div>
 
-                            {!isOwner && <div title={`Exit ${company[0].name}`} className="flex items-center gap-2 px-4 p-2 opacity-60 hover:opacity-100 hover:scale-110 active:scale-90 active:opacity-50 cursor-pointer rounded-3xl border border-transparent hover:border-red-500">
+                            {!isOwner && <div onClick={openAreYouSureModal} title={`Exit ${company[0].name}`} className="flex items-center gap-2 px-4 p-2 opacity-60 hover:opacity-100 hover:scale-110 active:scale-90 active:opacity-50 cursor-pointer rounded-3xl border border-transparent hover:border-red-500">
                                 <FaXmark /> leave
                             </div>}
-                            {isOwner && <div title={`Edit your Company profile`} className="flex items-center gap-2 px-4 p-2 opacity-60 hover:opacity-100 hover:scale-110 active:scale-90 active:opacity-50 cursor-pointer rounded-3xl border border-transparent hover:border-theme-main">
+                            {isOwner && <div onClick={openEditModal} title={`Edit your Company profile`} className="flex items-center gap-2 px-4 p-2 opacity-60 hover:opacity-100 hover:scale-110 active:scale-90 active:opacity-50 cursor-pointer rounded-3xl border border-transparent hover:border-theme-main">
                                 <FaPen /> edit
                             </div>}
                         </div>

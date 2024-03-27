@@ -10,6 +10,7 @@ import { fetchProjects } from "@/Redux Store/Thunk";
 import { echoProjectListError, echoProjectListLoading, echoProjectListResponse } from "@/Redux Store/Slices/profiles/projects";
 import { loadingState } from "@/lib/Enums";
 import { TaskerProject } from "@/lib/Interfaces";
+import ShowElement from "@/lib/utilities/Show";
 
 export default function ProjectList() {
     const dispatch = useDispatch<AppDispatch>();
@@ -47,21 +48,28 @@ export default function ProjectList() {
             />}
             <div className="flex-1 h-full overflow-y-auto flex flex-col gap-1 relative">
                 <p className="text-sm opacity-50 sticky top-0 mb-2">Projects</p>
-                {projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0 && projectListDisplay.map((project)=> (
-                    <Project
-                        key={project.project_id}
-                        data={project}
-                    />
-                ))}
-                {projectsLoading === loadingState.SUCCESS && projectListDisplay.length === 0 && <span className="text-center opacity-60">
-                    No project yet.
-                </span>}
-                {projectsLoading === loadingState.PENDING && <span className="text-center animate-pulse">
-                    loading...
-                </span>}
-                {projectsLoading === loadingState.FAILED && <span className="text-center text-red-500">
-                    {projectsError}
-                </span>}
+                <ShowElement.when isTrue={projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0}>
+                    {projectListDisplay.map((project) => (
+                        <Project
+                            key={project.project_id}
+                            data={project}
+                        />
+                    ))}
+                </ShowElement.when>
+
+                <ShowElement.when isTrue={projectsLoading === loadingState.SUCCESS && projectListDisplay.length === 0}>
+                    <span className="text-center opacity-60">You have no projects yet.</span>
+                </ShowElement.when>
+                <ShowElement.when isTrue={projectsLoading === loadingState.PENDING}>
+                    <span className="text-center animate-pulse">
+                        loading projects...
+                    </span>
+                </ShowElement.when>
+                <ShowElement.when isTrue={projectsLoading === loadingState.FAILED}>    
+                    <span className="text-center text-red-500">
+                        {projectsError}
+                    </span>
+                </ShowElement.when>
             </div>
         </>
     );
