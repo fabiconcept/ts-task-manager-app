@@ -4,7 +4,7 @@ import SearchFeature from "../../side components/SearchFeature";
 import { FaArrowDownWideShort, FaArrowUpAZ, FaArrowUpZA, FaSort } from "react-icons/fa6";
 import { SortBy, ViewType } from "@/lib/Enums";
 import clsx from "clsx";
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useEffect, useMemo } from "react";
 import { teamContext } from "../TeamViewer";
 import { performSearch, toggleSortBy } from "@/lib/functions";
 
@@ -34,10 +34,10 @@ export default function Filter() {
         setViewType(ViewType.LIST);
     } 
 
-    const handleSearchFeature = (searchParam: string) : void => { 
+    const handleSearchFeature = useCallback((searchParam: string) : void => { 
         const searchResults = performSearch(searchParam, teamList);
         setSearchResultList(searchResults);
-    }
+    }, [teamList, setSearchResultList]);
 
     const handleToggleSortBy = () => {
         const currentSortByType = sortByOptions.findIndex((option) => option === sortBy)!;

@@ -79,6 +79,7 @@ export default function TeamList() {
                         alt=""
                         height={500}
                         width={500}
+                        priority
                         className="xl:w-[20rem] sm:w-[15rem] w-[10rem]"
                     />
 

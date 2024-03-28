@@ -20,6 +20,12 @@ export enum loadingState {
     FAILED = "failed"
 }
 
+export enum ErrorState {
+    IDLE =  "idle",
+    GOOD = "good",
+    BAD = "bad"
+}
+
 export enum Priority {
     NONE = "none",
     LOW = "low",
