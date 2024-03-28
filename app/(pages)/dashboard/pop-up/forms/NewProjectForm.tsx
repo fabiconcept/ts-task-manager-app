@@ -84,7 +84,7 @@ export default function NewProjectForm() {
             priority: priorityLevel,
         }
 
-        
+        console.log(formData);
     }
     const priorityArray: Priority[] = [Priority.NONE, Priority.LOW, Priority.MEDIUM, Priority.HIGH];
 
@@ -157,16 +157,9 @@ export default function NewProjectForm() {
 const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({ options, retrieveData }) => {
 
     const handleRadioChange = (e:ChangeEvent<HTMLInputElement>) => {
-        function getPriority(value: any): Priority | null {
-            if (isPriority(value)) {
-                return value;
-            } else {
-                return null;
-            }
-        }
+        const value = e.target.value as Priority;
 
-        const value = getPriority(e.target.value);
-        if(value) {
+        if(isPriority(value)) {
             retrieveData(value);
         }else{
             retrieveData(Priority.NONE);
@@ -187,6 +180,7 @@ const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({ options, retrieveDa
                                         id={`vertical-list-${option}`} 
                                         type="radio" 
                                         onChange={handleRadioChange}
+                                        value={option}
                                         className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-theme-main text-theme-main transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-theme-main before:opacity-0 before:transition-opacity checked:border-theme-main checked:before:bg-theme-main hover:before:opacity-0 peer" 
                                     />
                                     <span className="absolute text-theme-main transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 mr-4">
