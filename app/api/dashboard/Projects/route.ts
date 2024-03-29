@@ -82,8 +82,13 @@ export const POST = async (req: Request, res: Response) => {
 
         const db = client.db('taskity');
         const collection = db.collection(collectionName);
+        const taskerProfilesCollection = db.collection('TaskerProfiles');
 
         await collection.insertOne(payload);
+        await taskerProfilesCollection.updateOne(
+            {profile_id: payload.from_id},
+            {$inc: {projectsCount: 1}}
+        );
 
         apiResponse = {
             status: 200,
