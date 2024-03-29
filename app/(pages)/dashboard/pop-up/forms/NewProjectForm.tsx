@@ -80,7 +80,7 @@ export default function NewProjectForm() {
         setLoading(true);
 
 
-        function areAllStatusGood(): void {
+        function areAllStatusGood(): [boolean, string] {
             let shouldUpdateState = false;
             let errorText = "";
             const updatedErrorObj = { ...errorObj }; 
@@ -91,17 +91,19 @@ export default function NewProjectForm() {
                     updatedErrorObj[key].error = `Invalid ${key} content!`;
                     errorText = `Invalid ${key} content!`;
                     shouldUpdateState = true; // Set the flag to true if any error is encountered
-                    return;
+                    break;
                 }
             }
 
             if (shouldUpdateState) {
                 setErrorObj(updatedErrorObj); // Update the state only if needed
-                throw new Error(errorText);
             }
+            return [shouldUpdateState, errorText];
         }
 
-        areAllStatusGood();
+        const [status, errorText] = areAllStatusGood();
+
+        if (status) throw new Error(errorText);
 
         const today = new Date();
         const year = today.getFullYear();
@@ -173,7 +175,7 @@ export default function NewProjectForm() {
                             "text-sm",
                             errorObj.title.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaHeading /></span>
-                        <span>Project title</span>
+                        <span>Project title<span className={"text-red-600"}>{errorObj.title.status === ErrorState.BAD ? `: ${errorObj.title.error}` : ""}</span> </span>
                     </span>
                     <input
                         type="text"
@@ -191,7 +193,7 @@ export default function NewProjectForm() {
                             "text-sm",
                             errorObj.description.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaFileLines /></span>
-                        <span>Project description</span>
+                        <span>Project description<span className={"text-red-600"}>{errorObj.description.status === ErrorState.BAD ? `: ${errorObj.description.error}` : ""}</span> </span>
                     </span>
 
                     <textarea
@@ -213,7 +215,7 @@ export default function NewProjectForm() {
                             "text-sm",
                             errorObj.priorityLevel.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaTriangleExclamation /></span>
-                        <span>Priority Level</span>
+                        <span>Priority Level<span className={"text-red-600"}>{errorObj.priorityLevel.status === ErrorState.BAD ? `: ${errorObj.priorityLevel.error}` : ""}</span> </span>
                     </span>
                     <RadioButtonGroup retrieveData={setPriorityLevel} options={priorityArray} />
                 </div>
