@@ -13,6 +13,9 @@ import { popContext } from "../PopUpDiv";
 import Image from "next/image";
 import ShowElement from "@/lib/utilities/Show";
 import toast from "react-hot-toast";
+import { AppDispatch } from "@/Redux Store";
+import { useDispatch } from "react-redux";
+import { fetchProjects } from "@/Redux Store/Thunk";
 
 interface RadioButtonGroupProps {
     options: Priority[];
@@ -35,6 +38,8 @@ function isPriority(value: any): value is Priority {
 
 export default function NewProjectForm() {
     const { setCanClose, handleCloseModal } = useContext(popContext)!;
+    const dispatch = useDispatch<AppDispatch>();
+
     const [titleText, setTitleText] = useState<string>("");
     const [descriptionText, setDescriptionText] = useState<string>("");
     const [priorityLevel, setPriorityLevel] = useState<Priority>(Priority.NONE);
@@ -133,6 +138,7 @@ export default function NewProjectForm() {
             await createProject(formData);
             setLoading(false);
             handleCloseModal();
+            dispatch(fetchProjects(activeId));
         }catch(error){
             setLoading(false);
             throw new Error(`${error}`);
