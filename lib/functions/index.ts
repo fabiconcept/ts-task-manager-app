@@ -68,11 +68,11 @@ export async function getProfiles(taskerProfileIds: string[]): Promise<{ respons
 
 export async function getProjects(taskerProfileId: string): Promise<{ response: boolean, resultProjects: TaskerProject[], message: string }> {
     const sendRequest = await fetch("/api/dashboard/taskerProfiles/projects", {
-        method: "post",
+        method: "get",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Authorization': taskerProfileId
         },
-        body: JSON.stringify({owner_id: taskerProfileId}),
     });
 
     const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProject[]> = await sendRequest.json();
@@ -157,3 +157,35 @@ export const performSortingForTeamList = (sortBy: SortBy, arrayToSort: UserAccou
     }
 };
   
+
+// Projects activity
+// @GET
+export async function getProject(taskerProjectId: string)/*: Promise<{ response: boolean, result: TaskerProject, message: string }>*/ {
+    const sendRequest = await fetch("api/dashboard/Projects", {
+        method: "get",
+        headers: {
+            "Content-Type": "application/json",
+            "project_key": taskerProjectId,
+        }
+    });
+
+    const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
+
+    const { status, message } = data;
+    console.log({ status, message });
+}
+// @POST
+export async function createProject(payload: TaskerProject)/*: Promise<{ response: boolean, result: TaskerProject, message: string }>*/ {
+    const sendRequest = await fetch("api/dashboard/Projects", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({payload}),
+    });
+
+    const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
+
+    const { status, message } = data;
+    console.log({ status, message });
+}

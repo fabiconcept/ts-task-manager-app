@@ -1,17 +1,19 @@
 import connectDatabase from "@/lib/Database";
 import { AuthResponseType } from "@/lib/Enums";
 import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "@/lib/Types";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 let apiResponse: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<any>
 
-export const POST = async (req: Request, res: Response) => {
-    const { owner_id }: {  owner_id: string } = await req.json();
+export const GET = async (req: Request) => {
+    const headerList = headers();
+    const owner_id = headerList.get("Authorization");
 
     if (!owner_id || owner_id === "") {
         apiResponse = {
             status: 400, 
-            message: "Invalid request - Please provide a Project project_id",
+            message: "Invalid request - Owner not found!",
             type: AuthResponseType.InvalidError
         }
 

@@ -5,23 +5,31 @@ import clsx from "clsx";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
-import { useState } from "react";
+import { useState, createContext, Dispatch, SetStateAction } from "react";
 import { PopupType } from "@/lib/Enums";
 import NewProjectForm from "./forms/NewProjectForm";
 
+interface PopContext  {
+    setCanClose: Dispatch<SetStateAction<boolean>>,
+    handleCloseModal: () => void,
+}
+
+export const popContext = createContext<PopContext | undefined>(undefined);
 
 export default function PopUpDiv() {
     const isOpen = useSelector(echoPopUpIsOpen);
     const popUpType = useSelector(echoPopUpType);
     const popUpId = useSelector(echoPopUpId);
+    const [canClose, setCanClose] = useState<boolean>(true);
     const [modalState, setModalState] = useState(true);
 
     const dispatch = useDispatch<AppDispatch>();
 
 
     const handleCloseModal = () => {
+        if (!canClose) return;
+        
         setModalState(false);
-
         setTimeout(() => {
             dispatch(closeModal());
             setModalState(true);
@@ -29,7 +37,7 @@ export default function PopUpDiv() {
     }
 
     return (
-        <>
+        <popContext.Provider value={{setCanClose, handleCloseModal}}>
             <ShowElement.when isTrue={isOpen}>
                 <section key={popUpId} className={clsx(
                     'fixed top-0 left-0 z-[50] h-screen w-screen grid place-items-center dark:bg-black/50 bg-white/50 backdrop-blur-sm',
@@ -47,6 +55,6 @@ export default function PopUpDiv() {
                     </div>
                 </section>
             </ShowElement.when>
-        </>
+        </popContext.Provider>
     );
 }

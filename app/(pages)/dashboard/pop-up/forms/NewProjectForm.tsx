@@ -1,11 +1,18 @@
 "use client"
-import { ErrorState, Priority } from "@/lib/Enums";
+import { ErrorState, Priority, TaskerStatus } from "@/lib/Enums";
+import { createProject } from "@/lib/functions";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
 import { TaskerProject } from "@/lib/Interfaces";
-import { realEscapeString } from "@/lib/utilities";
+import { generateUniqueId, realEscapeString } from "@/lib/utilities";
+import { echoTaskerProfilesActiveId } from "@/Redux Store/Slices/profiles";
 import clsx from "clsx";
-import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { FaFileLines, FaHeading, FaPlus, FaTriangleExclamation } from "react-icons/fa6";
+import { useSelector } from "react-redux";
+import { popContext } from "../PopUpDiv";
+import Image from "next/image";
+import ShowElement from "@/lib/utilities/Show";
+import toast from "react-hot-toast";
 
 interface RadioButtonGroupProps {
     options: Priority[];
@@ -25,14 +32,18 @@ function isPriority(value: any): value is Priority {
     return Object.values(Priority).includes(value);
 }
 
-interface NewProject extends Pick<TaskerProject, "title" | "description" | "priority"> { };
-
 
 export default function NewProjectForm() {
+    const { setCanClose, handleCloseModal } = useContext(popContext)!;
     const [titleText, setTitleText] = useState<string>("");
     const [descriptionText, setDescriptionText] = useState<string>("");
     const [priorityLevel, setPriorityLevel] = useState<Priority>(Priority.NONE);
-    
+    const activeId = useSelector(echoTaskerProfilesActiveId);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const titleRef = useRef<HTMLInputElement>(null);
+    const descriptionRef = useRef<HTMLTextAreaElement>(null);
+
     const [errorObj, setErrorObj] =  useState<ErrorObj>({
         title: { status: ErrorState.IDLE, error: "" },
         description: { status: ErrorState.IDLE, error: "" },
@@ -61,35 +72,99 @@ export default function NewProjectForm() {
         setErrorObj((error)=>({...error, description: {status: ErrorState.GOOD, error: ""}}));
     }, [descriptionDebounce]);
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async(e: FormEvent) => {
         e.preventDefault();
 
-        function areAllStatusGood(): boolean {
-            for (const key in errorObj) {
-                console.log(key);
-                if (errorObj[key].status !== ErrorState.GOOD) {
-                    return false;
+        if (loading) return;
+
+        setLoading(true);
+
+
+        function areAllStatusGood(): void {
+            let shouldUpdateState = false;
+            let errorText = "";
+            const updatedErrorObj = { ...errorObj }; 
+
+            for (const key in updatedErrorObj) {
+                if (updatedErrorObj[key].status !== ErrorState.GOOD && key !== "priorityLevel") {
+                    updatedErrorObj[key].status = ErrorState.BAD;
+                    updatedErrorObj[key].error = `Invalid ${key} content!`;
+                    errorText = `Invalid ${key} content!`;
+                    shouldUpdateState = true; // Set the flag to true if any error is encountered
+                    return;
                 }
             }
-            return true;
+
+            if (shouldUpdateState) {
+                setErrorObj(updatedErrorObj); // Update the state only if needed
+                throw new Error(errorText);
+            }
         }
 
-        if (!areAllStatusGood) {
+        areAllStatusGood();
 
-        }
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1
+        const day = String(today.getDate()).padStart(2, '0');
 
-        const formData: NewProject = {
+        const todayString = `${year}-${month}-${day}`;
+
+
+        const formData: TaskerProject = {
+            project_id: generateUniqueId(),
+            from_id: activeId,
             title: realEscapeString(titleDebounce),
             description: realEscapeString(descriptionDebounce),
             priority: priorityLevel,
+            membersCount: 0,
+            membersList: [],
+            status: TaskerStatus.UPCOMING,
+            tasksCount: 0,
+            tasksList: [],
+            created_on: todayString,
+            updated_on: todayString
         }
 
-        console.log(formData);
+        
+        try{
+            await createProject(formData);
+            setLoading(false);
+            handleCloseModal();
+        }catch(error){
+            setLoading(false);
+            throw new Error(`${error}`);
+        }
     }
+
+    const watchSubmit = (e: FormEvent) => {
+        const promise = handleSubmit(e);
+        toast.promise(promise, {
+            loading: "Creating project",
+            error: "Failed to create this project!❌❌",
+            success: "Project created successfully! ✨💥🚀"
+        })
+    }
+
+    useEffect(() => {
+        if (errorObj.title.status === ErrorState.BAD && titleRef.current){
+            titleRef.current.focus();
+            return;
+        }
+        if (errorObj.description.status  === ErrorState.BAD && descriptionRef.current){
+            descriptionRef.current.focus();
+            return;
+        }
+    }, [errorObj.title.status, errorObj.description.status]);
+
+    useEffect(() => {
+        setCanClose(!loading);
+    }, [loading, setCanClose]);
+
     const priorityArray: Priority[] = [Priority.NONE, Priority.LOW, Priority.MEDIUM, Priority.HIGH];
 
     return (
-        <form onSubmit={handleSubmit} className={clsx("flex flex-col gap-6")}>
+        <form onSubmit={watchSubmit} className={clsx("flex flex-col gap-6 h-full")}>
             <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10"> <span className="opacity-50 text-theme-main"><FaPlus /></span> New project</div>
             <div className={"flex flex-1 overflow-y-auto flex-col gap-6 pb-6"}>
                 <div className={clsx("flex flex-col gap-3")}>
@@ -106,6 +181,7 @@ export default function NewProjectForm() {
                         onChange={(e:ChangeEvent<HTMLInputElement>)=>setTitleText(e.target.value)}
                         required
                         value={titleText}
+                        ref={titleRef}
                         className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main")}
                     />
                 </div>
@@ -125,6 +201,7 @@ export default function NewProjectForm() {
                         placeholder="Enter a short description of the project..."
                         rows={5}
                         value={descriptionText}
+                        ref={descriptionRef}
                         onChange={(e:ChangeEvent<HTMLTextAreaElement>)=>setDescriptionText(e.target.value)}
                         style={{ resize: "none" }}
                         className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main resize-none")}
@@ -144,9 +221,27 @@ export default function NewProjectForm() {
 
             <button
                 type="submit"
-                className={clsx("hover:bg-theme-main hover:border-transparent outline-none w-full py-2 px-3 rounded-lg border border-theme-main text-theme-main hover:text-theme-white-dark active:scale-90")}
+                className={clsx(
+                    "outline-none w-full py-2 px-3 rounded-lg",
+                    loading ? "cursor-wait border border-theme-main grid place-items-center" : "hover:bg-theme-main hover:border-transparent border border-theme-main text-theme-main hover:text-theme-white-dark active:scale-90"
+                )}
             >
-                Publish
+                <ShowElement.when isTrue={!loading}>
+                    <span>
+                        Publish
+                    </span>
+                </ShowElement.when>
+                <ShowElement.when isTrue={loading}>
+                    <span>
+                        <Image
+                            src={"https://taskify.sirv.com/three-dots.svg"}
+                            alt="loading"
+                            height={80}
+                            width={80}
+                            className="object-contain w-6 h-auto py-2 dark:invert-0 invert"
+                        />
+                    </span>
+                </ShowElement.when>
             </button>
         </form>
     )
