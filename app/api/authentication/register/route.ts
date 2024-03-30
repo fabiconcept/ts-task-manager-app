@@ -138,6 +138,7 @@ export const POST = async (request: Request) => {
                 token: `${UserId} ${authentication.key}`
             } 
         }
+        
         return NextResponse.json(response);
     } catch (error) {
         return NextResponse.json({ 

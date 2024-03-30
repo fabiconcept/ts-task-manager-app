@@ -8,6 +8,7 @@ import { AppDispatch } from "@/Redux Store";
 import { useState, createContext, Dispatch, SetStateAction } from "react";
 import { PopupType } from "@/lib/Enums";
 import NewProjectForm from "./forms/NewProjectForm";
+import InviteTeammate from "./forms/InviteTeammate";
 
 interface PopContext  {
     setCanClose: Dispatch<SetStateAction<boolean>>,
@@ -51,6 +52,9 @@ export default function PopUpDiv() {
                     )}>
                         <ShowElement.when isTrue={popUpType === PopupType.NewProject}>
                             <NewProjectForm />
+                        </ShowElement.when>
+                        <ShowElement.when isTrue={popUpType === PopupType.AddTeam}>
+                            <InviteTeammate />
                         </ShowElement.when>
                     </div>
                 </section>
