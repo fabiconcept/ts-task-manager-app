@@ -35,7 +35,7 @@ export interface TaskerProfile {
     avatar: string;
     owner: string;
     team: TeamMember[];
-    teamCount?: number | 0;
+    teamCount: number | 0;
     projectsCount: number,
     updated_on: string;
     created_on: string;

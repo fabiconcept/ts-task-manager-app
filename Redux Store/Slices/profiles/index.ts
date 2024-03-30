@@ -39,7 +39,45 @@ const TaskerProfilesState = createSlice({
         },
         switchProfile: (state, action: PayloadAction<string>) => {
             state.activeId = action.payload;
-        }
+        },
+        updateTeamCount: (state) => {
+            const profilesList = [...state.response.profiles];
+            if (profilesList.length === 0) return;
+
+            let updatedList: TaskerProfile[] = [];
+
+            updatedList = profilesList.map(profile => {
+                if (profile.profile_id === state.activeId) return ({
+                    ...profile,
+                    teamCount: profile.teamCount + 1
+                });
+
+                return profile;
+            });
+
+            state.response.profiles = updatedList;
+        },
+        updateProjectsCount: (state) => {
+            const profilesList = [...state.response.profiles];
+            if (profilesList.length === 0) return;
+
+            let updatedList: TaskerProfile[] = [];
+
+            // Example logic to update team count
+            updatedList = profilesList.map(profile => {
+                if (profile.profile_id === state.activeId) return ({
+                    ...profile,
+                    projectsCount: profile.projectsCount + 1
+                });
+
+                return profile;
+            });
+
+            state.response.profiles = updatedList;
+
+
+            // No need to assign `updatedList` since we are updating the existing profilesList directly
+        },        
     },
     extraReducers: (builder) =>{
         builder.addCase(fetchProfiles.pending, (state)=>{
@@ -72,7 +110,7 @@ const TaskerProfilesState = createSlice({
     }
 });
 
-export const { cleanResponse, switchProfile } = TaskerProfilesState.actions;
+export const { cleanResponse, switchProfile, updateTeamCount, updateProjectsCount } = TaskerProfilesState.actions;
 export const TaskerProfilesStateSlice = TaskerProfilesState.reducer;
 
 export const echoTaskerProfilesLoading = (state: RootState) => state.taskerProfiles.loading; 

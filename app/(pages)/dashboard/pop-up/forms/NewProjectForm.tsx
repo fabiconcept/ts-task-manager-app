@@ -4,7 +4,7 @@ import { createProject } from "@/lib/functions";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
 import { TaskerProject } from "@/lib/Interfaces";
 import { generateUniqueId, realEscapeString } from "@/lib/utilities";
-import { echoTaskerProfilesActiveId } from "@/Redux Store/Slices/profiles";
+import { echoTaskerProfilesActiveId, updateProjectsCount } from "@/Redux Store/Slices/profiles";
 import clsx from "clsx";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { FaFileLines, FaHeading, FaPlus, FaTriangleExclamation } from "react-icons/fa6";
@@ -139,6 +139,7 @@ export default function NewProjectForm() {
             setLoading(false);
             handleCloseModal();
             dispatch(fetchProjects(activeId));
+            dispatch(updateProjectsCount());
         }catch(error){
             setLoading(false);
             throw new Error(`${error}`);
