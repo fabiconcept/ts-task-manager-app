@@ -49,6 +49,11 @@ export default function NewProjectForm() {
     const titleRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
+    useEffect(()=>{
+        if (!titleRef.current) return;
+        titleRef.current.focus();
+    },[titleRef]);
+
     const [errorObj, setErrorObj] =  useState<ErrorObj>({
         title: { status: ErrorState.IDLE, error: "" },
         description: { status: ErrorState.IDLE, error: "" },
@@ -232,7 +237,7 @@ export default function NewProjectForm() {
                 type="submit"
                 className={clsx(
                     "outline-none w-full py-2 px-3 rounded-lg",
-                    loading ? "cursor-wait border border-theme-main grid place-items-center" : "hover:bg-theme-main hover:border-transparent border border-theme-main text-theme-main hover:text-theme-white-dark active:scale-90"
+                    loading ? "cursor-wait border border-theme-main grid place-items-center" : "hover:bg-theme-main focus:bg-theme-main hover:border-transparent border border-theme-main text-theme-main hover:text-theme-white-dark focus:text-theme-white-dark active:scale-90"
                 )}
             >
                 <ShowElement.when isTrue={!loading}>
