@@ -1,4 +1,6 @@
+import { BrevoEmailClient } from "@/lib/Classes";
 import connectDatabase from "@/lib/Database";
+import { createAccountEmail } from "@/lib/Email template";
 import { AuthResponseType } from "@/lib/Enums";
 import { TaskerProfile, UserAccount, UserAccountDetails } from "@/lib/Interfaces";
 import { RequestBody, ResponseWithError, ResponseWithoutError } from "@/lib/Types";
@@ -129,6 +131,32 @@ export const POST = async (request: Request) => {
             created_on: (new Date).toDateString(),
         }
         await accountsDetailsCollection.insertOne(accountsDetailsPayload);
+
+        const brevoClient = new BrevoEmailClient();
+
+        const emailData = {
+            receiptName: payload.name,
+            receiptEmail: payload.email,
+            subject: "Welcome to Taskify - Your Task Management Companion 🚀",
+            emailBody: createAccountEmail(payload.name),
+        }
+
+        brevoClient.sendEmail(
+            emailData.receiptName,
+            emailData.receiptEmail,
+            emailData.subject,
+            emailData.emailBody,
+        )
+            .then(response => {
+                if (response.ok) {
+                    console.log('Email sent successfully!');
+                } else {
+                    console.error('Error sending email:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending email:', error);
+            });
         
         response = { 
             status: 200, 

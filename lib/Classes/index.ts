@@ -6,8 +6,6 @@ export class BrevoEmailClient {
     }
 
     async sendEmail(
-        senderName: string,
-        senderEmail: string,
         recipientName: string,
         recipientEmail: string,
         subject: string,
@@ -21,8 +19,8 @@ export class BrevoEmailClient {
 
         const body = JSON.stringify({
             sender: {
-                name: senderName,
-                email: senderEmail,
+                name: "Taskify support",
+                email: "noreply@taskity.com",
             },
             to: [
                 {
