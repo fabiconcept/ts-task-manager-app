@@ -2,10 +2,11 @@
 import clsx from "clsx";
 // import { GiHighFive } from "react-icons/gi";
 import { FaAt, FaUserPlus } from "react-icons/fa6";
-import { useContext, useRef, useEffect, useState } from "react";
+import { useContext, useRef, useEffect, useState, FormEvent } from "react";
 import { popContext } from "../PopUpDiv";
 import ShowElement from "@/lib/utilities/Show";
 import Image from "next/image";
+import { BrevoEmailClient } from "@/lib/Classes";
 
 export default function InviteTeammate() {
     const { setCanClose, handleCloseModal } = useContext(popContext)!;
@@ -17,8 +18,33 @@ export default function InviteTeammate() {
         emailRef.current.focus();
     },[emailRef]);
 
+    const testbrevo = async(e:FormEvent) => {
+        e.preventDefault();
+        const brevoClient = new BrevoEmailClient();
+
+        brevoClient.sendEmail(
+            'fabiconcept',
+            'favourajokubi@gmail.com',
+            'John Doe',
+            'fabianajokubi@gmail.com',
+            'Hello world',
+            '<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Brevo.</p></body></html>'
+        )
+            .then(response => {
+                if (response.ok) {
+                    console.log('Email sent successfully!');
+                } else {
+                    console.error('Error sending email:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending email:', error);
+            });
+
+    }
+
     return (
-        <form className={clsx("flex flex-col gap-6 h-full")}>
+        <form onSubmit={testbrevo} className={clsx("flex flex-col gap-6 h-full")}>
             <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10">
                 <span className="opacity-80 text-xl text-theme-main"><FaUserPlus /></span>
                 Invite Teammate
