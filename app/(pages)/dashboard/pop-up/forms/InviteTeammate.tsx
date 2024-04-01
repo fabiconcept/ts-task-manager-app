@@ -14,14 +14,8 @@ import { ErrorState } from "@/lib/Enums";
 import { validateEmail } from "@/lib/utilities";
 import { inviteTeamMember } from "@/lib/functions";
 import { echoTeamFromActiveProfile } from "@/Redux Store/Slices/profiles/team";
+import { ErrorObj } from "@/lib/Interfaces";
 
-interface ErrorStateObj {
-    status: ErrorState;
-    error: string;
-}
-interface ErrorObj {
-    [key: string]: ErrorStateObj; // Index signature
-}
 export default function InviteTeammate() {
     const { setCanClose, handleCloseModal } = useContext(popContext)!;
     const emailRef = useRef<HTMLInputElement>(null);

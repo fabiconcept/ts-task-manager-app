@@ -2,7 +2,7 @@
 import { ErrorState, Priority, TaskerStatus } from "@/lib/Enums";
 import { createProject } from "@/lib/functions";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
-import { TaskerProject } from "@/lib/Interfaces";
+import { ErrorObj, TaskerProject } from "@/lib/Interfaces";
 import { generateUniqueId, realEscapeString } from "@/lib/utilities";
 import { echoTaskerProfilesActiveId, updateProjectsCount } from "@/Redux Store/Slices/profiles";
 import clsx from "clsx";
@@ -22,14 +22,6 @@ interface RadioButtonGroupProps {
     retrieveData: Dispatch<SetStateAction<Priority>>;
 }
 
-interface ErrorStateObj {
-    status: ErrorState;
-    error: string;
-}
-
-interface ErrorObj {
-    [key: string]: ErrorStateObj; // Index signature
-}
 
 function isPriority(value: any): value is Priority {
     return Object.values(Priority).includes(value);

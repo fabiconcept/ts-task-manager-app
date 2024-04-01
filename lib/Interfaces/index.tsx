@@ -1,9 +1,17 @@
-import { Priority, TaskerStatus } from "../Enums";
+import { ErrorState, Priority, TaskerStatus } from "../Enums";
 import { TeamMember, UserProject } from "../Types";
 import { FunctionProp } from "../Types/dashboard";
 
 export interface UiWithChildren {
     children: React.ReactNode
+}
+
+interface ErrorStateObj {
+    status: ErrorState;
+    error: string;
+}
+export interface ErrorObj {
+    [key: string]: ErrorStateObj; // Index signature
 }
 
 export interface UserAccount {
