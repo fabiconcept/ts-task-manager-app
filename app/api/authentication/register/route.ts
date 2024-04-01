@@ -66,15 +66,19 @@ export const POST = async (request: Request) => {
             name: cleanName,
             avatar: "",
             owner: UserId,
+            ownerEmail: cleanEmail,
             team: [
                 { 
                     user_id: UserId, 
-                    type: "editor", 
+                    type: "owner", 
                     status: "active",
                     joined_on: (new Date()).toDateString(),
+                    email: cleanEmail
                 }
             ],
-            teamCount: 0,
+            invitedTeam: [],
+            invitedTeamCount: 0,
+            teamCount: 1,
             projectsCount: 0,
             updated_on: (new Date()).toDateString(),
             created_on: (new Date()).toDateString(),

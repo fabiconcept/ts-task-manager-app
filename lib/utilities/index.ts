@@ -117,3 +117,37 @@ export function sortByMatchingId(tags: CompanyTag[], targetId: string): CompanyT
 
     return arr;
 }
+
+export function getTomorrowDateFormatted(): string {
+    type DateTimeFormatOptions = {
+        localeMatcher?: 'best fit' | 'lookup';
+        weekday?: 'long' | 'short' | 'narrow';
+        era?: 'long' | 'short' | 'narrow';
+        year?: 'numeric' | '2-digit';
+        month?: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow';
+        day?: 'numeric' | '2-digit';
+        hour?: 'numeric' | '2-digit';
+        minute?: 'numeric' | '2-digit';
+        second?: 'numeric' | '2-digit';
+        timeZoneName?: 'long' | 'short';
+        formatMatcher?: 'best fit' | 'basic';
+        hour12?: boolean;
+        timeZone?: string;
+    };
+    
+    const currentDate = new Date();
+    const tomorrowDate = new Date(currentDate);
+    tomorrowDate.setDate(currentDate.getDate() + 1);
+
+    const options: DateTimeFormatOptions = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    };
+
+    return new Intl.DateTimeFormat('en-GB', options).format(tomorrowDate);
+}

@@ -85,7 +85,6 @@ export default function NewProjectForm() {
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault();
 
-        if (loading) return;
 
         setLoading(true);
 
@@ -152,6 +151,7 @@ export default function NewProjectForm() {
     }
 
     const watchSubmit = (e: FormEvent) => {
+        if (loading) return;
         const promise = handleSubmit(e);
         toast.promise(promise, {
             loading: "Creating project",

@@ -58,7 +58,7 @@ export default function SideBar() {
                     <span className="text-center text-red-500">{taskerProfilesErrorMsg}</span>
                 </ShowElement.when>
                 <ShowElement.when 
-                    isTrue={companyTeamList.find((teamMember)=> teamMember.user_id === user.userData.userId)?.type === "editor"}
+                    isTrue={(companyTeamList.find((teamMember)=> teamMember.user_id === user.userData.userId)?.type === "editor" || companyTeamList.find((teamMember)=> teamMember.user_id === user.userData.userId)?.type === "owner")}
                 >
                     <div className={clsx(
                         'opacity-60 hover:opacity-100 rounded-md peer-active:opacity-40 peer-active:scale-90 relative grid place-items-center px-6')}

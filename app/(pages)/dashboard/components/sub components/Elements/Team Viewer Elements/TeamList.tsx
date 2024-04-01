@@ -48,7 +48,13 @@ export default function TeamList() {
                 isTrue={loading === loadingState.SUCCESS && sortedList.length > 0}
             >
                 <ShowElement.when 
-                    isTrue={sortedList.length === displayList.length && companyTeamList.find((teamMember)=> teamMember.user_id === user.userData.userId)?.type === "editor"}
+                    isTrue={
+                        sortedList.length === displayList.length &&
+                        (
+                          companyTeamList.find((teamMember) => teamMember.user_id === user.userData.userId)?.type === "editor" ||
+                          companyTeamList.find((teamMember) => teamMember.user_id === user.userData.userId)?.type === "owner"
+                        )
+                      }
                 >
                     <div className={clsx(
                         'opacity-60 hover:opacity-100 rounded-md h-[10rem] peer-active:opacity-40 peer-active:scale-90 relative overflow-hidden grid place-items-center')}

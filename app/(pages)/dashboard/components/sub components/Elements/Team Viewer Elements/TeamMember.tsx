@@ -1,4 +1,4 @@
-import { echoOwnerOfActiveProfile, echoTeamFromActiveProfile } from '@/Redux Store/Slices/profiles/team';
+import { echoTeamFromActiveProfile } from '@/Redux Store/Slices/profiles/team';
 import { UserAccountDetails } from '@/lib/Interfaces';
 import clsx from 'clsx';
 import Image from 'next/image';
@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 
 export default function TeamMember({ data }: { data: UserAccountDetails }) {
     const companyTeamList = useSelector(echoTeamFromActiveProfile);
-    const companyOwner = useSelector(echoOwnerOfActiveProfile);
 
     const type = useMemo(() => {
         const user = companyTeamList.find((member) => member.user_id === data.userId );
@@ -28,9 +27,9 @@ export default function TeamMember({ data }: { data: UserAccountDetails }) {
 
         if (!user) return member;
 
-        if (user.user_id === companyOwner) return owner;
-
         switch(user.type) {
+            case "owner":
+                return owner;
             case "editor":
                 return moderator;
             case "worker":
@@ -38,7 +37,7 @@ export default function TeamMember({ data }: { data: UserAccountDetails }) {
             default:
                 return member;
         }
-    }, [companyTeamList, data.userId, companyOwner]);
+    }, [companyTeamList, data.userId]);
 
     return (
         <div className='rounded-md dark:bg-white/5 bg-dark/5 h-[10rem] hover:dark:bg-white/20 hover:bg-dark/10 border-2 dark:border-white/50 hover:border-theme-text border-black/50 relative overflow-hidden'>

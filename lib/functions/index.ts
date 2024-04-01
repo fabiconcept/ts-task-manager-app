@@ -124,7 +124,7 @@ export const performSortingForTeamList = (sortBy: SortBy, arrayToSort: UserAccou
                     const typeB = helperArray.find((member) => member.user_id === b.userId)?.type || 'none';
 
                     // Define the order in which types should appear
-                    const typeOrder = { editor: 0, worker: 1, none: 2 };
+                    const typeOrder = { owner: 0, editor: 1, worker: 2, none: 3 };
 
                     // Use localeCompare for string comparison based on defined order
                     return typeOrder[typeA] - typeOrder[typeB];
@@ -187,5 +187,27 @@ export async function createProject(payload: TaskerProject)/*: Promise<{ respons
     const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
 
     const { status, message } = data;
-    console.log({ status, message });
+    if (status === 400) {
+        throw new Error(message);
+    }
+}
+
+// Team activities
+export async function inviteTeamMember(payload: { email: string, profile_id: string }): Promise<string>{
+    const sendRequest = await fetch("api/dashboard/taskerProfiles/team", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
+    const { status, message } = data;
+
+    if (status === 400) {
+        throw new Error(message);
+    }
+
+    return message;
 }

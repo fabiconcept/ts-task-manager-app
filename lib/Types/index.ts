@@ -52,8 +52,9 @@ export type NextApiResponseServerIO = NextApiResponse & {
 
 export type TeamMember = {
     user_id: string;
-    status: "active" | "suspended" | "blocked";
-    type: "editor" | "worker",
+    email: string;
+    status: "active" | "suspended" | "blocked" | "pending";
+    type: "editor" | "worker" | "owner",
     joined_on: string;
 }
 

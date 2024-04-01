@@ -34,9 +34,12 @@ export interface TaskerProfile {
     name: string;
     avatar: string;
     owner: string;
+    ownerEmail: string;
     team: TeamMember[];
     teamCount: number | 0;
     projectsCount: number,
+    invitedTeam: string[];
+    invitedTeamCount: number;
     updated_on: string;
     created_on: string;
 }
@@ -88,6 +91,13 @@ export interface UserDetails extends Pick<UserAccount, "name" | "email" | "userI
 export interface SearchProp {
     performFunction: FunctionProp;
     placeholder: string
+}
+
+export interface TaskerInvite {
+    code: string;
+    invited_to: string;
+    invited_email: string;
+    exp_date: string;
 }
 
 // web socket set up
