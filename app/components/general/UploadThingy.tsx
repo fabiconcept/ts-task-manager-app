@@ -16,6 +16,7 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
         }
     });
     const [previewUrl, setPreviewUrl] = useState<string>(defaultPicture ? defaultPicture : "");
+    const [hasValidUpload, setHasValidUpload] = useState<boolean>(false);
 
     const handleFileChange = useCallback((e: FileList | null) => {
         if (!e) {
@@ -27,6 +28,7 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
                 }
             }))
             setPreviewUrl(defaultPicture ? defaultPicture : "");
+            setHasValidUpload(false)
             return;
         };
 
@@ -48,6 +50,7 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
                 }
             }))
             setPreviewUrl(defaultPicture ? defaultPicture : "");
+            setHasValidUpload(false)
             return;
         }
 
@@ -62,6 +65,7 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
                 }
             }));
             setPreviewUrl(defaultPicture ? defaultPicture : "");
+            setHasValidUpload(false)
             return;
         }
 
@@ -77,6 +81,7 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
         reader.onload = () => {
             setPreviewUrl(reader.result as string);
         }
+        setHasValidUpload(true)
 
         reader.readAsDataURL(file);
         getUpload(file);
@@ -146,7 +151,9 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
                     onChange={(e: ChangeEvent<HTMLInputElement>) => handleFileChange(e.target.files)}
                     className="absolute h-full w-full top-0 left-0 cursor-pointer opacity-0"
                 />
-                <div className="active:scale-95 absolute left-1/2 -translate-x-1/2 -bottom-4 px-3 py-2 rounded-lg bg-red-500 text-white cursor-pointer">reset</div>
+                <ShowElement.when isTrue={hasValidUpload}>
+                    <div className="active:scale-95 absolute left-1/2 -translate-x-1/2 -bottom-4 px-3 py-2 rounded-lg bg-red-500 text-white cursor-pointer">reset</div>
+                </ShowElement.when>
             </div>
         </>
     )
