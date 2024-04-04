@@ -7,7 +7,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useRef, 
 import { FaArrowUpFromBracket } from "react-icons/fa6";
 import clsx from "clsx";
 
-const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, getUpload: Dispatch<SetStateAction<File | null>> }) => {
+const UploadThingy = ({ defaultPicture, getUpload, disabled }: { defaultPicture?: string, getUpload: Dispatch<SetStateAction<File | null>>, disabled?: boolean }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [errorObj, setErrorObj] = useState<ErrorObj>({
         upload: {
@@ -16,9 +16,12 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
         }
     });
     const [previewUrl, setPreviewUrl] = useState<string>(defaultPicture ? defaultPicture : "");
+    const [uploadedFile, setUploadedFile]= useState<File | null>(null);
     const [hasValidUpload, setHasValidUpload] = useState<boolean>(false);
 
     const handleFileChange = useCallback((e: FileList | null) => {
+        if (disabled) return;
+
         if (!e) {
             setErrorObj((prev) => ({
                 ...prev,
@@ -84,10 +87,28 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
         setHasValidUpload(true)
 
         reader.readAsDataURL(file);
-        getUpload(file);
-    }, [defaultPicture, getUpload]);
+        setUploadedFile(file);
+    }, [defaultPicture, setUploadedFile, disabled]);
+
+    const handleReset = useCallback(()=>{
+        if (!fileInputRef.current) return;
+        fileInputRef.current.files = null;
+        fileInputRef.current.value = "";
+        setHasValidUpload(false);
+        setPreviewUrl("");
+    },[fileInputRef])
 
     useEffect(() => {
+        if (disabled) return;
+        if (!hasValidUpload) {
+            getUpload(null);
+            return
+        };
+        getUpload(uploadedFile);
+    }, [hasValidUpload, getUpload, uploadedFile, disabled]);
+
+    useEffect(() => {
+        if (disabled) return;
         const handleDragOver = (event: DragEvent) => {
             event.preventDefault();
         };
@@ -119,13 +140,14 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
             window.removeEventListener('dragover', handleDragOver);
             window.removeEventListener('drop', handleDrop);
         };
-    }, [handleFileChange]);
+    }, [handleFileChange, disabled]);
 
     return (
         <>
             <div className={clsx(
                 "bg-white/5 relative hover:bg-white/10 w-full h-[10rem] rounded-lg border dark:border-white/50 hover:dark:border-theme-main grid place-items-center",
-                errorObj.upload.status === ErrorState.BAD ? "border-red/80" : "dark:border-white/50 hover:dark:border-theme-main"
+                errorObj.upload.status === ErrorState.BAD ? "border-red/80" : "dark:border-white/50 hover:dark:border-theme-main",
+                !disabled ? "" : "pointer-events-none cursor-not-allowed opacity-30 grayscale"
             )}>
                 <div className="absolute flex flex-col gap-2 items-center text-sm z-10">
                     <FaArrowUpFromBracket className="text-lg" />
@@ -152,7 +174,7 @@ const UploadThingy = ({ defaultPicture, getUpload }: { defaultPicture?: string, 
                     className="absolute h-full w-full top-0 left-0 cursor-pointer opacity-0"
                 />
                 <ShowElement.when isTrue={hasValidUpload}>
-                    <div className="active:scale-95 absolute left-1/2 -translate-x-1/2 -bottom-4 px-3 py-2 rounded-lg bg-red-500 text-white cursor-pointer">reset</div>
+                    <div onClick={handleReset} className="active:scale-95 absolute left-1/2 -translate-x-1/2 -bottom-4 px-3 py-2 rounded-lg bg-red-500 text-white cursor-pointer">reset</div>
                 </ShowElement.when>
             </div>
         </>

@@ -64,6 +64,7 @@ export const POST = async (request: Request) => {
         const myTaskerProfile:TaskerProfile = {
             profile_id: generateUniqueId(),
             name: cleanName,
+            bio: "",
             avatar: "",
             owner: UserId,
             ownerEmail: cleanEmail,

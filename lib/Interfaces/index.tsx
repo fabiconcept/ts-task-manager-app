@@ -6,6 +6,11 @@ export interface UiWithChildren {
     children: React.ReactNode
 }
 
+export interface SirvCredentials {
+    clientId: string;
+    clientSecret: string;
+  }
+
 interface ErrorStateObj {
     status: ErrorState;
     error: string;
@@ -40,6 +45,7 @@ export interface UserAccountDetails {
 export interface TaskerProfile {
     profile_id: string;
     name: string;
+    bio: string;
     avatar: string;
     owner: string;
     ownerEmail: string;

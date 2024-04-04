@@ -1,5 +1,9 @@
 import { CompanyTag } from "../Types/dashboard";
 
+export const clientId = process.env.NEXT_PUBLIC_SIRV_ClIENT_ID!
+export const clientSecret = process.env.NEXT_PUBLIC_SIRV_ClIENT_SECRET!
+
+
 export function validateEmail(email: string): boolean {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
@@ -9,6 +13,20 @@ function validateName (name: string): boolean {
     const test = /[^a-zA-Z\s]/.test(name);
     return test;
 }
+
+export function validateText(name: string): boolean {
+    const test = /[^a-zA-Z\s]/.test(name);
+    return !test; // Returning the opposite of the test result since we're validating for allowed characters
+}
+
+export const generateFileName = (file: File): string =>{
+    const filename = `${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${new Date().toISOString().slice(11, 16).replace(/:/g, '')}${
+        String.fromCharCode(97 + Math.floor(Math.random() * 26) + (Math.random() > 0.5 ? 0 : -32))
+      }.${file.type.split('/').pop()}`;
+
+      return filename
+}
+
 
 export function validateFullName(name: string): [boolean, string] {
     let errorMessage = "";
@@ -151,3 +169,37 @@ export function getTomorrowDateFormatted(): string {
 
     return new Intl.DateTimeFormat('en-GB', options).format(tomorrowDate);
 }
+
+export function getSirvAuthHeader(clientId: string, clientSecret: string): string {
+    const credentials = `${clientId}:${clientSecret}`;
+    const encodedCredentials = btoa(credentials);
+    return `Basic ${encodedCredentials}`;
+}
+
+interface TokenResponse {
+    token: string;
+    expiresIn: number;
+    scope: string[];
+}
+
+export const fetchToken = async (): Promise<string> => {
+    try {
+        const response = await fetch('https://api.sirv.com/v2/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ clientId, clientSecret }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`This happened: ${response.statusText}`);
+        }
+
+        const data: TokenResponse = await response.json();
+        const token = data.token;
+        return token;
+    } catch (error) {
+        throw error;
+    }
+};
