@@ -150,6 +150,7 @@ export function unescapeString(str: string): string {
     return str.replace(/\\(0|b|t|Z|n|r|"|'|\\)/g, (match, p1) => unescapeChars[match]);
 }
 
+
 export function sortByMatchingId(tags: CompanyTag[], targetId: string): CompanyTag[] {
     const arr = [...tags];
     const matchedIndex = arr.findIndex(tag => tag.id === targetId);

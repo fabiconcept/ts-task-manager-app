@@ -12,6 +12,8 @@ import { useDispatch } from "react-redux";
 import { updateTaskerTeam } from "@/Redux Store/Slices/profiles/team";
 import { PopupType } from "@/lib/Enums";
 import { openModal } from "@/Redux Store/Slices/Popup Slice";
+import ShowElement from "@/lib/utilities/Show";
+import { unescapeString } from "@/lib/utilities";
 
 export default function CompanyIntro() {
     const activeId = useSelector(echoTaskerProfilesActiveId);
@@ -98,6 +100,12 @@ export default function CompanyIntro() {
                                 <FaPen /> edit
                             </div>}
                         </div>
+                        <ShowElement.when isTrue={company[0].bio !== ""}>
+                            <div className="p-4 flex flex-col items-center border-b dark:border-b-white/10 border-b-black/10 dark:bg-black/10 bg-white/10 text-center">
+                                <TextToHtml text={unescapeString(company[0].bio)} />
+                            </div>
+                        </ShowElement.when>
+
                         <div className="p-4 flex items-start justify-center border-b dark:border-b-white/10 border-b-black/10 dark:bg-black/10 bg-white/10">
                             <div className="flex flex-col px-6 items-center  border-r dark:border-r-white/10 border-r-black/10">
                                 <span className="text-sm opacity-60">Team Size</span>
@@ -116,4 +124,26 @@ export default function CompanyIntro() {
             </div> :
             <></>
     )
+}
+
+const TextToHtml = ({ text }: { text: string }) => {
+    // Split the text into lines
+    const lines = text.split('\n');
+
+    // Convert each line to HTML format
+    const htmlLines = lines.map((line, index) => {
+        // Check if the line is a link
+        if (line.startsWith('https://') || line.startsWith('http://')) {
+            return <a key={index} href={line} className={"text-theme-text font-semibold"} target="_blank">{line}</a>;
+        } else {
+            return <p key={index}>{line}</p>;
+        }
+    });
+
+    // Render the HTML lines
+    return (
+        <div>
+            {htmlLines}
+        </div>
+    );
 }
