@@ -6,7 +6,7 @@ import { useDebounce } from "@/lib/Hooks/useDebouce";
 import { fetchUserData } from "@/Redux Store/Thunk";
 import { AppDispatch } from "@/Redux Store";
 import { ErrorObj, TaskerProfile } from "@/lib/Interfaces";
-import { fetchToken, generateFileName, validateText } from "@/lib/utilities";
+import { fetchToken, generateFileName, validateText, unescapeString } from "@/lib/utilities";
 import ShowElement from "@/lib/utilities/Show";
 import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
 import clsx from "clsx";
@@ -24,7 +24,7 @@ export default function EditProfile() {
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const { setCanClose, handleCloseModal } = useContext(popContext)!;
+    const { setCanClose, handleCloseModal, setIsDragingOver } = useContext(popContext)!;
 
     const nameRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -121,7 +121,7 @@ export default function EditProfile() {
     useEffect(() => {
         if (!companyProfile) return;
         setCompanyName(companyProfile.name);
-        setBioText(companyProfile.bio);
+        setBioText(unescapeString(companyProfile.bio));
         setAvatarUrl(companyProfile.avatar);
 
         setWantProfileAvatar(companyProfile.avatar !== "");
@@ -322,7 +322,7 @@ export default function EditProfile() {
 
                         </p>
                     </span>
-                    <UploadThingy getUpload={setProfilePhotoFile} defaultPicture={avatarUrl} disabled={!wantProfileAvatar}  />
+                    <UploadThingy getUpload={setProfilePhotoFile} defaultPicture={avatarUrl} disabled={!wantProfileAvatar} setIsDragingOver={setIsDragingOver}  />
                 </div>
 
                 <div className={clsx("flex flex-col gap-3")}>

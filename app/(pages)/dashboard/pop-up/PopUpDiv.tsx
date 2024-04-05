@@ -13,6 +13,7 @@ import EditProfile from "./forms/EditProfile";
 
 interface PopContext  {
     setCanClose: Dispatch<SetStateAction<boolean>>,
+    setIsDragingOver: Dispatch<SetStateAction<boolean>>,
     handleCloseModal: () => void,
 }
 
@@ -23,6 +24,7 @@ export default function PopUpDiv() {
     const popUpType = useSelector(echoPopUpType);
     const popUpId = useSelector(echoPopUpId);
     const [canClose, setCanClose] = useState<boolean>(true);
+    const [isDragingOver, setIsDragingOver] = useState<boolean>(true);
     const [modalState, setModalState] = useState(true);
 
     const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +41,7 @@ export default function PopUpDiv() {
     }
 
     return (
-        <popContext.Provider value={{setCanClose, handleCloseModal}}>
+        <popContext.Provider value={{setCanClose, handleCloseModal, setIsDragingOver}}>
             <ShowElement.when isTrue={isOpen}>
                 <section key={popUpId} className={clsx(
                     'fixed top-0 left-0 z-[50] h-screen w-screen grid place-items-center dark:bg-black/50 bg-white/50 backdrop-blur-sm',
@@ -47,6 +49,11 @@ export default function PopUpDiv() {
                 )}>
                     <div className="absolute top-6 left-6 z-10 cursor-pointer h-full w-full" onClick={handleCloseModal}>
                     </div>
+                    <ShowElement.when isTrue={isDragingOver}>
+                        <div className="absolute top-0 left-0 h-full w-full text-[10vmin] font-extrabold z-30 pointer-events-none opacity-15 grid place-items-center">
+                            Drop item here
+                        </div>
+                    </ShowElement.when>
                     <div className={clsx(
                         "absolute z-20 sm:top-0 sm:bottom-auto sm:right-0 sm:h-full top-auto bottom-0 right-1/2 -translate-x-1/2 h-[90vh] rounded-tl-xl rounded-bl-xl p-6 sm:w-[25rem] w-full border-l-2 dark:border-l-white border-l-black dark:bg-theme-white-dark bg-theme-white shadow-xl sm:translate-x-[100%] translate-y-[100%]",
                         modalState ? "sm:animate-openModal animate-md-openModal": "sm:animate-closeModal animate-md-closeModal"

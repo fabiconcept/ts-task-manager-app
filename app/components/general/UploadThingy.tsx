@@ -7,7 +7,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useRef, 
 import { FaArrowUpFromBracket } from "react-icons/fa6";
 import clsx from "clsx";
 
-const UploadThingy = ({ defaultPicture, getUpload, disabled }: { defaultPicture?: string, getUpload: Dispatch<SetStateAction<File | null>>, disabled?: boolean }) => {
+const UploadThingy = ({ defaultPicture, getUpload, disabled, setIsDragingOver }: { defaultPicture?: string, getUpload: Dispatch<SetStateAction<File | null>>, disabled?: boolean, setIsDragingOver: Dispatch<SetStateAction<boolean>> }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [errorObj, setErrorObj] = useState<ErrorObj>({
         upload: {
@@ -114,12 +114,18 @@ const UploadThingy = ({ defaultPicture, getUpload, disabled }: { defaultPicture?
 
     useEffect(() => {
         if (disabled) return;
+        let isDragging = false;
+
         const handleDragOver = (event: DragEvent) => {
             event.preventDefault();
+            isDragging = true;
+            setIsDragingOver(isDragging)
         };
 
         const handleDrop = (event: DragEvent) => {
             event.preventDefault();
+            isDragging = false;
+            setIsDragingOver(isDragging)
             if (!event || !event.dataTransfer) return;
 
             const files = event.dataTransfer.files;
@@ -140,12 +146,21 @@ const UploadThingy = ({ defaultPicture, getUpload, disabled }: { defaultPicture?
         window.addEventListener('dragover', handleDragOver);
         window.addEventListener('drop', handleDrop);
 
+        const checkIdleState = () => {
+            if (!isDragging) {
+                setIsDragingOver(isDragging);
+            }
+        };
+    
+        const idleInterval = setInterval(checkIdleState, 1000);
+
         // Cleanup function to remove event listeners on unmount
         return () => {
             window.removeEventListener('dragover', handleDragOver);
             window.removeEventListener('drop', handleDrop);
+            clearInterval(idleInterval);
         };
-    }, [handleFileChange, disabled]);
+    }, [handleFileChange, disabled, setIsDragingOver]);
 
     return (
         <>
