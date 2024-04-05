@@ -24,7 +24,7 @@ export default function PopUpDiv() {
     const popUpType = useSelector(echoPopUpType);
     const popUpId = useSelector(echoPopUpId);
     const [canClose, setCanClose] = useState<boolean>(true);
-    const [isDragingOver, setIsDragingOver] = useState<boolean>(true);
+    const [isDragingOver, setIsDragingOver] = useState<boolean>(false);
     const [modalState, setModalState] = useState(true);
 
     const dispatch = useDispatch<AppDispatch>();

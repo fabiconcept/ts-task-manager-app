@@ -6,7 +6,7 @@ import { useDebounce } from "@/lib/Hooks/useDebouce";
 import { fetchUserData } from "@/Redux Store/Thunk";
 import { AppDispatch } from "@/Redux Store";
 import { ErrorObj, TaskerProfile } from "@/lib/Interfaces";
-import { fetchToken, generateFileName, validateText, unescapeString } from "@/lib/utilities";
+import { fetchToken, generateFileName, validateText, unescapeString, realEscapeString } from "@/lib/utilities";
 import ShowElement from "@/lib/utilities/Show";
 import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
 import clsx from "clsx";
@@ -141,7 +141,7 @@ export default function EditProfile() {
 
         if (debouncedCompanyName !== companyProfile.name) return true;
         
-        if (debouncedBioText !== companyProfile.bio) return true;
+        if (realEscapeString(debouncedBioText) !== companyProfile.bio) return true;
 
         return false;
 
@@ -215,13 +215,6 @@ export default function EditProfile() {
     }, [errorObj, isEdited, profilePhotoFile, avatarUrl]);
 
     const handleSubmit = async () => {
-        if (wantProfileAvatar && !profilePhotoFile){
-            setErrorObj((prev)=>({...prev, avatar: {
-                error: "You said you want an avatar please upload one!",
-                status: ErrorState.BAD
-            }}));
-            throw new Error("You said you want an avatar please upload one!");
-        };
         setLoading(true);
         try {
             let newAvatarUrl

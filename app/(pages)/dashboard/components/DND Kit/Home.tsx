@@ -315,7 +315,7 @@ export default function Home() {
                 >
                     <SortableContext items={containers.map((container) => container.id)}>
                         {containers.map((container) => (
-                            <Container key={container.id} id={container.id} title={container.title} itemsCount={container.items.length} onAddItem={()=>{}}>
+                            <Container description={""} key={container.id} id={container.id as string} title={container.title} itemsCount={container.items.length} >
                                 <SortableContext items={container.items.map((i) => i.id)}>
                                     <div className="flex flex-col items-start gap-y-4">
                                         {container.items.map((item) => (

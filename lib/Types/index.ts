@@ -2,6 +2,7 @@ import { NextApiResponse } from "next";
 import { AuthResponseType } from "../Enums";
 import { Server as NetServer, Socket } from "net";
 import { Server as SocketIOServer } from "socket.io";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 export type RequestBody = {
     name: string;
@@ -25,7 +26,6 @@ export type ResponseWithoutError<T = { userId: string, auth: string }> = {
     type: AuthResponseType,
     message: T
 };
-
 
 export type ValidateAuthResponseWithoutError<T> = {
     status: 200,
@@ -62,4 +62,21 @@ export type TeamMember = {
 export type UserProject = {
     profile_id: string;
     last_used: string;
+}
+
+// DND Kit
+
+export type DNDType = {
+    id: UniqueIdentifier;
+    title: string;
+    items: { id: UniqueIdentifier, title: string }[];
+};
+
+export default interface ContainerProps {
+    id: UniqueIdentifier;
+    children: React.ReactNode;
+    title?: string;
+    description?: string;
+    itemsCount: number;
+    onAddItem?: () => void;
 }

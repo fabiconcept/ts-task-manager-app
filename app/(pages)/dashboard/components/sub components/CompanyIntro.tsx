@@ -134,7 +134,7 @@ const TextToHtml = ({ text }: { text: string }) => {
     const htmlLines = lines.map((line, index) => {
         // Check if the line is a link
         if (line.startsWith('https://') || line.startsWith('http://')) {
-            return <a key={index} href={line} className={"text-theme-text font-semibold"} target="_blank">{line}</a>;
+            return <a key={index} href={line} className={"text-theme-text font-semibold hover:rotate-[6deg] origin-left"} target="_blank">{line}</a>;
         } else {
             return <p key={index}>{line}</p>;
         }

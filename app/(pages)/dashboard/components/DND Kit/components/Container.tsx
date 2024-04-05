@@ -7,9 +7,9 @@ type ContainerProps = {
     id: string,
     children: React.ReactNode,
     title: string,
-    description: string,
+    description?: string,
     itemsCount: number,
-    onAddItem: ()=>{}
+    onAddItem?: ()=>{}
 }
 
 const Container = ({
