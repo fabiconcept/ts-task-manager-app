@@ -59,7 +59,7 @@ export default function CompanyIntro() {
                         <div className="w-full flex items-center p-6 justify-between backdrop-blur-md  border-b dark:border-b-white/20 border-b-black/20">
                             <div className="flex items-center gap-4">
                                 <div className={clsx(
-                                    "h-16 w-16 shadow rounded-full grid place-items-center font-extrabold text-4xl",
+                                    "h-16 w-16 shadow rounded-full grid place-items-center font-extrabold text-4xl overflow-hidden",
                                     !company[1].avatar ? "bg-theme-main dark:text-theme-white-dark" : "bg-white"
                                 )}>
                                     {!company[1].avatar ?
