@@ -1,12 +1,15 @@
 import connectDatabase from '@/lib/Database';
 import { AuthResponseType } from '@/lib/Enums';
 import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from '@/lib/Types';
+import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 let apiResponse : ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<any>
 
-export const POST = async (req: Request, res: Response) => {
-    const { key }: { key: string } = await req.json();
+export const GET = async (req: Request, res: Response) => {
+    const headerList = headers();
+    const key = headerList.get("userKey");
+
 
     try {
 
@@ -49,3 +52,7 @@ export const POST = async (req: Request, res: Response) => {
         return NextResponse.json(apiResponse);
     }
 };
+
+export const PUT = async(req: Request) => {
+
+}

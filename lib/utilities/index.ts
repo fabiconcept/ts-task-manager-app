@@ -9,6 +9,14 @@ export function validateEmail(email: string): boolean {
     return emailPattern.test(email);
 }
 
+export function isValidURL(text: string) {
+    // Regular expression pattern to match a valid URL format
+    const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/;
+
+    return urlPattern.test(text);
+}
+
+
 function validateName (name: string): boolean {
     const test = /[^a-zA-Z\s]/.test(name);
     return test;
@@ -124,6 +132,24 @@ export function realEscapeString(str: string) {
     return str.replace(/[\x00\x08\x09\x1a\n\r"\'\\]/g, (char) => escapeChars[char]);
 }
 
+export function unescapeString(str: string): string {
+    // List of escape sequences and their corresponding characters
+    const unescapeChars: Record<string, string> = {
+        '\\0': '\x00',
+        '\\b': '\x08',
+        '\\t': '\x09',
+        '\\Z': '\x1a',
+        '\\n': '\n',
+        '\\r': '\r',
+        '\\"': '\"',
+        '\\\'': '\'',
+        '\\\\': '\\',
+    };
+
+    // Replace escape sequences with their corresponding characters
+    return str.replace(/\\(0|b|t|Z|n|r|"|'|\\)/g, (match, p1) => unescapeChars[match]);
+}
+
 export function sortByMatchingId(tags: CompanyTag[], targetId: string): CompanyTag[] {
     const arr = [...tags];
     const matchedIndex = arr.findIndex(tag => tag.id === targetId);
@@ -168,12 +194,6 @@ export function getTomorrowDateFormatted(): string {
     };
 
     return new Intl.DateTimeFormat('en-GB', options).format(tomorrowDate);
-}
-
-export function getSirvAuthHeader(clientId: string, clientSecret: string): string {
-    const credentials = `${clientId}:${clientSecret}`;
-    const encodedCredentials = btoa(credentials);
-    return `Basic ${encodedCredentials}`;
 }
 
 interface TokenResponse {

@@ -15,9 +15,14 @@ const UploadThingy = ({ defaultPicture, getUpload, disabled }: { defaultPicture?
             error: ""
         }
     });
-    const [previewUrl, setPreviewUrl] = useState<string>(defaultPicture ? defaultPicture : "");
+    const [previewUrl, setPreviewUrl] = useState<string>("");
     const [uploadedFile, setUploadedFile]= useState<File | null>(null);
     const [hasValidUpload, setHasValidUpload] = useState<boolean>(false);
+
+    useEffect(()=>{
+        if (!defaultPicture) return;
+        setPreviewUrl(defaultPicture);
+    }, [defaultPicture]);
 
     const handleFileChange = useCallback((e: FileList | null) => {
         if (disabled) return;

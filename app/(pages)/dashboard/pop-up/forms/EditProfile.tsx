@@ -1,18 +1,31 @@
 "use client"
 import UploadThingy from "@/app/components/general/UploadThingy";
 import { ErrorState } from "@/lib/Enums";
+import { updateTaskerProfileInformation } from "@/lib/functions";
 import { useDebounce } from "@/lib/Hooks/useDebouce";
+import { fetchUserData } from "@/Redux Store/Thunk";
+import { AppDispatch } from "@/Redux Store";
 import { ErrorObj, TaskerProfile } from "@/lib/Interfaces";
 import { fetchToken, generateFileName, validateText } from "@/lib/utilities";
 import ShowElement from "@/lib/utilities/Show";
 import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
 import clsx from "clsx";
 import Image from "next/image";
-import { FormEvent, useEffect, useRef, useState, useMemo, ChangeEvent } from "react";
+import { FormEvent, useEffect, useRef, useState, useMemo, ChangeEvent, useContext } from "react";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 import { FaFileLines, FaImage, FaPenToSquare, FaSignature } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import { popContext } from "../PopUpDiv";
+import { getSessionData } from "@/lib/session";
 
 export default function EditProfile() {
+    const cookieData = getSessionData("taskerUser")!;
+
+    const dispatch = useDispatch<AppDispatch>();
+
+    const { setCanClose, handleCloseModal } = useContext(popContext)!;
+
     const nameRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLTextAreaElement>(null);
     const withProfileRef = useRef<HTMLInputElement>(null);
@@ -44,6 +57,10 @@ export default function EditProfile() {
 
     const debouncedCompanyName = useDebounce(companyName, 500);
     const debouncedBioText = useDebounce(bioText, 500);
+
+    useEffect(() => {
+        setCanClose(!loading);
+    }, [loading, setCanClose]);
 
     const companyProfile = useMemo((): TaskerProfile | undefined => {
         const activeProfile = profiles.find((profile) => profile.profile_id === activeId);
@@ -105,7 +122,9 @@ export default function EditProfile() {
         if (!companyProfile) return;
         setCompanyName(companyProfile.name);
         setBioText(companyProfile.bio);
-        setAvatarUrl(companyProfile.avatar)
+        setAvatarUrl(companyProfile.avatar);
+
+        setWantProfileAvatar(companyProfile.avatar !== "");
     }, [companyProfile]);
 
     useEffect(() => {
@@ -118,6 +137,7 @@ export default function EditProfile() {
         if (!debouncedCompanyName) return false;
 
         if (profilePhotoFile && profilePhotoFile.name !== companyProfile.avatar) return true;
+        if (!wantProfileAvatar && companyProfile.avatar !== "") return true;
 
         if (debouncedCompanyName !== companyProfile.name) return true;
         
@@ -125,7 +145,7 @@ export default function EditProfile() {
 
         return false;
 
-    }, [debouncedBioText, debouncedCompanyName, profilePhotoFile, companyProfile]);
+    }, [debouncedBioText, debouncedCompanyName, profilePhotoFile, companyProfile, wantProfileAvatar]);
 
     const handleFileUpload = async (selectedFile: File) => {
         try {
@@ -178,20 +198,13 @@ export default function EditProfile() {
         nameRef.current.focus();
     }, [nameRef]);
 
-    useEffect(() => {
-        if (!profilePhotoFile) {
-            return;
-        }
-
-    }, [profilePhotoFile]);
-
     const canSubmit = useMemo(()=>{
         if (!isEdited) return false;
 
         if(!(errorObj.name.status === ErrorState.GOOD)) return false;
         if((errorObj.avatar.status === ErrorState.BAD)) return false;
 
-        if(wantProfileAvatar && !profilePhotoFile) {
+        if(withProfileRef.current && withProfileRef.current.checked && !profilePhotoFile && !avatarUrl) {
             setErrorObj((prev)=>({...prev, bio: {
                 error: "Please select an Image!",
                 status: ErrorState.BAD
@@ -199,14 +212,62 @@ export default function EditProfile() {
             return false;
         };
         return true;
-    }, [errorObj, isEdited, profilePhotoFile, wantProfileAvatar]);
+    }, [errorObj, isEdited, profilePhotoFile, avatarUrl]);
+
+    const handleSubmit = async () => {
+        if (wantProfileAvatar && !profilePhotoFile){
+            setErrorObj((prev)=>({...prev, avatar: {
+                error: "You said you want an avatar please upload one!",
+                status: ErrorState.BAD
+            }}));
+            throw new Error("You said you want an avatar please upload one!");
+        };
+        setLoading(true);
+        try {
+            let newAvatarUrl
+            if (profilePhotoFile) {
+                newAvatarUrl = await handleFileUpload(profilePhotoFile);
+            }else{
+                if (wantProfileAvatar) {
+                    newAvatarUrl = avatarUrl;
+                }else{
+                    newAvatarUrl = "";
+                }
+            }
+
+            const payload: {profile_id: string, name: string, avatar: string, bio: string} = {
+                profile_id: activeId,
+                avatar: newAvatarUrl,
+                bio: debouncedBioText,
+                name: debouncedCompanyName
+            }
+
+            await updateTaskerProfileInformation(payload);
+
+            setLoading(false);
+            handleCloseModal();
+
+            dispatch(fetchUserData(cookieData));
+
+        } catch (error) {
+            setLoading(false);
+            console.error("Failed to update because: ", error);
+            throw new Error(`${error}`);
+        }
+
+    }
 
     const watchSubmit = (e: FormEvent) => {
         if (!canSubmit) return;
+        if (loading) return;
         e.preventDefault();
+        const promise = handleSubmit();
+        toast.promise(promise, {
+            loading: "Updating profile information...",
+            success: "Profile updated ✅🚀",
+            error: "Failed to update profile information ❌"
+        });
     }
-
-
 
     return (
         <form onSubmit={watchSubmit} className={clsx("flex flex-col gap-6 h-full")}>

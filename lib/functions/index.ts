@@ -6,13 +6,12 @@ import { CompanyTag } from "../Types/dashboard";
 // : UserDetails
 export const getUserData = async (key: string) => {
     const getResponse: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<UserAccountDetails> = await fetch("/api/dashboard/userData", {
-        method: "post",
+        method: "get",
         headers: {
             "Content-Type": "application/json",
+            "userKey": key,
         },
-        body: JSON.stringify({
-            key
-        }),
+        next: { revalidate: 60 },
     }).then((res) => {
         if (!res.ok) {
             throw new Error("Failed to fetch user data.");
@@ -200,6 +199,26 @@ export async function inviteTeamMember(payload: { email: string, profile_id: str
             "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
+    });
+
+    const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
+    const { status, message } = data;
+
+    if (status === 400) {
+        throw new Error(message);
+    }
+
+    return message;
+}
+
+// Team activities
+export async function updateTaskerProfileInformation(payload: {profile_id: string, name: string, avatar: string, bio: string}): Promise<string>{
+    const sendRequest = await fetch("api/dashboard/taskerProfiles", {
+        method: "put",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({payload}),
     });
 
     const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
