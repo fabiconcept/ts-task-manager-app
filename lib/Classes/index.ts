@@ -19,7 +19,7 @@ export class BrevoEmailClient {
 
         const body = JSON.stringify({
             sender: {
-                name: "Taskify support",
+                name: "Taskify",
                 email: "noreply@taskity.com",
             },
             to: [
