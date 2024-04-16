@@ -305,7 +305,7 @@ export default function Home() {
 
     return (
         <div className="mt-10">
-            <div className="grid grid-cols-3">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))]">
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
