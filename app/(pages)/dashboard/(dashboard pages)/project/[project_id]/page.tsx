@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function page({ params }: { params: { project_id: string } }) {
     return (
-        <div className="w-full h-full relative dark:bg-white/5 bg-black/5 overflow-y-auto flex flex-col">
+        <div className="w-full h-screen relative dark:bg-white/5 bg-black/5 overflow-y-auto flex flex-col">
             <div className="p-6 flex items-center justify-between">
                 <h1 className="text-2xl font-semibold flex gap-2 items-center">
                     <Link href={"../../dashboard"}><FaAngleLeft /></Link>
@@ -15,7 +15,7 @@ export default function page({ params }: { params: { project_id: string } }) {
                 </div>
             </div>
             <div className={"px-6"}>
-                <p className={"max-w-[30erem]"}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur dolorum nostrum perspiciatis, aut amet alias tempore maxime distinctio deserunt officiis?</p>
+                <p className={"max-w-[clamp(30rem,80%,50rem)]"}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur dolorum nostrum perspiciatis, aut amet alias tempore maxime distinctio deserunt officiis?</p>
             </div>
             <Home />
         </div>

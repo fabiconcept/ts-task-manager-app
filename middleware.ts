@@ -43,9 +43,12 @@ export async function middleware(request: NextRequest) {
     const getCookie = request.cookies.get("taskerId")!;
 
     if (pathName.startsWith("/dashboard")) {
-        console.log("starts With dashboard");
         if (!getCookie) {
             return NextResponse.redirect(new URL("/login", request.url));
+        }
+
+        if (pathName.startsWith("/dashboard/project")) {
+            if(pathName === "/dashboard/project") return NextResponse.redirect(new URL("/dashboard", request.url));
         }
 
         const [test, response] = await verifyLogin(getCookie);
