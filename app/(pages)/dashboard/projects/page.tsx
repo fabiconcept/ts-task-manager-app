@@ -1,7 +1,7 @@
 import { CiSearch } from "react-icons/ci";
 import { GoBell } from "react-icons/go";
 import { GiCheckMark } from "react-icons/gi";
-import Home from "../components/DND Kit/Home";
+import Home from "../components/project board/Home";
 
 export default function page() {
     return (

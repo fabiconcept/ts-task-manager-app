@@ -4,7 +4,7 @@
 
 @layer utilities {
   .custom-radial-gradient {
-    background-image: radial-gradient(hsl(0, 0%, 63%) 5%, transparent 0);
+    background-image: radial-gradient(hsla(0, 0%, 63%, 0.802) 5%, transparent 0);
     background-size: 20px 20px;
   }
 
@@ -21,7 +21,7 @@
       rgb(55, 55, 55, 0.35) 0, rgb(55, 55, 55, 0.35) 20px);
     }
     .custom-radial-gradient {
-      background-image: radial-gradient(hsl(0, 1%, 31%) 5%, transparent 0);
+      background-image: radial-gradient(hsla(0, 1%, 31%, 0.853) 5%, transparent 0);
     }
   }
 }

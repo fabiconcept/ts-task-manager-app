@@ -6,8 +6,14 @@ import { useState } from "react";
 import Container from "./components/Container";
 import { DNDType } from "@/lib/Types";
 import Items from "./components/Item";
+import { FaPlus } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/Redux Store";
+import { PopupType } from "@/lib/Enums";
+import { openModal } from "@/Redux Store/Slices/Popup Slice";
 
 export default function Home() {
+    const dispatch = useDispatch<AppDispatch>();
     const [containers, setContainers] = useState<DNDType[]>([
         {
             id: `container-0fe1ec50-5ee6-55a4-8902-0dab6183acab`,
@@ -288,9 +294,20 @@ export default function Home() {
         setActiveId(null);
     }
 
+    const openNewTaskModal = () => { 
+        const popUpType: PopupType = PopupType.NewTask;
+        dispatch(openModal({popUpType}));
+    }
+
     return (
         <div className="mt-4">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))]">
+            <div className="w-full flex justify-end px-6">
+                <div onClick={openNewTaskModal} className="rounded-md py-3 px-6 border border-theme-main hover:border-transparent hover:bg-theme-main text-theme-main dark:hover:text-theme-white-dark active:scale-90 cursor-pointer flex items-center justify-center gap-2 active:opacity-50">
+                    <FaPlus />
+                    <span className={"font-semibold"}>New task</span>
+                </div>
+            </div>
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(clamp(20rem,30%,40rem),1fr))]">
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
