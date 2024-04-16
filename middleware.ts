@@ -43,21 +43,21 @@ export async function middleware(request: NextRequest) {
     const getCookie = request.cookies.get("taskerId")!;
 
     if (pathName.startsWith("/dashboard")) {
+        console.log("starts With dashboard");
         if (!getCookie) {
-            request.cookies.delete("taskerUser");
-            return NextResponse.rewrite(new URL("/login", request.url));
-        }else{
-            const [test, response] = await verifyLogin(getCookie);
-
-            if (test) {
-                const responseCookies= NextResponse.next();
-                responseCookies.cookies.set("taskerUser", encryptValue(response));
-
-                return responseCookies;
-            } else {
-                return NextResponse.redirect(new URL("/login", request.url));
-            }
+            return NextResponse.redirect(new URL("/login", request.url));
         }
+
+        const [test, response] = await verifyLogin(getCookie);
+
+        if (!test) {
+            return NextResponse.redirect(new URL("/login", request.url));
+        }
+
+        const responseCookies = NextResponse.next();
+        responseCookies.cookies.set("taskerUser", encryptValue(response));
+
+        return responseCookies;   
     }
 
     if (pathName.startsWith("/login") || pathName.startsWith("/signin")) {

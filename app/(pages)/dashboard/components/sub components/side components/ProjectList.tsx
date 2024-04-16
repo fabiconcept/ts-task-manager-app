@@ -13,6 +13,7 @@ import { TaskerProject } from "@/lib/Interfaces";
 import ShowElement from "@/lib/utilities/Show";
 
 export default function ProjectList() {
+
     const dispatch = useDispatch<AppDispatch>();
     const activeId = useSelector(echoTaskerProfilesActiveId);
     const { profiles } = useSelector(echoTaskerProfilesResponse);
@@ -20,6 +21,35 @@ export default function ProjectList() {
     const projectsLoading = useSelector(echoProjectListLoading);
     const projectsError = useSelector(echoProjectListError);
 
+    const [openProject, setOpenProject]= useState<string | null>("");
+
+    useEffect(() => {
+        function getProjectIdFromUrl() {
+            try {
+                // Get current URL from window object
+                const url = window.location.href;
+    
+                // Parse the URL using URL object (adjust for your route structure)
+                const parsedUrl = new URL(url);
+                const pathname = parsedUrl.pathname;
+                const projectSegments = pathname.split('/'); // Split path segments
+    
+                // Extract project ID from the last segment (assuming it's at the end)
+                const projectId = projectSegments[projectSegments.length - 1];
+    
+                if (!projectId) {
+                    throw new Error('Project ID not found in URL');
+                }
+    
+                return projectId;
+            } catch (error) {
+                console.error('Error getting project ID:', error);
+                return null; // Or handle the error differently
+            }
+        }
+
+        setOpenProject(getProjectIdFromUrl);
+    }, []);
     const [projectListDisplay, setProjectListDisplay] = useState<TaskerProject[]>([]);
 
     useEffect(() => {
@@ -53,6 +83,7 @@ export default function ProjectList() {
                         <Project
                             key={project.project_id}
                             data={project}
+                            isOpen={openProject}
                         />
                     ))}
                 </ShowElement.when>

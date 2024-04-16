@@ -39,7 +39,7 @@ const Items = ({ id, title }: ItemsType) => {
                 transform: CSS.Translate.toString(transform),
             }}
             className={clsx(
-                'p-4 dark:bg-theme-white-dark/50 bg-theme-white/50 dark:shadow-md shadow-[0_5px_25px_rgb(0,0,0,0.25)] rounded-md w-full border border-transparent hover:border-theme-main/50 relative overflow-hidden',
+                'p-4 dark:bg-theme-white-dark/50 bg-theme-white/50 dark:shadow-md shadow-[0_5px_25px_rgb(0,0,0,0.25)] rounded-md w-full border border-theme-main/25 hover:border-theme-main/80 relative overflow-hidden',
                 isDragging && 'rounded-none border-black opacity-25',
                 !isDragging && 'dark:custom-radial-gradient custom-radial-gradient backdrop-blur',
             )}

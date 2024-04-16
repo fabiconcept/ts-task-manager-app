@@ -14,8 +14,8 @@ export default function page({ params }: { params: { project_id: string } }) {
                     <FaEllipsisVertical />
                 </div>
             </div>
-            <div className={""}>
-
+            <div className={"px-6"}>
+                <p className={"max-w-[30erem]"}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur dolorum nostrum perspiciatis, aut amet alias tempore maxime distinctio deserunt officiis?</p>
             </div>
             <Home />
         </div>
