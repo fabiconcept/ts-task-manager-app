@@ -40,11 +40,7 @@ export default function Home() {
             ]
         },
     ]);
-    const [activeId,setActiveId] = useState<UniqueIdentifier | null>(null);
-    const [containerId, setContainerId] = useState<UniqueIdentifier>();
-    const [containerName, setContainerName] =useState("");
-    const [itemName, setItemName] = useState("");
-    const [showAddItemModal, setShowAddItemModal] = useState(false); 
+    const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
     // Helper function 
     function findValueOfItems(id: UniqueIdentifier | undefined, type: string) {
@@ -66,17 +62,6 @@ export default function Home() {
         return item.title;
     };
 
-    const findContainerTitle = (id: UniqueIdentifier | undefined) => {
-        const container = findValueOfItems(id, 'container');
-        if (!container) return '';
-        return container.title;
-    };
-
-    const findContainerItems = (id: UniqueIdentifier | undefined) => {
-        const container = findValueOfItems(id, 'container');
-        if (!container) return [];
-        return container.items;
-    };
     // DND Handlers
     const sensors = useSensors(
         useSensor(PointerSensor), 
@@ -304,7 +289,7 @@ export default function Home() {
     }
 
     return (
-        <div className="mt-10">
+        <div className="mt-4">
             <div className="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))]">
                 <DndContext
                     sensors={sensors}

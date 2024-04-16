@@ -23,10 +23,8 @@ const Container = ({
     const {
         attributes,
         setNodeRef,
-        listeners,
         transform,
         transition,
-        isDragging,
     } = useSortable({
         id: id,
         data: {
@@ -41,9 +39,9 @@ const Container = ({
                 transition,
                 transform: CSS.Translate.toString(transform),
             }}
+            title={description}
             className={clsx(
                 'w-full h-full p-4 flex flex-col gap-y-4',
-                isDragging && 'opacity-50',
             )}
         >
             <div className="flex items-center justify-between">
