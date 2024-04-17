@@ -10,6 +10,7 @@ import { PopupType } from "@/lib/Enums";
 import NewProjectForm from "./forms/NewProjectForm";
 import InviteTeammate from "./forms/InviteTeammate";
 import EditProfile from "./forms/EditProfile";
+import NewTaskForm from "./forms/NewTaskForm";
 
 interface PopContext  {
     setCanClose: Dispatch<SetStateAction<boolean>>,
@@ -64,8 +65,11 @@ export default function PopUpDiv() {
                         <ShowElement.when isTrue={popUpType === PopupType.AddTeam}>
                             <InviteTeammate />
                         </ShowElement.when>
-                        <ShowElement.when isTrue={popUpType === PopupType.EditProfile   }>
+                        <ShowElement.when isTrue={popUpType === PopupType.EditProfile}>
                             <EditProfile />
+                        </ShowElement.when>
+                        <ShowElement.when isTrue={popUpType === PopupType.NewTask}>
+                            <NewTaskForm />
                         </ShowElement.when>
                     </div>
                 </section>

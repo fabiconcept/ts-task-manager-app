@@ -1,7 +1,6 @@
 import { TaskerProject } from "@/lib/Interfaces";
 import ShowElement from "@/lib/utilities/Show";
 import Link from "next/link";
-import { MouseEvent } from "react";
 
 export default function Project({data, isOpen}: {data: TaskerProject, isOpen: string | null}) {
     return (
