@@ -77,9 +77,7 @@ export default function NewProjectForm() {
     const handleSubmit = async(e: FormEvent) => {
         e.preventDefault();
 
-
         setLoading(true);
-
 
         function areAllStatusGood(): [boolean, string] {
             let shouldUpdateState = false;
@@ -112,7 +110,6 @@ export default function NewProjectForm() {
         const day = String(today.getDate()).padStart(2, '0');
 
         const todayString = `${year}-${month}-${day}`;
-
 
         const formData: TaskerProject = {
             project_id: generateUniqueId(),
@@ -188,7 +185,9 @@ export default function NewProjectForm() {
                         required
                         value={titleText}
                         ref={titleRef}
-                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main")}
+                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border", 
+                        errorObj.title.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
+                        "")}
                     />
                 </div>
                 <div className={clsx("flex flex-col gap-3")}>
@@ -210,7 +209,9 @@ export default function NewProjectForm() {
                         ref={descriptionRef}
                         onChange={(e:ChangeEvent<HTMLTextAreaElement>)=>setDescriptionText(e.target.value)}
                         style={{ resize: "none" }}
-                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main resize-none")}
+                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border", 
+                        errorObj.description.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
+                        "resize-none")}
                     ></textarea>
                 </div>
                 <div className={clsx("flex flex-col gap-3")}>

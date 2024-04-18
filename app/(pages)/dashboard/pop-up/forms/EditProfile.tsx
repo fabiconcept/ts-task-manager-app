@@ -286,7 +286,9 @@ export default function EditProfile() {
                         value={companyName}
                         onChange={(e: ChangeEvent<HTMLInputElement>)=>setCompanyName(e.target.value)}
                         ref={nameRef}
-                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main")}
+                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border", 
+                        errorObj.name.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
+                        "")}
                     />
                 </div>
 
@@ -337,7 +339,9 @@ export default function EditProfile() {
                         onChange={(e: ChangeEvent<HTMLTextAreaElement>)=>setBioText(e.target.value)}
                         ref={descriptionRef}
                         style={{ resize: "none" }}
-                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main resize-none")}
+                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border", 
+                        errorObj.bio.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
+                        "resize-none")}
                     ></textarea>
                 </div>
             </div>

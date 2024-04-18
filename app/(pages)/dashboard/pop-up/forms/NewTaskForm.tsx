@@ -1,13 +1,125 @@
+import { ErrorState, Priority } from '@/lib/Enums';
 import { useDebounce } from '@/lib/Hooks/useDebouce';
 import ShowElement from '@/lib/utilities/Show';
 import clsx from 'clsx';
 import Image from 'next/image';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { FaFolderPlus, FaHeading, FaFileLines, FaUserPlus, FaX } from 'react-icons/fa6';
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState, useContext, useMemo, FormEvent } from 'react';
+import { FaFolderPlus, FaHeading, FaFileLines, FaUserPlus, FaX, FaTriangleExclamation } from 'react-icons/fa6';
+import { echoTaskerProfilesActiveId } from "@/Redux Store/Slices/profiles";
+import { AppDispatch } from "@/Redux Store";
+import { useDispatch, useSelector } from "react-redux";
+import { popContext } from "../PopUpDiv";
+import { ErrorObj } from '@/lib/Interfaces';
+
+type Assignee = {
+    id: string,
+    avatar: string,
+    userName: string
+}
 
 export default function NewTaskForm() {
+    const { setCanClose, handleCloseModal } = useContext(popContext)!;
+    const dispatch = useDispatch<AppDispatch>();
 
-    const watchSubmit = () => {
+    const titleRef = useRef<HTMLInputElement>(null);
+    const descriptionRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(()=>{
+        if (!titleRef.current) return;
+        titleRef.current.focus();
+    },[titleRef]);
+
+    const [errorObj, setErrorObj] =  useState<ErrorObj>({
+        title: { status: ErrorState.IDLE, error: "" },
+        description: { status: ErrorState.IDLE, error: "" },
+        priorityLevel: { status: ErrorState.IDLE, error: "" },
+        assignees: { status: ErrorState.IDLE, error: "" },
+    });
+    
+    const [taskAssignees, setTaskAssignees] = useState<string[]>([]);
+
+    const [titleText, setTitleText] = useState<string>("");
+    const [descriptionText, setDescriptionText] = useState<string>("");
+    const [priorityLevel, setPriorityLevel] = useState<Priority>(Priority.NONE);
+    const activeId = useSelector(echoTaskerProfilesActiveId);
+    
+    const titleDebounce = useDebounce(titleText, 500);
+    const descriptionDebounce = useDebounce(descriptionText, 500);
+
+    useEffect(() => {
+        if(!titleDebounce) {
+            setErrorObj((error)=>({...error, title: {status: ErrorState.IDLE, error: ""}}));
+            return;
+        };
+        
+        if(titleDebounce.length > 40) {
+            setErrorObj((error)=>({...error, title: {status: ErrorState.BAD, error: "Title is too long"}}));
+            return;
+        };
+
+        setErrorObj((error)=>({...error, title: {status: ErrorState.GOOD, error: ""}}));
+        
+    }, [titleDebounce]);
+
+    useEffect(() => {
+        if(!descriptionDebounce) {
+            setErrorObj((error)=>({...error, description: {status: ErrorState.IDLE, error: ""}}));
+            return;
+        };
+
+        if(descriptionDebounce.length > 300) {
+            setErrorObj((error)=>(
+                {...error, 
+                    description: {
+                        status: ErrorState.BAD, 
+                        error: "Description is too long"
+                    }
+                }
+            ));
+            return;
+        };
+
+        setErrorObj((error)=>({...error, description: {status: ErrorState.GOOD, error: ""}}));
+    }, [descriptionDebounce]);
+    
+    useEffect(() => {
+        if(taskAssignees.length === 0) {
+            setErrorObj((error)=>({...error, assignees: {status: ErrorState.IDLE, error: ""}}));
+            return;
+        };
+
+        if(taskAssignees.length > 3) {
+            setErrorObj((error)=>(
+                {...error, 
+                    assignees: {
+                        status: ErrorState.BAD, 
+                        error: "HTF!"
+                    }
+                }
+            ));
+            return;
+        };
+
+        setErrorObj((error)=>({...error, assignees: {status: ErrorState.GOOD, error: ""}}));
+    }, [taskAssignees]);
+    
+
+    const [loading, setLoading]= useState(false);
+
+    const canSubmit = useMemo(()=>{
+        if (errorObj.title.status !== ErrorState.GOOD) return false;
+        if (errorObj.description.status !== ErrorState.GOOD) return false;
+        if (errorObj.assignees.status !== ErrorState.GOOD) return false;
+
+        return true;
+    }, [errorObj]);
+
+    const priorityArray: Priority[] = [Priority.NONE, Priority.LOW, Priority.MEDIUM, Priority.HIGH];
+
+    const watchSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        if (!canSubmit) return;
+        if (loading) return;
 
     }
 
@@ -19,14 +131,20 @@ export default function NewTaskForm() {
                     <span className="flex items-center gap-2 opacity-70">
                         <span className={clsx(
                             "text-sm",
+                            errorObj.title.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaHeading /></span>
-                        <span>Task title</span>
+                        <span>Task title <span className={"text-red-600"}>{errorObj.title.status === ErrorState.BAD ? `: ${errorObj.title.error}` : ""}</span></span>
                     </span>
                     <input
                         type="text"
                         placeholder="Pick something funny"
                         required
-                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main")}
+                        onChange={(e:ChangeEvent<HTMLInputElement>)=>setTitleText(e.target.value)}
+                        value={titleText}
+                        ref={titleRef}
+                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border", 
+                        errorObj.title.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
+                        "")}
                     />
                 </div>
 
@@ -34,8 +152,9 @@ export default function NewTaskForm() {
                     <span className="flex items-center gap-2 opacity-70">
                         <span className={clsx(
                             "text-sm",
+                            errorObj.description.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaFileLines /></span>
-                        <span>Task description</span>
+                        <span>Task description <span className={"text-red-600"}>{errorObj.description.status === ErrorState.BAD ? `: ${errorObj.description.error}` : ""}</span></span>
                     </span>
 
                     <textarea
@@ -44,8 +163,13 @@ export default function NewTaskForm() {
                         cols={30}
                         placeholder="Enter a short description of the task..."
                         rows={5}
+                        ref={descriptionRef}
+                        onChange={(e:ChangeEvent<HTMLTextAreaElement>)=>setDescriptionText(e.target.value)}
+                        value={descriptionText}
                         style={{ resize: "none" }}
-                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border dark:border-white focus:dark:border-theme-main resize-none")}
+                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border", 
+                        errorObj.description.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
+                        "resize-none")}
                     ></textarea>
                 </div>
 
@@ -53,37 +177,79 @@ export default function NewTaskForm() {
                     <span className="flex items-center gap-2 opacity-70">
                         <span className={clsx(
                             "text-sm",
+                            errorObj.assignees.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaUserPlus /></span>
-                        <span>Task assignees <span className="opacity-50">(max of 3)</span></span>
+                        <span>Task assignees <span className="opacity-50">(max of 3) <span className={"text-red-600"}>{errorObj.assignees.status === ErrorState.BAD ? `: ${errorObj.assignees.error}` : ""}</span></span></span>
                     </span>
 
-                    <TaskAssigneeComponent />
+                    <TaskAssigneeComponent retrieveAssignees={setTaskAssignees} />
+                </div>
+                
+                <div className={clsx("flex flex-col gap-3")}>
+                    <span className="flex items-center gap-2 opacity-70">
+                        <span className={clsx(
+                            "text-sm",
+                            errorObj.priorityLevel.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
+                        )}><FaTriangleExclamation /></span>
+                        <span>Task priority level <span className={"text-red-600"}>{errorObj.priorityLevel.status === ErrorState.BAD ? `: ${errorObj.priorityLevel.error}` : ""}</span></span>
+                    </span>
+
+                    <RadioButtonGroup retrieveData={setPriorityLevel} options={priorityArray} />
                 </div>
             </div>
-        </form >
-    )
-}
 
-type Assignee = {
-    id: string,
-    avatar: string,
-    userName: string
+            <button
+                type="submit"
+                className={clsx(
+                    "outline-none w-full py-2 px-3 rounded-lg",
+                    canSubmit ? "" : "opacity-50 grayscale",
+                    loading ? "cursor-wait border border-theme-main grid place-items-center" : "hover:bg-theme-main focus:bg-theme-main hover:border-transparent border border-theme-main text-theme-main hover:text-theme-white-dark focus:text-theme-white-dark active:scale-90"
+                )}
+            >
+                <ShowElement.when isTrue={!loading}>
+                    <span>
+                        Create task
+                    </span>
+                </ShowElement.when>
+                <ShowElement.when isTrue={loading}>
+                    <span>
+                        <Image
+                            src={"https://taskify.sirv.com/three-dots.svg"}
+                            alt="loading"
+                            height={80}
+                            width={80}
+                            className="object-contain w-6 h-auto py-2 dark:invert-0 invert"
+                        />
+                    </span>
+                </ShowElement.when>
+            </button>
+        </form >
+    );
 }
 
 type AssigneeOption = Assignee & {
     selected: boolean
 }
 
-const TaskAssigneeComponent = () => {
+const TaskAssigneeComponent = ({retrieveAssignees}: {retrieveAssignees: Dispatch<SetStateAction<string[]>>}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [addedAssignees, setAddedAssignees] = useState<Assignee[]>([]);
     const [assigneesOptions, setAssigneesOptions] = useState<AssigneeOption[]>([]);
     const [assigneesOptionsDisplay, setAssigneesOptionsDisplay] = useState<AssigneeOption[]>([]);
+    const [inputOnFocus, setInputOnFocus] = useState<boolean>(false);
 
-    const debouncedSearchQuery = useDebounce(searchQuery, 500)
+    const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+    useEffect(() => {
+        const getIds: string[] = [];
+        addedAssignees.forEach((assignee) => {
+            getIds.push(assignee.id);
+        })
+        retrieveAssignees(getIds);
+    }, [addedAssignees, retrieveAssignees]);
     
     
-    const showPlatform = debouncedSearchQuery.length > 0;
+    const showPlatform = (debouncedSearchQuery.length > 0) || inputOnFocus;
     const reachedLimit = addedAssignees.length === 3;
 
     useEffect(() => {
@@ -165,15 +331,19 @@ const TaskAssigneeComponent = () => {
         }));
     }    
 
-
     useEffect(() => {
-        if (debouncedSearchQuery === "") return;
+        if (debouncedSearchQuery === "") {
+            if (inputOnFocus){
+                setAssigneesOptionsDisplay(assigneesOptions);
+                return;
+            }
+            return;
+        };
 
         const searchResult = assigneesOptions.filter(option => option.userName.toLowerCase().includes(debouncedSearchQuery.toLowerCase()));
         setAssigneesOptionsDisplay(searchResult);
-    }, [debouncedSearchQuery, assigneesOptions]);
+    }, [debouncedSearchQuery, assigneesOptions, inputOnFocus]);
     
-
 
     return (
         <div className='relative w-full group'>
@@ -194,13 +364,15 @@ const TaskAssigneeComponent = () => {
                         className={"border-none outline-none bg-transparent flex-1 py-1 px-2"}
                         placeholder='Add team'
                         value={searchQuery}
+                        onFocus={()=>setInputOnFocus(true)}
+                        onBlur={()=>setInputOnFocus(false)}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     />
                 </ShowElement.when>
             </div>
 
             <ShowElement.when isTrue={showPlatform}>
-                <div className={clsx("absolute left-0 mt-3 w-full p-3 rounded-xl flex flex-col gap-3 border border-white/25")}>
+                <div className={clsx("absolute z-10 backdrop-blur-sm bg-black/5 shadow left-0 mt-3 w-full p-3 rounded-xl flex flex-col gap-3 border border-white/25")}>
                     <div className="flex justify-between items-center pb-2 border-b border-b-white/10">
                         <span>Members</span>
                         <span onClick={clearSearchQuery} className={"text-sm hover:text-red-600 cursor-pointer"}>
@@ -309,6 +481,63 @@ const OptionTaskAssignee = ({ id, avatar, userName, selected, addFunc, removeFun
 
                 <div className='flex-1 w-full truncate'>{userName}</div>
             </div>
+        </div>
+    );
+}
+
+
+
+interface RadioButtonGroupProps {
+    options: Priority[];
+    retrieveData: Dispatch<SetStateAction<Priority>>;
+}
+
+const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({ options, retrieveData }) => {
+    function isPriority(value: any): value is Priority {
+        return Object.values(Priority).includes(value);
+    }
+
+    const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value as Priority;
+
+        if (isPriority(value)) {
+            retrieveData(value);
+        } else {
+            retrieveData(Priority.NONE);
+        }
+
+    }
+
+    return (
+        <div className="relative flex flex-wrap">
+            {options.map((option, index) => (
+                <div key={index} role="button" className="flex items-center w-full p-0 leading-tight transition-all rounded-lg outline-none text-start hover:bg-theme-main/10 hover:bg-opacity-80 hover:text-white focus:bg-theme-main focus:bg-opacity-80 focus:text-white active:bg-theme-main active:bg-opacity-80 active:text-white max-w-[50%]">
+                    <label htmlFor={`vertical-list-${option}`} className="flex gap-2 items-center w-full px-3 py-2 cursor-pointer">
+                        <div className="grid mr-3 place-items-center">
+                            <div className="inline-flex items-center">
+                                <label className="relative flex items-center p-0 rounded-full cursor-pointer" htmlFor={`vertical-list-${option}`}>
+                                    <input
+                                        name="vertical-list"
+                                        id={`vertical-list-${option}`}
+                                        type="radio"
+                                        onChange={handleRadioChange}
+                                        value={option}
+                                        className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-theme-main text-theme-main transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-theme-main before:opacity-0 before:transition-opacity checked:border-theme-main checked:before:bg-theme-main hover:before:opacity-0 peer"
+                                    />
+                                    <span className="absolute text-theme-main transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor">
+                                            <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
+                                        </svg>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <p className={clsx("block font-sans text-base antialiased font-medium leading-relaxed")}>
+                            {option}
+                        </p>
+                    </label>
+                </div>
+            ))}
         </div>
     );
 }

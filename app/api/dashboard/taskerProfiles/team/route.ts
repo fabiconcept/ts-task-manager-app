@@ -17,9 +17,10 @@ function isUserAccount(profile: any): profile is UserAccount {
     return (profile as UserAccount).userId !== undefined;
 }
 
-export const GET = async(request: Request)=>{
+export const GET = async()=>{
     const headerList = headers();
     const userId = headerList.get("userId");
+    const searchQuery = headerList.get("searchQuery");
 
     if (!userId) {
         apiResponse = {
