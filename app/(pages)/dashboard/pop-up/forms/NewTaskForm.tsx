@@ -5,11 +5,12 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState, useContext, useMemo, FormEvent } from 'react';
 import { FaFolderPlus, FaHeading, FaFileLines, FaUserPlus, FaX, FaTriangleExclamation } from 'react-icons/fa6';
-import { echoTaskerProfilesActiveId } from "@/Redux Store/Slices/profiles";
+import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
 import { AppDispatch } from "@/Redux Store";
 import { useDispatch, useSelector } from "react-redux";
 import { popContext } from "../PopUpDiv";
 import { ErrorObj } from '@/lib/Interfaces';
+import { echoDisplayList, updateTaskerTeam } from '@/Redux Store/Slices/profiles/team';
 
 type Assignee = {
     id: string,
@@ -20,9 +21,26 @@ type Assignee = {
 export default function NewTaskForm() {
     const { setCanClose, handleCloseModal } = useContext(popContext)!;
     const dispatch = useDispatch<AppDispatch>();
+    const activeId = useSelector(echoTaskerProfilesActiveId);
+    const { profiles } = useSelector(echoTaskerProfilesResponse);
+
+    useEffect(() => {
+        if  (!activeId) return;
+        if  (!profiles) return;
+
+        const activeProfile = profiles.find((profile) => profile.profile_id === activeId);
+
+        if (!activeProfile) return;
+
+        dispatch(updateTaskerTeam({
+            arr: activeProfile.team,
+            id: activeProfile.owner
+        }));
+    }, [profiles, activeId, dispatch]);
 
     const titleRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLTextAreaElement>(null);
+    const resetRef = useRef<HTMLButtonElement>(null);
 
     useEffect(()=>{
         if (!titleRef.current) return;
@@ -41,7 +59,6 @@ export default function NewTaskForm() {
     const [titleText, setTitleText] = useState<string>("");
     const [descriptionText, setDescriptionText] = useState<string>("");
     const [priorityLevel, setPriorityLevel] = useState<Priority>(Priority.NONE);
-    const activeId = useSelector(echoTaskerProfilesActiveId);
     
     const titleDebounce = useDebounce(titleText, 500);
     const descriptionDebounce = useDebounce(descriptionText, 500);
@@ -88,7 +105,7 @@ export default function NewTaskForm() {
             return;
         };
 
-        if(taskAssignees.length > 3) {
+        if(taskAssignees.length > 10) {
             setErrorObj((error)=>(
                 {...error, 
                     assignees: {
@@ -106,21 +123,38 @@ export default function NewTaskForm() {
 
     const [loading, setLoading]= useState(false);
 
+    useEffect(() => {
+        setCanClose(!loading);
+    }, [loading, setCanClose]);
+
     const canSubmit = useMemo(()=>{
         if (errorObj.title.status !== ErrorState.GOOD) return false;
         if (errorObj.description.status !== ErrorState.GOOD) return false;
         if (errorObj.assignees.status !== ErrorState.GOOD) return false;
+        if (loading) return false;
 
         return true;
-    }, [errorObj]);
+    }, [errorObj, loading]);
 
     const priorityArray: Priority[] = [Priority.NONE, Priority.LOW, Priority.MEDIUM, Priority.HIGH];
 
     const watchSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!canSubmit) return;
+        if (!resetRef.current) return;
         if (loading) return;
 
+        const payload = {
+            title: titleDebounce,
+            description: descriptionDebounce,
+            assignees: taskAssignees,
+            priorityLevel
+        }
+
+        console.log(payload);
+
+        resetRef.current.click();
+        setLoading(true);
     }
 
     return (
@@ -179,7 +213,7 @@ export default function NewTaskForm() {
                             "text-sm",
                             errorObj.assignees.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaUserPlus /></span>
-                        <span>Task assignees <span className="opacity-50">(max of 3) <span className={"text-red-600"}>{errorObj.assignees.status === ErrorState.BAD ? `: ${errorObj.assignees.error}` : ""}</span></span></span>
+                        <span>Task assignees <span className="opacity-50">(max of 10)</span> <span className={"text-red-600"}>{errorObj.assignees.status === ErrorState.BAD ? `: ${errorObj.assignees.error}` : ""}</span></span>
                     </span>
 
                     <TaskAssigneeComponent retrieveAssignees={setTaskAssignees} />
@@ -199,11 +233,11 @@ export default function NewTaskForm() {
             </div>
 
             <button
-                type="submit"
+                type={(canSubmit && !loading) ? "submit" : "button"}
                 className={clsx(
                     "outline-none w-full py-2 px-3 rounded-lg",
-                    canSubmit ? "" : "opacity-50 grayscale",
-                    loading ? "cursor-wait border border-theme-main grid place-items-center" : "hover:bg-theme-main focus:bg-theme-main hover:border-transparent border border-theme-main text-theme-main hover:text-theme-white-dark focus:text-theme-white-dark active:scale-90"
+                    canSubmit ? "hover:text-theme-white-dark active:scale-90 hover:bg-theme-main hover:border-transparent" : "opacity-50 grayscale cursor-default",
+                    loading ? "cursor-wait border border-theme-main grid place-items-center" : "border border-theme-main text-theme-main"
                 )}
             >
                 <ShowElement.when isTrue={!loading}>
@@ -223,6 +257,7 @@ export default function NewTaskForm() {
                     </span>
                 </ShowElement.when>
             </button>
+            <button type="reset" hidden ref={resetRef}></button>
         </form >
     );
 }
@@ -238,6 +273,29 @@ const TaskAssigneeComponent = ({retrieveAssignees}: {retrieveAssignees: Dispatch
     const [assigneesOptionsDisplay, setAssigneesOptionsDisplay] = useState<AssigneeOption[]>([]);
     const [inputOnFocus, setInputOnFocus] = useState<boolean>(false);
 
+    const platformRef = useRef<HTMLDivElement>(null);
+
+    const [displayList, setDisplayList] = useState<Assignee[]>([]);
+    const teamList = useSelector(echoDisplayList);
+
+    useEffect(() => {
+        if (!teamList) return;
+
+        const assigneeList: Assignee[] = []
+
+        teamList.map((team)=>{
+            const assigneeObj: Assignee = {
+                avatar: team.profileAvatar,
+                id: team.userId,
+                userName: team.name
+            };
+
+            assigneeList.push(assigneeObj);
+        });
+
+        setDisplayList(assigneeList);
+    }, [teamList]);
+    
     const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
     useEffect(() => {
@@ -248,50 +306,22 @@ const TaskAssigneeComponent = ({retrieveAssignees}: {retrieveAssignees: Dispatch
         retrieveAssignees(getIds);
     }, [addedAssignees, retrieveAssignees]);
     
-    
-    const showPlatform = (debouncedSearchQuery.length > 0) || inputOnFocus;
-    const reachedLimit = addedAssignees.length === 3;
+    const reachedLimit = addedAssignees.length === 10;
+    const showPlatform = ((debouncedSearchQuery.length > 0) || inputOnFocus) && !reachedLimit;
 
     useEffect(() => {
-        const randomAssignees: Assignee[] = [
-            {
-                id: "1",
-                avatar: "https://taskify.sirv.com/github-ico.svg",
-                userName: "GitHub"
-            },
-            {
-                id: "2",
-                avatar: "https://taskify.sirv.com/svg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDgiIGhlaWdodD0iNjQ4IiB2aWV3Qm94PSIwIDAgNjQ4IDY0OCIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ.svg",
-                userName: "User456"
-            },
-            {
-                id: "3",
-                avatar: "https://taskify.sirv.com/e5ac7718-1c7f-4fd3-acae-ca0a6e5265c5.jpg",
-                userName: "Halle"
-            },
-            {
-                id: "4",
-                avatar: "https://taskify.sirv.com/google-ico.png",
-                userName: "Google"
-            },
-            {
-                id: "5",
-                avatar: "https://taskify.sirv.com/859897c8-7c22-49ef-842f-c0a3954f9947.jpg",
-                userName: "Joker DC"
-            }
-        ];
-
         const newList: AssigneeOption[] = [];
-        randomAssignees.forEach((assignee)=>{
+        displayList.forEach((assignee)=>{
             newList.push({...assignee, selected: false});
         });
 
         setAssigneesOptions(newList);
-    }, []);
+    }, [displayList]);
 
     
     const clearSearchQuery = () => {
         setSearchQuery("");
+        setInputOnFocus(false);
     }
 
     const addAssigneeFunc = (id: string) => {
@@ -331,6 +361,10 @@ const TaskAssigneeComponent = ({retrieveAssignees}: {retrieveAssignees: Dispatch
         }));
     }    
 
+    const handleOnBlur = () =>{
+        setInputOnFocus(false);
+    }
+
     useEffect(() => {
         if (debouncedSearchQuery === "") {
             if (inputOnFocus){
@@ -365,22 +399,21 @@ const TaskAssigneeComponent = ({retrieveAssignees}: {retrieveAssignees: Dispatch
                         placeholder='Add team'
                         value={searchQuery}
                         onFocus={()=>setInputOnFocus(true)}
-                        onBlur={()=>setInputOnFocus(false)}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     />
                 </ShowElement.when>
             </div>
 
             <ShowElement.when isTrue={showPlatform}>
-                <div className={clsx("absolute z-10 backdrop-blur-sm bg-black/5 shadow left-0 mt-3 w-full p-3 rounded-xl flex flex-col gap-3 border border-white/25")}>
-                    <div className="flex justify-between items-center pb-2 border-b border-b-white/10">
+                <div onMouseLeave={handleOnBlur} ref={platformRef} className={clsx("absolute z-10 backdrop-blur-sm overflow-hidden bg-black/5 shadow left-0 mt-3 w-full rounded-xl flex flex-col gap-3 border border-white/25")}>
+                    <div className="flex justify-between items-center p-3 pb-2 border-b bg-white/10 border-b-white/10">
                         <span>Members</span>
                         <span onClick={clearSearchQuery} className={"text-sm hover:text-red-600 cursor-pointer"}>
                             <FaX />
                         </span>
                     </div>
                     <ShowElement.when isTrue={assigneesOptionsDisplay.length > 0}>
-                        <div className="grid overflow-y-auto max-h-[30rem]">
+                        <div className="grid overflow-y-auto max-h-[15rem] px-3">
                             {assigneesOptionsDisplay.map((assignee) => (
                                 <OptionTaskAssignee
                                     key={assignee.id}

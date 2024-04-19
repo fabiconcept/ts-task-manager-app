@@ -7,7 +7,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const  dummyUserAccounts: UserAccountDetails[] = [
     {
-        userId: "cnbbaknei9l1706619434965",
+        userId: "7o562ck8jl4k1712062438080",
         displayName: "Favour",
         profileAvatar: "",
         name: "Favour Tochukwu Ajokubi",
@@ -70,7 +70,7 @@ const  dummyUserAccounts: UserAccountDetails[] = [
         userId: "7",
         displayName: "Ella",
         profileAvatar: "",
-        name: "Ella Johnson",
+        name: "Ellazabeth5000 Johnson",
         email: "ella@example.com",
         projects: [],
         defaultProject: "",
