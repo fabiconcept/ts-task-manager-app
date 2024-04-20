@@ -16,6 +16,7 @@ interface PopContext  {
     setCanClose: Dispatch<SetStateAction<boolean>>,
     setIsDragingOver: Dispatch<SetStateAction<boolean>>,
     handleCloseModal: () => void,
+    popUpType: "" | PopupType,
 }
 
 export const popContext = createContext<PopContext | undefined>(undefined);
@@ -42,7 +43,7 @@ export default function PopUpDiv() {
     }
 
     return (
-        <popContext.Provider value={{setCanClose, handleCloseModal, setIsDragingOver}}>
+        <popContext.Provider value={{setCanClose, handleCloseModal, setIsDragingOver, popUpType}}>
             <ShowElement.when isTrue={isOpen}>
                 <section key={popUpId} className={clsx(
                     'fixed top-0 left-0 z-[50] h-screen w-screen grid place-items-center dark:bg-black/50 bg-white/50 backdrop-blur-sm',
@@ -68,7 +69,7 @@ export default function PopUpDiv() {
                         <ShowElement.when isTrue={popUpType === PopupType.EditProfile}>
                             <EditProfile />
                         </ShowElement.when>
-                        <ShowElement.when isTrue={popUpType === PopupType.NewTask}>
+                        <ShowElement.when isTrue={popUpType === PopupType.NewTask || popUpType === PopupType.EditTask}>
                             <NewTaskForm />
                         </ShowElement.when>
                     </div>

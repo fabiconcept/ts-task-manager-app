@@ -1,4 +1,4 @@
-import { ErrorState, Priority, TaskerStatus } from '@/lib/Enums';
+import { ErrorState, PopupType, Priority, TaskerStatus } from '@/lib/Enums';
 import { useDebounce } from '@/lib/Hooks/useDebouce';
 import ShowElement from '@/lib/utilities/Show';
 import clsx from 'clsx';
@@ -12,6 +12,8 @@ import { popContext } from "../PopUpDiv";
 import { ErrorObj, TaskerProjectTask } from '@/lib/Interfaces';
 import { echoDisplayList, updateTaskerTeam } from '@/Redux Store/Slices/profiles/team';
 import { generateUniqueId, realEscapeString } from '@/lib/utilities';
+import { createNewtask } from '@/lib/functions';
+import toast from 'react-hot-toast';
 
 type Assignee = {
     id: string,
@@ -20,7 +22,7 @@ type Assignee = {
 }
 
 export default function NewTaskForm() {
-    const { setCanClose, handleCloseModal } = useContext(popContext)!;
+    const { setCanClose, handleCloseModal, popUpType } = useContext(popContext)!;
     const dispatch = useDispatch<AppDispatch>();
     const activeId = useSelector(echoTaskerProfilesActiveId);
     const { profiles } = useSelector(echoTaskerProfilesResponse);
@@ -93,7 +95,7 @@ export default function NewTaskForm() {
                 {...error, 
                     description: {
                         status: ErrorState.BAD, 
-                        error: "Description is too long"
+                        error: " over"
                     }
                 }
             ));
@@ -114,7 +116,7 @@ export default function NewTaskForm() {
                 {...error, 
                     descriptionShort: {
                         status: ErrorState.BAD, 
-                        error: "Short description is too long"
+                        error: " over"
                     }
                 }
             ));
@@ -164,53 +166,75 @@ export default function NewTaskForm() {
 
     const priorityArray: Priority[] = [Priority.NONE, Priority.LOW, Priority.MEDIUM, Priority.HIGH];
 
-    const handleSubmit = () => {
-        const taskId = `task-${generateUniqueId()}`;
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1
-        const day = String(today.getDate()).padStart(2, '0');
+    const handleCreateTask = async () => {
+        setLoading(true);
+        
+        try{
+            const taskId = `task-${generateUniqueId()}`;
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1
+            const day = String(today.getDate()).padStart(2, '0');
+    
+            const todayString = `${year}-${month}-${day}`;
+    
+            const payload: TaskerProjectTask = {
+                task_id: taskId,
+                from_id: activeId,
+                assigneeCount: taskAssignees.length,
+                assigneeList: taskAssignees,
+                created_on: todayString,
+                desc: realEscapeString(descriptionDebounce),
+                shortDesc: realEscapeString(descriptionShortDebounce),
+                last_update: todayString,
+                priorityLevel: priorityLevel,
+                status: TaskerStatus.UPCOMING,
+                title: realEscapeString(titleDebounce),
+            }
 
-        const todayString = `${year}-${month}-${day}`;
+            await createNewtask(payload);
 
-        const payload: TaskerProjectTask = {
-            task_id: taskId,
-            from_id: activeId,
-            assigneeCount: taskAssignees.length,
-            assigneeList: taskAssignees,
-            created_on: todayString,
-            desc: realEscapeString(descriptionDebounce),
-            shortDesc: realEscapeString(descriptionShortDebounce),
-            last_update: todayString,
-            priorityLevel: priorityLevel,
-            status: TaskerStatus.UPCOMING,
-            title: realEscapeString(titleDebounce),
+            setLoading(false);
+            handleCloseModal();
+        }catch(error){
+            setLoading(false);
+            setErrorObj((error)=>({...error, title: {status: ErrorState.BAD, error: "Something went wrong!"}}));
+            titleRef.current?.focus();
+            console.error("Failed to create task because: ", error);
+            throw new Error(`${error}`);
         }
-        // createNewtask
     }
+
+    const handleUpdateTask = async () => { }
 
     const watchSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!canSubmit) return;
-        if (!resetRef.current) return;
         if (loading) return;
+        
+        if(popUpType === PopupType.NewTask){
+            const promise = handleCreateTask();
+            toast.promise(promise, {
+                loading: "Creating new task...",
+                success: "Task creation successful! ✅🚀",
+                error: "Failed to create task! ❌"
+            });
 
-        const payload = {
-            title: titleDebounce,
-            description: descriptionDebounce,
-            assignees: taskAssignees,
-            priorityLevel
+            return;
         }
 
-        console.log(payload);
+        const promise = handleUpdateTask();
+        toast.promise(promise, {
+            loading: "Updating task information...",
+            success: "Task updated successfully! ✅🚀",
+            error: "Failed to update task! ❌"
+        });
 
-        resetRef.current.click();
-        setLoading(true);
     }
 
     return (
         <form onSubmit={watchSubmit} className={clsx("flex flex-col gap-6 h-full")}>
-            <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10"> <span className="opacity-50 text-theme-main"><FaFolderPlus /></span> New task</div>
+            <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10"> <span className="opacity-50 text-theme-main"><FaFolderPlus /></span> {!!(popUpType === PopupType.NewTask) && "New"} {!!(popUpType === PopupType.EditTask) && "Edit"} task</div>
             <div className={"flex flex-1 overflow-y-auto flex-col gap-6 pb-6"}>
                 <div className={clsx("flex flex-col gap-3")}>
                     <span className="flex items-center gap-2 opacity-70">
@@ -239,7 +263,7 @@ export default function NewTaskForm() {
                             "text-sm",
                             errorObj.description.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaFileLines /></span>
-                        <span>Task Short description <span className={"text-red-600"}>{errorObj.descriptionShort.status === ErrorState.BAD ? `: ${errorObj.description.error}` : ""}</span></span>
+                        <span>Task Short description: <span className={`text-sm ${errorObj.descriptionShort.status === ErrorState.BAD ? "text-red-600": ""}`}>{100 - descriptionShortText.length} {errorObj.descriptionShort.status === ErrorState.BAD ? `${errorObj.descriptionShort.error}` : " left"}</span></span>
                     </span>
 
                     <textarea
@@ -264,7 +288,7 @@ export default function NewTaskForm() {
                             "text-sm",
                             errorObj.description.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
                         )}><FaFileLines /></span>
-                        <span>Task description <span className={"text-red-600"}>{errorObj.description.status === ErrorState.BAD ? `: ${errorObj.description.error}` : ""}</span></span>
+                        <span>Task description: <span className={`text-sm ${errorObj.description.status === ErrorState.BAD ? "text-red-600": ""}`}>{300 - descriptionText.length} {errorObj.description.status === ErrorState.BAD ? `${errorObj.description.error}` : " left"}</span></span>
                     </span>
 
                     <textarea
@@ -318,7 +342,7 @@ export default function NewTaskForm() {
             >
                 <ShowElement.when isTrue={!loading}>
                     <span>
-                        Create task
+                    {!!(popUpType === PopupType.NewTask) && "Create"} {!!(popUpType === PopupType.EditTask) && "Update"} task
                     </span>
                 </ShowElement.when>
                 <ShowElement.when isTrue={loading}>

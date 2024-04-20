@@ -233,7 +233,7 @@ export async function updateTaskerProfileInformation(payload: {profile_id: strin
 
 // Create a new task
 export async function createNewtask(payload: TaskerProjectTask): Promise<string> {
-    const sendRequest = await fetch("api/dashboard/taskerProfiles/task", {
+    const sendRequest = await fetch("/api/dashboard/taskerProfiles/task", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

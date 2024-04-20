@@ -57,4 +57,5 @@ export enum PopupType {
     EditProfile = "editProfile",
     NewProject = "newProject",
     NewTask = "newTask",
+    EditTask = "editTask",
 }
