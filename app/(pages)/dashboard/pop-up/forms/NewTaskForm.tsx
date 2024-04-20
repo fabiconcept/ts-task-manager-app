@@ -1,4 +1,4 @@
-import { ErrorState, Priority } from '@/lib/Enums';
+import { ErrorState, Priority, TaskerStatus } from '@/lib/Enums';
 import { useDebounce } from '@/lib/Hooks/useDebouce';
 import ShowElement from '@/lib/utilities/Show';
 import clsx from 'clsx';
@@ -9,8 +9,9 @@ import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux 
 import { AppDispatch } from "@/Redux Store";
 import { useDispatch, useSelector } from "react-redux";
 import { popContext } from "../PopUpDiv";
-import { ErrorObj } from '@/lib/Interfaces';
+import { ErrorObj, TaskerProjectTask } from '@/lib/Interfaces';
 import { echoDisplayList, updateTaskerTeam } from '@/Redux Store/Slices/profiles/team';
+import { generateUniqueId, realEscapeString } from '@/lib/utilities';
 
 type Assignee = {
     id: string,
@@ -50,6 +51,7 @@ export default function NewTaskForm() {
     const [errorObj, setErrorObj] =  useState<ErrorObj>({
         title: { status: ErrorState.IDLE, error: "" },
         description: { status: ErrorState.IDLE, error: "" },
+        descriptionShort: { status: ErrorState.IDLE, error: "" },
         priorityLevel: { status: ErrorState.IDLE, error: "" },
         assignees: { status: ErrorState.IDLE, error: "" },
     });
@@ -58,10 +60,12 @@ export default function NewTaskForm() {
 
     const [titleText, setTitleText] = useState<string>("");
     const [descriptionText, setDescriptionText] = useState<string>("");
+    const [descriptionShortText, setDescriptionShortText] = useState<string>("");
     const [priorityLevel, setPriorityLevel] = useState<Priority>(Priority.NONE);
     
     const titleDebounce = useDebounce(titleText, 500);
     const descriptionDebounce = useDebounce(descriptionText, 500);
+    const descriptionShortDebounce = useDebounce(descriptionShortText, 500);
 
     useEffect(() => {
         if(!titleDebounce) {
@@ -98,6 +102,27 @@ export default function NewTaskForm() {
 
         setErrorObj((error)=>({...error, description: {status: ErrorState.GOOD, error: ""}}));
     }, [descriptionDebounce]);
+
+    useEffect(() => {
+        if(!descriptionShortDebounce) {
+            setErrorObj((error)=>({...error, descriptionShort: {status: ErrorState.IDLE, error: ""}}));
+            return;
+        };
+
+        if(descriptionShortDebounce.length > 100) {
+            setErrorObj((error)=>(
+                {...error, 
+                    descriptionShort: {
+                        status: ErrorState.BAD, 
+                        error: "Short description is too long"
+                    }
+                }
+            ));
+            return;
+        };
+
+        setErrorObj((error)=>({...error, descriptionShort: {status: ErrorState.GOOD, error: ""}}));
+    }, [descriptionShortDebounce]);
     
     useEffect(() => {
         if(taskAssignees.length === 0) {
@@ -130,6 +155,7 @@ export default function NewTaskForm() {
     const canSubmit = useMemo(()=>{
         if (errorObj.title.status !== ErrorState.GOOD) return false;
         if (errorObj.description.status !== ErrorState.GOOD) return false;
+        if (errorObj.descriptionShort.status !== ErrorState.GOOD) return false;
         if (errorObj.assignees.status !== ErrorState.GOOD) return false;
         if (loading) return false;
 
@@ -137,6 +163,31 @@ export default function NewTaskForm() {
     }, [errorObj, loading]);
 
     const priorityArray: Priority[] = [Priority.NONE, Priority.LOW, Priority.MEDIUM, Priority.HIGH];
+
+    const handleSubmit = () => {
+        const taskId = `task-${generateUniqueId()}`;
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1
+        const day = String(today.getDate()).padStart(2, '0');
+
+        const todayString = `${year}-${month}-${day}`;
+
+        const payload: TaskerProjectTask = {
+            task_id: taskId,
+            from_id: activeId,
+            assigneeCount: taskAssignees.length,
+            assigneeList: taskAssignees,
+            created_on: todayString,
+            desc: realEscapeString(descriptionDebounce),
+            shortDesc: realEscapeString(descriptionShortDebounce),
+            last_update: todayString,
+            priorityLevel: priorityLevel,
+            status: TaskerStatus.UPCOMING,
+            title: realEscapeString(titleDebounce),
+        }
+        // createNewtask
+    }
 
     const watchSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -180,6 +231,31 @@ export default function NewTaskForm() {
                         errorObj.title.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
                         "")}
                     />
+                </div>
+
+                <div className={clsx("flex flex-col gap-3")}>
+                    <span className="flex items-center gap-2 opacity-70">
+                        <span className={clsx(
+                            "text-sm",
+                            errorObj.description.status === ErrorState.BAD ? "text-red-600" : "text-theme-main"
+                        )}><FaFileLines /></span>
+                        <span>Task Short description <span className={"text-red-600"}>{errorObj.descriptionShort.status === ErrorState.BAD ? `: ${errorObj.description.error}` : ""}</span></span>
+                    </span>
+
+                    <textarea
+                        name=""
+                        id=""
+                        cols={30}
+                        placeholder="Enter a short description of the task..."
+                        rows={5}
+                        ref={descriptionRef}
+                        onChange={(e:ChangeEvent<HTMLTextAreaElement>)=>setDescriptionShortText(e.target.value)}
+                        value={descriptionShortText}
+                        style={{ resize: "none" }}
+                        className={clsx("bg-transparent outline-none w-full py-2 px-3 rounded-lg border", 
+                        errorObj.descriptionShort.status === ErrorState.BAD ? "border-red-600" : "dark:border-white focus:dark:border-theme-main",
+                        "resize-none")}
+                    ></textarea>
                 </div>
 
                 <div className={clsx("flex flex-col gap-3")}>

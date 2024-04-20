@@ -1,5 +1,5 @@
 import { SortBy } from "../Enums";
-import { TaskerProfile, TaskerProject, UserAccountDetails} from "../Interfaces";
+import { TaskerProfile, TaskerProject, TaskerProjectTask, UserAccountDetails} from "../Interfaces";
 import { TeamMember, ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
 import { CompanyTag } from "../Types/dashboard";
 
@@ -215,6 +215,26 @@ export async function inviteTeamMember(payload: { email: string, profile_id: str
 export async function updateTaskerProfileInformation(payload: {profile_id: string, name: string, avatar: string, bio: string}): Promise<string>{
     const sendRequest = await fetch("api/dashboard/taskerProfiles", {
         method: "put",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({payload}),
+    });
+
+    const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
+    const { status, message } = data;
+
+    if (status === 400) {
+        throw new Error(message);
+    }
+
+    return message;
+}
+
+// Create a new task
+export async function createNewtask(payload: TaskerProjectTask): Promise<string> {
+    const sendRequest = await fetch("api/dashboard/taskerProfiles/task", {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },

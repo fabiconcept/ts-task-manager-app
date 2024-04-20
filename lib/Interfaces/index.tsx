@@ -82,7 +82,7 @@ export interface TaskerProjectTask {
     priorityLevel: Priority;
     status: TaskerStatus;
     assigneeCount: number | 0;
-    assigneeList: TaskTeamProfile[];
+    assigneeList: string[];
     created_on: string;
     last_update: string;
 }
