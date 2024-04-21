@@ -6,7 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import { FaEllipsis } from 'react-icons/fa6';
 import { CiClock1 } from 'react-icons/ci';
-import ActiveMember from '../../sub components/Elements/ActiveMember';
+import ActiveMember from '@/app/(pages)/dashboard/components/sub components/Elements/ActiveMember';
 
 type ItemsType = {
     id: UniqueIdentifier;

@@ -300,7 +300,7 @@ export default function Home() {
     }
 
     return (
-        <div className="mt-4">
+        <div className="mt-4 px-4">
             <div className="w-full flex justify-end px-6">
                 <div onClick={openNewTaskModal} className="rounded-md py-3 px-6 border border-theme-main hover:border-transparent hover:bg-theme-main text-theme-main dark:hover:text-theme-white-dark active:scale-90 cursor-pointer flex items-center justify-center gap-2 active:opacity-50">
                     <FaPlus />

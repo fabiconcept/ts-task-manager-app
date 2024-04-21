@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Project({ data }: { data: TaskerProject }) {
     return (
-        <Link href={`/dashboard/project/${data.project_id}`} className="flex items-center px-4 p-2 border-l-[4px] border-transparent rounded dark:bg-white/5 bg-black/5 hover:border-theme-main border cursor-pointer select-none active:scale-90 active:opacity-50">
+        <Link href={`/dashboard/project/${data.project_id}`} className="flex items-center px-4 p-2 border-l-[8px] border-transparent rounded dark:bg-white/5 bg-black/5 hover:border-theme-main border cursor-pointer select-none active:scale-90 active:opacity-50">
             <div className="flex-1 flex flex-col">
                 <p className="text-sm font-semibold max-w-[80%] truncate">{data.title}</p>
                 <ShowElement.when isTrue={data.membersCount > 0}>

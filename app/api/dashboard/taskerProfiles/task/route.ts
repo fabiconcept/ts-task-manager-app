@@ -73,7 +73,7 @@ export const POST = async (request: Request, response: Response) => {
 
         if (!getProject) throw new Error("An unexpected error occured!");
 
-        const membersList = getProject.membersList
+        const membersList = getProject.membersList;
 
         const nonMemebers = findNonMembers(membersList, payload.assigneeList);
 
