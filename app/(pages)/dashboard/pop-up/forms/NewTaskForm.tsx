@@ -14,6 +14,7 @@ import { echoDisplayList, updateTaskerTeam } from '@/Redux Store/Slices/profiles
 import { generateUniqueId, realEscapeString } from '@/lib/utilities';
 import { createNewtask } from '@/lib/functions';
 import toast from 'react-hot-toast';
+import { useParams } from 'next/navigation';
 
 type Assignee = {
     id: string,
@@ -24,6 +25,7 @@ type Assignee = {
 export default function NewTaskForm() {
     const { setCanClose, handleCloseModal, popUpType } = useContext(popContext)!;
     const dispatch = useDispatch<AppDispatch>();
+    const param = useParams<{ project_id: string }>();
     const activeId = useSelector(echoTaskerProfilesActiveId);
     const { profiles } = useSelector(echoTaskerProfilesResponse);
 
@@ -180,7 +182,7 @@ export default function NewTaskForm() {
     
             const payload: TaskerProjectTask = {
                 task_id: taskId,
-                from_id: activeId,
+                from_id: param.project_id,
                 assigneeCount: taskAssignees.length,
                 assigneeList: taskAssignees,
                 created_on: todayString,
