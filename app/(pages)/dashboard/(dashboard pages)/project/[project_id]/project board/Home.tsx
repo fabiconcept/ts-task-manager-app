@@ -16,34 +16,74 @@ export default function Home() {
     const dispatch = useDispatch<AppDispatch>();
     const [containers, setContainers] = useState<DNDType[]>([
         {
-            id: `container-0fe1ec50-5ee6-55a4-8902-0dab6183acab`,
+            id: "container-0fe1ec50-5ee6-55a4-8902-0dab6183acab",
             title: "Upcoming",
             items: [
                 {
-                    id: `item-d88525db-2917-554d-b7b5-042275252475`,
-                    title: "Item 1"
+                    id: "item-d88525db-2917-554d-b7b5-042275252475",
+                    title: "Item 1",
                 },
-            ]
+                {
+                    id: "item-001",
+                    title: "Item 4",
+                },
+                {
+                    id: "item-002",
+                    title: "Item 5",
+                },
+                {
+                    id: "item-003",
+                    title: "Contains A",
+                },
+            ],
         },
         {
-            id: `container-06ab7ac8-25e1-5e69-a937-c76f43112351`,
+            id: "container-06ab7ac8-25e1-5e69-a937-c76f43112351",
             title: "Pending",
             items: [
                 {
-                    id: `item-54090e9c-dd95-5839-8561-d1a2b0b2285c`,
-                    title: "Item 2"
+                    id: "item-54090e9c-dd95-5839-8561-d1a2b0b2285c",
+                    title: "Item 2",
                 },
-            ]
+                {
+                    id: "item-004",
+                    title: "Contains B",
+                },
+                {
+                    id: "item-005",
+                    title: "Item 6",
+                },
+                {
+                    id: "item-006",
+                    title: "Item 7",
+                },
+            ],
         },
         {
-            id: `container-06ab7ac8-25e1-5e69-a937-df`,
+            id: "container-06ab7ac8-25e1-5e69-a937-df",
             title: "Complete",
             items: [
                 {
-                    id: `item-54090e9c-dd95-5839-8561-sd`,
-                    title: "Item 3"
+                    id: "item-54090e9c-dd95-5839-8561-sd",
+                    title: "Item 3",
                 },
-            ]
+                {
+                    id: "item-007",
+                    title: "Contains C",
+                },
+                {
+                    id: "item-008",
+                    title: "Item 8",
+                },
+                {
+                    id: "item-009",
+                    title: "Item 9",
+                },
+                {
+                    id: "item-010",
+                    title: "Item 10",
+                },
+            ],
         },
     ]);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);

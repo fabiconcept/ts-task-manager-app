@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { FaEllipsis } from 'react-icons/fa6';
 import { CiClock1 } from 'react-icons/ci';
 import ActiveMember from '@/app/(pages)/dashboard/components/sub components/Elements/ActiveMember';
+import { motion, AnimatePresence, useAnimation, Variants } from "framer-motion";
 
 type ItemsType = {
     id: UniqueIdentifier;
@@ -27,6 +28,29 @@ const Items = ({ id, title }: ItemsType) => {
             type: 'item',
         },
     });
+    const [expanded, setExpanded] = useState<boolean>(false);
+    const controls = useAnimation();
+
+    const variants: Variants = {
+        open: { opacity: 1, height: "auto",  paddingLeft: "1rem", paddingRight: "1rem", paddingBottom: "1rem" },
+        collapsed: { opacity: 0, height: 0,  paddingLeft: "0", paddingRight: "0", paddingBottom: "0" }
+    }
+    const framerTransition = {
+        duration: 0.5,
+        ease: [0.04, 0.62, 0.23, 0.98]
+    }
+
+    const handleToggle = () => {
+        setExpanded(!expanded);
+    }
+
+    React.useEffect(() => {
+        if (expanded) {
+            controls.start('open');
+            return;
+        }
+        controls.start('collapsed');
+    }, [expanded, controls]);
 
     const [openMenu, setOpenMenu] = useState<boolean>(false);
 
@@ -39,24 +63,25 @@ const Items = ({ id, title }: ItemsType) => {
                 transform: CSS.Translate.toString(transform),
             }}
             className={clsx(
-                'p-4 dark:bg-theme-white-dark/50 bg-theme-white/50 dark:shadow-md shadow-[0_5px_25px_rgb(0,0,0,0.25)] rounded-md w-full border border-theme-main/25 hover:border-theme-main/80 relative overflow-hidden',
+                'dark:bg-theme-white-dark/50 bg-theme-white/50 dark:shadow-md shadow-[0_5px_25px_rgb(0,0,0,0.25)] rounded-md w-full border border-theme-main/25 hover:border-theme-main/80 relative',
                 isDragging && 'rounded-none border-black opacity-25',
                 !isDragging && 'dark:custom-radial-gradient custom-radial-gradient backdrop-blur',
             )}
         >
-            <div className={clsx("flex flex-col gap-4", isDragging && 'opacity-0',)}>
+            <div className={clsx("flex flex-col", isDragging && 'opacity-0',)}>
                 {/* Drag Handle */}
                 <div className="cursor-move absolute top-0 left-0 h-full w-full z-10" {...listeners}>
-
                 </div>
                 {/* header content */}
-                <div className='flex justify-between items-center'>
-                    <div className='relative z-20 max-w-[90%] truncate text-xl font-semibold flex items-center gap-1 text-theme-main '>
+                <div className='flex justify-between items-center relative p-4'>
+                    <div className='relative z-20 max-w-[90%] truncate text-xl font-semibold flex items-center gap-1 text-theme-main' onClick={handleToggle} title={expanded ? "Click to collapse" : "Click to expand"}>
                         Website Animation
                     </div>
+                    
                     <div className='relative z-60'>
                         <div className='relative z-10 cursor-pointer hover:bg-theme-text/50 bg-theme-text/5 active:scale-90 p-2 rounded-full' onClick={()=>setOpenMenu(!openMenu)}><FaEllipsis /></div>
 
+                        {/* Drop menu */}
                         <div className={clsx(
                             "origin-top-right absolute z-20 top-6 right-2 text-sm rounded-md p-2 dark:bg-theme-white-dark/90 bg-theme-white/90 grid gap-2 backdrop-blur",
                             !openMenu && "scale-0 opacity-0"
@@ -86,26 +111,33 @@ const Items = ({ id, title }: ItemsType) => {
                     </div>
                 </div>
 
-                
-                {/* text content */}
-                <div className='z-[2] relative flex flex-col'>
-                    <span className='font-bold'>Details:</span>
-                    <span className='opacity-70 font-semibold'>{title} Create a Prototype Mobile for Get Notification in Principle.</span>
-                </div>
+                <motion.div
+                    className='flex flex-col gap-3 overflow-hidden'
+                    initial="collapsed"
+                    animate={controls}
+                    variants={variants}
+                    transition={framerTransition}
+                >
+                    {/* text content */}
+                    <div className='z-[2] relative flex flex-col'>
+                        <span className='font-bold'>Details:</span>
+                        <span className='opacity-70 font-semibold'>{title} Create a Prototype Mobile for Get Notification in Principle.</span>
+                    </div>
 
-                {/* footer content */}
-                <div className='items-center flex justify-between'>
-                    <div className='p-1 flex items-center gap-1 text-sm bg-theme-text/25 rounded'>
-                        <span><CiClock1 /></span>
-                        <span>Mar 26</span>
+                    {/* footer content */}
+                    <div className='items-center flex justify-between'>
+                        <div className='p-1 flex items-center gap-1 text-sm bg-theme-text/25 rounded'>
+                            <span><CiClock1 /></span>
+                            <span>Mar 26</span>
+                        </div>
+                        <div className='flex'>
+                            <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full'><ActiveMember type='small' key={1} /></div>
+                            <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full -ml-3'><ActiveMember type='small' key={2} /></div>
+                            <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full -ml-3'><ActiveMember type='small' key={3} /></div>
+                            <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full -ml-3 aspect-square h-8 bg-gray-300 text-sm text-theme-white-dark grid place-items-center font-semibold'>5+</div>
+                        </div>
                     </div>
-                    <div className='flex'>
-                        <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full'><ActiveMember type='small' key={1} /></div>
-                        <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full -ml-3'><ActiveMember type='small' key={2} /></div>
-                        <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full -ml-3'><ActiveMember type='small' key={3}/></div>
-                        <div className='relative border-2 dark:border-theme-white-dark border-theme-white rounded-full -ml-3 aspect-square h-8 bg-gray-300 text-sm text-theme-white-dark grid place-items-center font-semibold'>5+</div>
-                    </div>
-                </div>
+                </motion.div>
 
             </div>
         </div>
