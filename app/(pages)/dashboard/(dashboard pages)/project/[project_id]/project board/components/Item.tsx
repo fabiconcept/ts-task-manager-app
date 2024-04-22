@@ -75,7 +75,7 @@ const Items = ({ id, title }: ItemsType) => {
                 {/* header content */}
                 <div className='flex justify-between items-center relative p-4'>
                     <div className='relative z-20 max-w-[90%] truncate text-xl font-semibold flex items-center gap-1 text-theme-main' onClick={handleToggle} title={expanded ? "Click to collapse" : "Click to expand"}>
-                        Website Animation
+                        {title}
                     </div>
                     
                     <div className='relative z-60'>
@@ -89,7 +89,7 @@ const Items = ({ id, title }: ItemsType) => {
                             <div className='flex items-center gap-2 w-[6rem] px-2'>
                                 <div className="content scale-75">
                                     <label className="checkBox">
-                                        <input id="ch1" type="checkbox" />
+                                        <input id="ch2" type="checkbox" />
                                         <div className="transition"></div>
                                     </label>
                                 </div>

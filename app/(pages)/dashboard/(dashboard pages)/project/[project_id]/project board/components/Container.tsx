@@ -41,12 +41,12 @@ const Container = ({
             }}
             title={description}
             className={clsx(
-                'w-full h-full p-4 flex flex-col gap-y-4',
+                'w-full h-full p-2 flex flex-col gap-y-4 border border-white/10 rounded-lg',
             )}
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center rounded-md justify-between p-2 dark:bg-white/10 bg-black/10 w-full">
-                    <h1 className="font-semibold px-2">{title}</h1>
+                    <h1 className="font-semibold px-2 capitalize">{title}</h1>
                     <div className='w-7 h-7 grid place-items-center rounded text-white bg-black dark:invert'>{itemsCount}</div>
                 </div>
             </div>

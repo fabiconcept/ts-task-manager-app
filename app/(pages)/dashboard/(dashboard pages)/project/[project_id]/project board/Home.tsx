@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
 import { PopupType } from "@/lib/Enums";
 import { openModal } from "@/Redux Store/Slices/Popup Slice";
+import ShowElement from "@/lib/utilities/Show";
+import { findItemTitle, findValueOfItems } from "@/lib/DnD Helper";
 
 export default function Home() {
     const dispatch = useDispatch<AppDispatch>();
@@ -29,11 +31,11 @@ export default function Home() {
                 },
                 {
                     id: "item-002",
-                    title: "Item 5",
+                    title: "Item 7",
                 },
                 {
                     id: "item-003",
-                    title: "Contains A",
+                    title: "Item 10",
                 },
             ],
         },
@@ -47,15 +49,15 @@ export default function Home() {
                 },
                 {
                     id: "item-004",
-                    title: "Contains B",
+                    title: "Item 5",
                 },
                 {
                     id: "item-005",
-                    title: "Item 6",
+                    title: "Item 8",
                 },
                 {
                     id: "item-006",
-                    title: "Item 7",
+                    title: "Item 11",
                 },
             ],
         },
@@ -69,44 +71,20 @@ export default function Home() {
                 },
                 {
                     id: "item-007",
-                    title: "Contains C",
+                    title: "Item 6",
                 },
                 {
                     id: "item-008",
-                    title: "Item 8",
-                },
-                {
-                    id: "item-009",
                     title: "Item 9",
                 },
                 {
-                    id: "item-010",
-                    title: "Item 10",
+                    id: "item-009",
+                    title: "Item 12",
                 },
             ],
         },
     ]);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-
-    // Helper function 
-    function findValueOfItems(id: UniqueIdentifier | undefined, type: string) {
-        if (type === 'container') {
-            return containers.find((item) => item.id === id);
-        }
-        if (type === 'item') {
-            return containers.find((container) =>
-                container.items.find((item) => item.id === id),
-            );
-        }
-    }
-
-    const findItemTitle = (id: UniqueIdentifier | undefined) => {
-        const container = findValueOfItems(id, 'item');
-        if (!container) return '';
-        const item = container.items.find((item) => item.id === id);
-        if (!item) return '';
-        return item.title;
-    };
 
     // DND Handlers
     const sensors = useSensors(
@@ -134,8 +112,8 @@ export default function Home() {
           active.id !== over.id
         ) {
           // Find the active container and over container
-          const activeContainer = findValueOfItems(active.id, 'item');
-          const overContainer = findValueOfItems(over.id, 'item');
+          const activeContainer = findValueOfItems(active.id, 'item', containers);
+          const overContainer = findValueOfItems(over.id, 'item', containers);
     
           // If the active or over container is not found, return
           if (!activeContainer || !overContainer) return;
@@ -190,8 +168,8 @@ export default function Home() {
           active.id !== over.id
         ) {
           // Find the active and over container
-          const activeContainer = findValueOfItems(active.id, 'item');
-          const overContainer = findValueOfItems(over.id, 'container');
+          const activeContainer = findValueOfItems(active.id, 'item', containers);
+          const overContainer = findValueOfItems(over.id, 'container', containers);
     
           // If the active or over container is not found, return
           if (!activeContainer || !overContainer) return;
@@ -253,8 +231,8 @@ export default function Home() {
             active.id !== over.id
         ) {
             // Find the active and over container
-            const activeContainer = findValueOfItems(active.id, 'item');
-            const overContainer = findValueOfItems(over.id, 'item');
+            const activeContainer = findValueOfItems(active.id, 'item', containers);
+            const overContainer = findValueOfItems(over.id, 'item', containers);
 
             // If the active or over container is not found, return
             if (!activeContainer || !overContainer) return;
@@ -306,8 +284,8 @@ export default function Home() {
             active.id !== over.id
         ) {
             // Find the active and over container
-            const activeContainer = findValueOfItems(active.id, 'item');
-            const overContainer = findValueOfItems(over.id, 'container');
+            const activeContainer = findValueOfItems(active.id, 'item', containers);
+            const overContainer = findValueOfItems(over.id, 'container', containers);
 
             // If the active or over container is not found, return
             if (!activeContainer || !overContainer) return;
@@ -340,14 +318,14 @@ export default function Home() {
     }
 
     return (
-        <div className="mt-4 px-4">
-            <div className="w-full flex justify-end px-6">
-                <div onClick={openNewTaskModal} className="rounded-md py-3 px-6 border border-theme-main hover:border-transparent hover:bg-theme-main text-theme-main dark:hover:text-theme-white-dark active:scale-90 cursor-pointer flex items-center justify-center gap-2 active:opacity-50">
+        <div className="mt-4 px-4 pb-4 flex flex-col gap-3">
+            <div className="w-full flex justify-end px-2">
+                <div onClick={openNewTaskModal} className="rounded-md py-3 px-6 border border-theme-main hover:border-transparent hover:bg-theme-main text-theme-main dark:hover:text-theme-white-dark active:scale-90 cursor-pointer flex items-center justify-center gap-2 active:opacity-50 hover:shadow-xl hover:shadow-white/10">
                     <FaPlus />
                     <span className={"font-semibold"}>New task</span>
                 </div>
             </div>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(clamp(20rem,30%,40rem),1fr))]">
+            <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(clamp(20rem,30%,40rem),1fr))]">
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
@@ -360,9 +338,14 @@ export default function Home() {
                             <Container description={""} key={container.id} id={container.id as string} title={container.title} itemsCount={container.items.length} >
                                 <SortableContext items={container.items.map((i) => i.id)}>
                                     <div className="flex flex-col items-start gap-y-4">
-                                        {container.items.map((item) => (
-                                            <Items key={item.id} id={item.id} title={item.title} />
-                                        ))}
+                                        <ShowElement.when isTrue={container.items.length > 0}>
+                                            {container.items.map((item) => (
+                                                <Items key={item.id} id={item.id} title={item.title} />
+                                            ))}
+                                        </ShowElement.when>
+                                        <ShowElement.when isTrue={container.items.length === 0}>
+                                            <p className="px-8 text-xl font-thin opacity-10 text-center pointer-events-none w-full">No item</p>
+                                        </ShowElement.when>
                                     </div>
                                 </SortableContext>
                             </Container>
@@ -371,7 +354,7 @@ export default function Home() {
                     <DragOverlay>
                         {
                             activeId && activeId.toString().includes("item") && (
-                                <Items key={activeId} id={activeId} title={findItemTitle(activeId)} />
+                                <Items key={activeId} id={activeId} title={findItemTitle(activeId, containers)} />
                             )
                         }
                     </DragOverlay>

@@ -34,8 +34,8 @@ export enum Priority {
 }
 
 export enum TaskerStatus {
-    UPCOMING = "upcoming",
     PENDING = "pending",
+    INPROGRESS = "InProgress",
     COMPLETE = "complete"
 }
 
