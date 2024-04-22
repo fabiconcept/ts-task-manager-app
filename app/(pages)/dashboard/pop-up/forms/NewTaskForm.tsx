@@ -15,6 +15,7 @@ import { generateUniqueId, realEscapeString } from '@/lib/utilities';
 import { createNewtask } from '@/lib/functions';
 import toast from 'react-hot-toast';
 import { useParams } from 'next/navigation';
+import { addNewTask } from '@/Redux Store/Slices/profiles/projects/tasks';
 
 type Assignee = {
     id: string,
@@ -190,13 +191,14 @@ export default function NewTaskForm() {
                 shortDesc: realEscapeString(descriptionShortDebounce),
                 last_update: todayString,
                 priorityLevel: priorityLevel,
-                status: TaskerStatus.UPCOMING,
+                status: TaskerStatus.PENDING,
                 title: realEscapeString(titleDebounce),
             }
 
             await createNewtask(payload);
 
             setLoading(false);
+            dispatch(addNewTask(payload));
             handleCloseModal();
         }catch(error){
             setLoading(false);

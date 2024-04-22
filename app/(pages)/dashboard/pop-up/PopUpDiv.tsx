@@ -57,7 +57,7 @@ export default function PopUpDiv() {
                         </div>
                     </ShowElement.when>
                     <div className={clsx(
-                        "absolute z-20 sm:top-0 sm:bottom-auto sm:right-0 sm:h-full top-auto bottom-0 right-1/2 -translate-x-1/2 h-[90vh] rounded-tl-xl rounded-bl-xl p-6 sm:w-[25rem] w-full border-l-2 dark:border-l-white border-l-black dark:bg-theme-white-dark bg-theme-white shadow-xl sm:translate-x-[100%] translate-y-[100%]",
+                        "absolute z-20 sm:top-0 sm:bottom-auto sm:right-0 sm:h-full top-auto bottom-0 h-[90vh] sm:rounded-tl-none rounded-tl-xl sm:rounded-bl-xl sm:rounded-tr-none rounded-tr-xl p-6 sm:w-[25rem] w-full sm:border-l-2 sm:border-t-0 border-t-2 sm:dark:border-l-white dark:border-t-white border-l-black dark:bg-theme-white-dark bg-theme-white shadow-xl sm:translate-x-[100%] translate-y-[100%]",
                         modalState ? "sm:animate-openModal animate-md-openModal": "sm:animate-closeModal animate-md-closeModal"
                     )}>
                         <ShowElement.when isTrue={popUpType === PopupType.NewProject}>

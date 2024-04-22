@@ -44,27 +44,32 @@ export default function Home() {
         if(tasksList.length === 0) return;
 
         setContainers((prev) => {
-            const tempContainers = prev;
+            const newContainers = prev.map((container) => ({
+                ...container,
+                items: [...container.items], // Deep copy to avoid mutation
+            }));
 
             tasksList.forEach((task) => {
-                switch (task.status) {
-                    case TaskerStatus.PENDING:
-                        tempContainers[0].items.push({...task, id: `item-${task.task_id}`});
-                        break;
-                    case TaskerStatus.INPROGRESS:
-                        tempContainers[1].items.push({...task, id: `item-${task.task_id}`});
-                        break;
-                    case TaskerStatus.COMPLETE:
-                        tempContainers[2].items.push({...task, id: `item-${task.task_id}`});
-                        break;
+                const itemWithId = { ...task, id: `item-${task.task_id}` };
 
-                    default:
-                        tempContainers[0].items.push({...task, id: `item-${task.task_id}`});
-                        break;
+                // Determine which container should get the task
+                const targetContainer = newContainers.find((container) => {
+                    return container.containerName === task.status;
+                });
+
+                if (targetContainer) {
+                    // Check if the item already exists in the container to avoid duplicates
+                    const itemExists = targetContainer.items.some(
+                        (item) => item.task_id === task.task_id
+                    );
+
+                    if (!itemExists) {
+                        targetContainer.items.push(itemWithId);
+                    }
                 }
-            })
+            });
 
-            return tempContainers;
+            return newContainers; // Return the updated containers array
         });
     }, [tasksList]);
 
@@ -331,7 +336,7 @@ export default function Home() {
                                         <ShowElement.when isTrue={tasksListLoading === loadingState.PENDING}>
                                             <p className="px-8 text-lg opacity-20 text-center pointer-events-none w-full">
                                                 <span className="animate-pulse">
-                                                    ...loading items...
+                                                    loading items
                                                 </span>
                                             </p>
                                         </ShowElement.when>
