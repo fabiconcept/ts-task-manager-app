@@ -3,7 +3,7 @@ import { AuthResponseType, TaskerStatus } from "../Enums";
 import { Server as NetServer, Socket } from "net";
 import { Server as SocketIOServer } from "socket.io";
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { TaskerProjectTask } from "../Interfaces";
+import { TaskerProjectTask, TaskerProjectTaskWithId } from "../Interfaces";
 
 export type RequestBody = {
     name: string;
@@ -65,19 +65,12 @@ export type UserProject = {
     last_used: string;
 }
 
-// DND Kit
-
-export type DNDType = {
+// Project Board
+export type ContainerGroup = {
     id: UniqueIdentifier;
     containerName: string;
-    items: { id: UniqueIdentifier, title: string }[];
+    items: TaskerProjectTaskWithId[];
 };
-
-export type ContainerGroup = {
-    id: UniqueIdentifier,
-    containerName: TaskerStatus,
-    items: TaskerProjectTask<UniqueIdentifier>[],
-}
 
 export default interface ContainerProps {
     id: UniqueIdentifier;

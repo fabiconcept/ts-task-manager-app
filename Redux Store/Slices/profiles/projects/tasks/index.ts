@@ -1,6 +1,5 @@
 import { loadingState, Priority, TaskerStatus } from "@/lib/Enums";
-import { TaskerProjectTask } from "@/lib/Interfaces";
-import { ContainerGroup } from "@/lib/Types";
+import { TaskerProjectTask, TaskerProjectTaskWithId } from "@/lib/Interfaces";
 import { RootState } from "@/Redux Store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -75,81 +74,27 @@ const dummyData: TaskerProjectTask[] = [
 interface InitialState {
     loading: loadingState,
     errorMsg: string,
-    tasksList: ContainerGroup[],
+    tasksList: TaskerProjectTask[],
 }
 
 const initialState: InitialState = {
     loading: loadingState.PENDING,
     errorMsg: "",
-    tasksList: [
-        {
-            containerName: TaskerStatus.PENDING,
-            id: `container-${TaskerStatus.PENDING}`,
-            items: []
-        },
-        {
-            containerName: TaskerStatus.INPROGRESS,
-            id: `container-${TaskerStatus.INPROGRESS}`,
-            items: []
-        },
-        {
-            containerName: TaskerStatus.COMPLETE,
-            id: `container-${TaskerStatus.COMPLETE}`,
-            items: []
-        },
-    ],
+    tasksList: [],
 }
 
 const tasksListSlice = createSlice({
     name: "tasksList",
     initialState,
     reducers: {
-        addNewtask: (state, action: PayloadAction<TaskerProjectTask>)=>{
-            const task = action.payload
-            const updatedContainers = state.tasksList.map((container) => ({
-                ...container,
-                items: [...container.items], // Create a copy of the items array
-            }));
-        
-            // Find the container that matches the task's status
-            const targetContainer = updatedContainers.find(
-                (c) => c.containerName.toLowerCase() === task.status.toLowerCase()
-            );
-        
-            if (targetContainer) {
-                // Add the task to the container's items
-                targetContainer.items.push(task);
-            }
-        
-            state.tasksList = updatedContainers satisfies ContainerGroup[];
-        },
-        loadTasksBunch: (state, action: PayloadAction<TaskerProjectTask[]>) => {
-            // Create a copy of containers to avoid direct mutation
-            const tasks  = action.payload
-            const updatedContainers = state.tasksList.map(container => ({
-                ...container,
-                items: [...container.items], // Ensure items is copied
-            }));
-
-            // Iterate through the tasks
-            tasks.forEach(task => {
-                // Find the container with the matching status
-                const container = updatedContainers.find(
-                    c => c.containerName.toLowerCase() === task.status.toLowerCase()
-                );
-
-                if (container) {
-                    // Append the task to the container's items array
-                    container.items.push(task);
-                }
-            });
-
-            state.tasksList = updatedContainers satisfies ContainerGroup[];
-        }
+        addNewTask: (state, action: PayloadAction<TaskerProjectTask>) => {
+            const $payload = action.payload;
+            state.tasksList.push($payload);
+         }
     }
 });
 
-export const { addNewtask, loadTasksBunch } = tasksListSlice.actions;
+export const { addNewTask } = tasksListSlice.actions;
 export const $tasksListSlice = tasksListSlice.reducer;
 
 export const echoTasksListLoading = (state: RootState) => state.tasksList.loading;

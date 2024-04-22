@@ -7,7 +7,7 @@ function findValueOfItems(id: UniqueIdentifier | undefined, type: "container" | 
     }
     if (type === 'item') {
         return containers.find((container) =>
-            container.items.find((item) => item.task_id === id),
+            container.items.find((item) => item.id === id),
         );
     }
 }
@@ -15,7 +15,7 @@ function findValueOfItems(id: UniqueIdentifier | undefined, type: "container" | 
 const findItemTitle = (id: UniqueIdentifier | undefined, containers:ContainerGroup[]) => {
     const container = findValueOfItems(id, 'item', containers);
     if (!container) return '';
-    const item = container.items.find((item) => item.task_id === id);
+    const item = container.items.find((item) => item.id === id);
     if (!item) return '';
     return item.title;
 };

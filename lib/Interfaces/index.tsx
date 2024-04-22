@@ -88,6 +88,10 @@ export interface TaskerProjectTask <T = string> {
     last_update: string;
 }
 
+export interface TaskerProjectTaskWithId extends TaskerProjectTask {
+    id: string
+}
+
 
 export interface TaskTeamProfile {
     user_id: string;

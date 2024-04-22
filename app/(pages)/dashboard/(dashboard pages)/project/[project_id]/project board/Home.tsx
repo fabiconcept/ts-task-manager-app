@@ -9,16 +9,32 @@ import Items from "./components/Item";
 import { FaPlus } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
-import { loadingState, PopupType, Priority, TaskerStatus } from "@/lib/Enums";
+import { loadingState, PopupType, TaskerStatus } from "@/lib/Enums";
 import { openModal } from "@/Redux Store/Slices/Popup Slice";
 import ShowElement from "@/lib/utilities/Show";
 import { findItemTitle, findValueOfItems } from "@/lib/DnD Helper";
 import { useSelector } from "react-redux";
-import { echoTasksListResponse, echoTasksListLoading, echoTasksListError, addNewtask } from "@/Redux Store/Slices/profiles/projects/tasks";
+import { echoTasksListResponse, echoTasksListLoading, echoTasksListError } from "@/Redux Store/Slices/profiles/projects/tasks";
 
 export default function Home() {
     const dispatch = useDispatch<AppDispatch>();
-    const [containers, setContainers] = useState<ContainerGroup[]>([]);
+    const [containers, setContainers] = useState<ContainerGroup[]>([
+        {
+            containerName: TaskerStatus.PENDING,
+            id: `container-${TaskerStatus.PENDING}`,
+            items: []
+        },
+        {
+            containerName: TaskerStatus.INPROGRESS,
+            id: `container-${TaskerStatus.INPROGRESS}`,
+            items: []
+        },
+        {
+            containerName: TaskerStatus.COMPLETE,
+            id: `container-${TaskerStatus.COMPLETE}`,
+            items: []
+        },
+    ]);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
     const tasksList = useSelector(echoTasksListResponse);
     const tasksListLoading = useSelector(echoTasksListLoading);
@@ -26,7 +42,30 @@ export default function Home() {
 
     useEffect(() => {
         if(tasksList.length === 0) return;
-        setContainers(tasksList);
+
+        setContainers((prev) => {
+            const tempContainers = prev;
+
+            tasksList.forEach((task) => {
+                switch (task.status) {
+                    case TaskerStatus.PENDING:
+                        tempContainers[0].items.push({...task, id: `item-${task.task_id}`});
+                        break;
+                    case TaskerStatus.INPROGRESS:
+                        tempContainers[1].items.push({...task, id: `item-${task.task_id}`});
+                        break;
+                    case TaskerStatus.COMPLETE:
+                        tempContainers[2].items.push({...task, id: `item-${task.task_id}`});
+                        break;
+
+                    default:
+                        tempContainers[0].items.push({...task, id: `item-${task.task_id}`});
+                        break;
+                }
+            })
+
+            return tempContainers;
+        });
     }, [tasksList]);
 
     // DND Handlers
@@ -71,10 +110,10 @@ export default function Home() {
     
           // Find the index of the active and over item
           const activeitemIndex = activeContainer.items.findIndex(
-            (item) => item.task_id === active.id,
+            (item) => item.id === active.id,
           );
           const overitemIndex = overContainer.items.findIndex(
-            (item) => item.task_id === over.id,
+            (item) => item.id === over.id,
           );
           // In the same container
           if (activeContainerIndex === overContainerIndex) {
@@ -127,7 +166,7 @@ export default function Home() {
     
           // Find the index of the active and over item
           const activeitemIndex = activeContainer.items.findIndex(
-            (item) => item.task_id === active.id,
+            (item) => item.id === active.id,
           );
     
           // Remove the active item from the active container and add it to the over container
@@ -188,10 +227,10 @@ export default function Home() {
             );
             // Find the index of the active and over item
             const activeitemIndex = activeContainer.items.findIndex(
-                (item) => item.task_id === active.id,
+                (item) => item.id === active.id,
             );
             const overitemIndex = overContainer.items.findIndex(
-                (item) => item.task_id === over.id,
+                (item) => item.id === over.id,
             );
 
             // In the same container
@@ -241,7 +280,7 @@ export default function Home() {
             );
             // Find the index of the active and over item
             const activeitemIndex = activeContainer.items.findIndex(
-                (item) => item.task_id === active.id,
+                (item) => item.id === active.id,
             );
 
             let newItems = [...containers];
@@ -256,20 +295,8 @@ export default function Home() {
     }
 
     const openNewTaskModal = () => { 
-        // const popUpType: PopupType = PopupType.NewTask;
-        dispatch(addNewtask({
-            task_id: `task-${Math.random()}`,
-            from_id: "user-100",
-            title: "Task Alpha",
-            shortDesc: "Initial task description for Alpha.",
-            desc: "This is a more detailed description for Task Alpha. It involves initial setup and configuration.",
-            priorityLevel: Priority.MEDIUM,
-            status: TaskerStatus.INPROGRESS,
-            assigneeCount: 1,
-            assigneeList: ["John Doe"],
-            created_on: "2024-04-20T10:00:00Z",
-            last_update: "2024-04-20T11:00:00Z",
-        }));
+        const popUpType: PopupType = PopupType.NewTask;
+        dispatch(openModal({popUpType}));
     }
 
     return (
@@ -291,11 +318,11 @@ export default function Home() {
                     <SortableContext items={containers.map((container) => container.id)}>
                         {containers.map((container) => (
                             <Container description={""} key={container.id} id={container.id as string} groupName={container.containerName} itemsCount={container.items.length} >
-                                <SortableContext items={container.items.map((i) => i.task_id)}>
+                                <SortableContext items={container.items.map((i) => i.id)}>
                                     <div className="flex flex-col items-start gap-y-4">
                                         <ShowElement.when isTrue={container.items.length > 0}>
                                             {container.items.map((item) => (
-                                                <Items key={item.task_id} id={item.task_id} title={item.title} />
+                                                <Items key={item.id} id={item.id} title={item.title} />
                                             ))}
                                         </ShowElement.when>
                                         <ShowElement.when isTrue={container.items.length === 0 && tasksListLoading === loadingState.SUCCESS}>
