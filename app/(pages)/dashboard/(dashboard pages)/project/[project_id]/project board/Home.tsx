@@ -2,89 +2,32 @@
 
 import { DndContext, DragEndEvent, DragMoveEvent, DragOverlay, DragStartEvent, KeyboardSensor, PointerSensor, UniqueIdentifier, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Container from "./components/Container";
-import { DNDType } from "@/lib/Types";
+import { ContainerGroup } from "@/lib/Types";
 import Items from "./components/Item";
 import { FaPlus } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
-import { PopupType } from "@/lib/Enums";
+import { loadingState, PopupType, Priority, TaskerStatus } from "@/lib/Enums";
 import { openModal } from "@/Redux Store/Slices/Popup Slice";
 import ShowElement from "@/lib/utilities/Show";
 import { findItemTitle, findValueOfItems } from "@/lib/DnD Helper";
+import { useSelector } from "react-redux";
+import { echoTasksListResponse, echoTasksListLoading, echoTasksListError, addNewtask } from "@/Redux Store/Slices/profiles/projects/tasks";
 
 export default function Home() {
     const dispatch = useDispatch<AppDispatch>();
-    const [containers, setContainers] = useState<DNDType[]>([
-        {
-            id: "container-0fe1ec50-5ee6-55a4-8902-0dab6183acab",
-            title: "Upcoming",
-            items: [
-                {
-                    id: "item-d88525db-2917-554d-b7b5-042275252475",
-                    title: "Item 1",
-                },
-                {
-                    id: "item-001",
-                    title: "Item 4",
-                },
-                {
-                    id: "item-002",
-                    title: "Item 7",
-                },
-                {
-                    id: "item-003",
-                    title: "Item 10",
-                },
-            ],
-        },
-        {
-            id: "container-06ab7ac8-25e1-5e69-a937-c76f43112351",
-            title: "Pending",
-            items: [
-                {
-                    id: "item-54090e9c-dd95-5839-8561-d1a2b0b2285c",
-                    title: "Item 2",
-                },
-                {
-                    id: "item-004",
-                    title: "Item 5",
-                },
-                {
-                    id: "item-005",
-                    title: "Item 8",
-                },
-                {
-                    id: "item-006",
-                    title: "Item 11",
-                },
-            ],
-        },
-        {
-            id: "container-06ab7ac8-25e1-5e69-a937-df",
-            title: "Complete",
-            items: [
-                {
-                    id: "item-54090e9c-dd95-5839-8561-sd",
-                    title: "Item 3",
-                },
-                {
-                    id: "item-007",
-                    title: "Item 6",
-                },
-                {
-                    id: "item-008",
-                    title: "Item 9",
-                },
-                {
-                    id: "item-009",
-                    title: "Item 12",
-                },
-            ],
-        },
-    ]);
+    const [containers, setContainers] = useState<ContainerGroup[]>([]);
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+    const tasksList = useSelector(echoTasksListResponse);
+    const tasksListLoading = useSelector(echoTasksListLoading);
+    const tasksListError = useSelector(echoTasksListError);
+
+    useEffect(() => {
+        if(tasksList.length === 0) return;
+        setContainers(tasksList);
+    }, [tasksList]);
 
     // DND Handlers
     const sensors = useSensors(
@@ -128,10 +71,10 @@ export default function Home() {
     
           // Find the index of the active and over item
           const activeitemIndex = activeContainer.items.findIndex(
-            (item) => item.id === active.id,
+            (item) => item.task_id === active.id,
           );
           const overitemIndex = overContainer.items.findIndex(
-            (item) => item.id === over.id,
+            (item) => item.task_id === over.id,
           );
           // In the same container
           if (activeContainerIndex === overContainerIndex) {
@@ -184,7 +127,7 @@ export default function Home() {
     
           // Find the index of the active and over item
           const activeitemIndex = activeContainer.items.findIndex(
-            (item) => item.id === active.id,
+            (item) => item.task_id === active.id,
           );
     
           // Remove the active item from the active container and add it to the over container
@@ -245,10 +188,10 @@ export default function Home() {
             );
             // Find the index of the active and over item
             const activeitemIndex = activeContainer.items.findIndex(
-                (item) => item.id === active.id,
+                (item) => item.task_id === active.id,
             );
             const overitemIndex = overContainer.items.findIndex(
-                (item) => item.id === over.id,
+                (item) => item.task_id === over.id,
             );
 
             // In the same container
@@ -298,7 +241,7 @@ export default function Home() {
             );
             // Find the index of the active and over item
             const activeitemIndex = activeContainer.items.findIndex(
-                (item) => item.id === active.id,
+                (item) => item.task_id === active.id,
             );
 
             let newItems = [...containers];
@@ -313,8 +256,20 @@ export default function Home() {
     }
 
     const openNewTaskModal = () => { 
-        const popUpType: PopupType = PopupType.NewTask;
-        dispatch(openModal({popUpType}));
+        // const popUpType: PopupType = PopupType.NewTask;
+        dispatch(addNewtask({
+            task_id: `task-${Math.random()}`,
+            from_id: "user-100",
+            title: "Task Alpha",
+            shortDesc: "Initial task description for Alpha.",
+            desc: "This is a more detailed description for Task Alpha. It involves initial setup and configuration.",
+            priorityLevel: Priority.MEDIUM,
+            status: TaskerStatus.INPROGRESS,
+            assigneeCount: 1,
+            assigneeList: ["John Doe"],
+            created_on: "2024-04-20T10:00:00Z",
+            last_update: "2024-04-20T11:00:00Z",
+        }));
     }
 
     return (
@@ -335,16 +290,26 @@ export default function Home() {
                 >
                     <SortableContext items={containers.map((container) => container.id)}>
                         {containers.map((container) => (
-                            <Container description={""} key={container.id} id={container.id as string} title={container.title} itemsCount={container.items.length} >
-                                <SortableContext items={container.items.map((i) => i.id)}>
+                            <Container description={""} key={container.id} id={container.id as string} groupName={container.containerName} itemsCount={container.items.length} >
+                                <SortableContext items={container.items.map((i) => i.task_id)}>
                                     <div className="flex flex-col items-start gap-y-4">
                                         <ShowElement.when isTrue={container.items.length > 0}>
                                             {container.items.map((item) => (
-                                                <Items key={item.id} id={item.id} title={item.title} />
+                                                <Items key={item.task_id} id={item.task_id} title={item.title} />
                                             ))}
                                         </ShowElement.when>
-                                        <ShowElement.when isTrue={container.items.length === 0}>
+                                        <ShowElement.when isTrue={container.items.length === 0 && tasksListLoading === loadingState.SUCCESS}>
                                             <p className="px-8 text-xl font-thin opacity-10 text-center pointer-events-none w-full">No item</p>
+                                        </ShowElement.when>
+                                        <ShowElement.when isTrue={tasksListLoading === loadingState.PENDING}>
+                                            <p className="px-8 text-lg opacity-20 text-center pointer-events-none w-full">
+                                                <span className="animate-pulse">
+                                                    ...loading items...
+                                                </span>
+                                            </p>
+                                        </ShowElement.when>
+                                        <ShowElement.when isTrue={tasksListLoading === loadingState.FAILED}>
+                                            <p className="px-8 text-lg opacity-80 text-center pointer-events-none w-full text-red-500">{tasksListError}</p>
                                         </ShowElement.when>
                                     </div>
                                 </SortableContext>

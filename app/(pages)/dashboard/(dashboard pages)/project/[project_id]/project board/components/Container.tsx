@@ -6,7 +6,7 @@ import clsx from 'clsx';
 type ContainerProps = {
     id: string,
     children: React.ReactNode,
-    title: string,
+    groupName: string,
     description?: string,
     itemsCount: number,
     onAddItem?: ()=>{}
@@ -15,7 +15,7 @@ type ContainerProps = {
 const Container = ({
     id,
     children,
-    title,
+    groupName,
     description,
     itemsCount,
     onAddItem
@@ -46,7 +46,7 @@ const Container = ({
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center rounded-md justify-between p-2 dark:bg-white/10 bg-black/10 w-full">
-                    <h1 className="font-semibold px-2 capitalize">{title}</h1>
+                    <h1 className="font-semibold px-2 capitalize">{groupName}</h1>
                     <div className='w-7 h-7 grid place-items-center rounded text-white bg-black dark:invert'>{itemsCount}</div>
                 </div>
             </div>

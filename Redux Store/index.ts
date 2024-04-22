@@ -4,6 +4,7 @@ import { TaskerProfilesStateSlice } from "./Slices/profiles";
 import { projectsListStateSlice } from "./Slices/profiles/projects";
 import { teamMainStateSlice } from "./Slices/profiles/team";
 import { popUpSlice } from "./Slices/Popup Slice";
+import { $tasksListSlice } from "./Slices/profiles/projects/tasks";
 
 const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
         projectsList: projectsListStateSlice,
         teamMain: teamMainStateSlice,
         popUp: popUpSlice,
+        tasksList: $tasksListSlice,
     }
 });
 

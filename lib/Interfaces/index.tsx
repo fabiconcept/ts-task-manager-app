@@ -1,3 +1,4 @@
+import { UniqueIdentifier } from "@dnd-kit/core";
 import { ErrorState, Priority, TaskerStatus } from "../Enums";
 import { TeamMember, UserProject } from "../Types";
 import { FunctionProp } from "../Types/dashboard";
@@ -73,8 +74,8 @@ export interface TaskerProject {
     updated_on: string;
 }
 
-export interface TaskerProjectTask {
-    task_id: string;
+export interface TaskerProjectTask <T = string> {
+    task_id: T;
     from_id: string;
     title: string;
     shortDesc: string;
@@ -86,6 +87,7 @@ export interface TaskerProjectTask {
     created_on: string;
     last_update: string;
 }
+
 
 export interface TaskTeamProfile {
     user_id: string;

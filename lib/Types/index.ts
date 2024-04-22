@@ -1,8 +1,9 @@
 import { NextApiResponse } from "next";
-import { AuthResponseType } from "../Enums";
+import { AuthResponseType, TaskerStatus } from "../Enums";
 import { Server as NetServer, Socket } from "net";
 import { Server as SocketIOServer } from "socket.io";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import { TaskerProjectTask } from "../Interfaces";
 
 export type RequestBody = {
     name: string;
@@ -68,9 +69,15 @@ export type UserProject = {
 
 export type DNDType = {
     id: UniqueIdentifier;
-    title: string;
+    containerName: string;
     items: { id: UniqueIdentifier, title: string }[];
 };
+
+export type ContainerGroup = {
+    id: UniqueIdentifier,
+    containerName: TaskerStatus,
+    items: TaskerProjectTask<UniqueIdentifier>[],
+}
 
 export default interface ContainerProps {
     id: UniqueIdentifier;
