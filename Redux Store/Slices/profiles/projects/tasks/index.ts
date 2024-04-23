@@ -91,6 +91,9 @@ const tasksListSlice = createSlice({
             const $payload = action.payload;
             state.tasksList.push($payload);
          }
+    },
+    extraReducers: (builder) => {
+        
     }
 });
 

@@ -1,5 +1,5 @@
 import { UserAccountDetails } from "@/lib/Interfaces";
-import { getProfiles, getProjects, getUserData } from "@/lib/functions";
+import { fetchProjectTasks, getProfiles, getProjects, getUserData } from "@/lib/functions";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Users Data Operations
@@ -24,6 +24,14 @@ export const fetchProjects = createAsyncThunk(
     "taskerProjects/fetchProjects",
     async (key: string) => {
         const response = await getProjects(key);
+        return response;
+    }
+);
+
+export const $fetchProjectTasks = createAsyncThunk(
+    "tasksList/fetchProjectTasks",
+    async (key: string) => {
+        const response = await fetchProjectTasks(key);
         return response;
     }
 );

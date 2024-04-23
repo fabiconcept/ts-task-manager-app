@@ -250,3 +250,43 @@ export async function createNewtask(payload: TaskerProjectTask): Promise<string>
 
     return message;
 }
+
+// fetch all the Tasks for a particular project
+export async function fetchProjectTasks(projectId: string): Promise<TaskerProjectTask[]> {
+    const sendRequest = await fetch("/api/dashboard/taskerProfiles/task", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "projectId": `${projectId}`
+        },
+    });
+
+    const response: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProjectTask[]> = await sendRequest.json();
+    const { status, message } = response;
+
+    if (status === 400) {
+        throw new Error(message);
+    }
+
+    return response.data;
+}
+
+// fetch a particular Task
+export async function fetchTask(taskId: string): Promise<TaskerProjectTask> {
+    const sendRequest = await fetch("/api/dashboard/taskerProfiles/task", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "taskId": `${taskId}`
+        },
+    });
+
+    const response: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProjectTask> = await sendRequest.json();
+    const { status, message } = response;
+
+    if (status === 400) {
+        throw new Error(message);
+    }
+
+    return response.data;
+}
