@@ -1,6 +1,7 @@
 import { loadingState, Priority, TaskerStatus } from "@/lib/Enums";
 import { TaskerProjectTask, TaskerProjectTaskWithId } from "@/lib/Interfaces";
 import { RootState } from "@/Redux Store";
+import { $fetchProjectTasks } from "@/Redux Store/Thunk";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const dummyData: TaskerProjectTask[] = [
@@ -92,8 +93,25 @@ const tasksListSlice = createSlice({
             state.tasksList.push($payload);
          }
     },
+    
     extraReducers: (builder) => {
-        
+        builder.addCase($fetchProjectTasks.pending, (state)=>{
+            state.loading = loadingState.PENDING;
+        });
+
+        builder.addCase($fetchProjectTasks.rejected, (state) => { 
+            state.loading = loadingState.FAILED;
+        });
+
+        builder.addCase($fetchProjectTasks.fulfilled, (state, action)=>{
+            const payload = action.payload;
+            const tasksList = payload;
+
+
+            state.loading = loadingState.SUCCESS;
+            state.errorMsg = "";
+            state.tasksList = tasksList;
+        });
     }
 });
 
