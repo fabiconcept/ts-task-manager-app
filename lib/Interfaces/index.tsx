@@ -1,5 +1,5 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { ErrorState, Priority, TaskerStatus } from "../Enums";
+import { ErrorState, Priority, PutType, TaskerStatus } from "../Enums";
 import { TeamMember, UserProject } from "../Types";
 import { FunctionProp } from "../Types/dashboard";
 
@@ -88,6 +88,17 @@ export interface TaskerProjectTask <T = string> {
     last_update: string;
 }
 
+export interface TaskerProjectTaskUpdatables {
+    title: string;
+    shortDesc: string;
+    desc: string;
+    priorityLevel: Priority;
+    status: TaskerStatus;
+    assigneeCount: number;
+    assigneeList: string[];
+    last_update: string;
+}
+
 export interface TaskerProjectTaskWithId extends TaskerProjectTask {
     id: string
 }
@@ -118,6 +129,21 @@ export interface TaskerInvite {
     invited_to: string;
     invited_email: string;
     exp_date: string;
+}
+
+interface PutPayload {
+    taskId: string,
+    putType: PutType,
+}
+
+export interface PutPayload_Status extends PutPayload {
+    putType: PutType.STATUS,
+    payload: TaskerStatus,
+}
+
+export interface PutPayload_General extends PutPayload {
+    putType: PutType.GENERAL,
+    payload: TaskerProjectTaskUpdatables,
 }
 
 // web socket set up

@@ -1,9 +1,9 @@
 import connectDatabase from "@/lib/Database";
-import { AuthResponseType } from "@/lib/Enums";
-import { TaskerProjectTask } from "@/lib/Interfaces";
+import { AuthResponseType, PutType } from "@/lib/Enums";
+import { PutPayload_General, PutPayload_Status, TaskerProjectTask } from "@/lib/Interfaces";
 import { ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "@/lib/Types";
 import { NextResponse } from "next/server";
-import { Document, Collection } from "mongodb";
+import { Document, Collection, UpdateResult } from "mongodb";
 import { headers } from "next/headers";
 
 const collectionName = "TaskerProjectsTasks"
@@ -194,4 +194,102 @@ export const POST = async (request: Request, response: Response) => {
 
         return NextResponse.json(apiResponse);
     }
+}
+
+export const PUT = async (request: Request) => {
+    const putBody : PutPayload_Status | PutPayload_General = await request.json();
+
+    const { putType, taskId, payload }= putBody;
+
+    if (!taskId) {
+        apiResponse = {
+            status: 400,
+            message: "Invalid request - No taskId in the payload for PUT 😂😂!",
+            type: AuthResponseType.InvalidError
+        }
+
+        return NextResponse.json(apiResponse);
+    }
+
+    if (!putType) {
+        apiResponse = {
+            status: 400,
+            message: "Invalid request - PUT Type not found in payload for PUT 😂😂!",
+            type: AuthResponseType.InvalidError
+        }
+
+        return NextResponse.json(apiResponse);
+    }
+    if (!payload) {
+        apiResponse = {
+            status: 400,
+            message: "Invalid request - PUT Data not found in payload for PUT 😂😂!",
+            type: AuthResponseType.InvalidError
+        }
+
+        return NextResponse.json(apiResponse);
+    }
+
+    try {
+        const client = await connectDatabase();
+
+        if(!client) {
+            throw new Error("Failed to connect to Database");
+        }
+
+        const db = client.db('taskity');
+        const tasksCollection = db.collection(collectionName);
+
+        let performUpdate: UpdateResult<Document>;
+
+        switch(putType){
+            case PutType.STATUS:
+                performUpdate = await tasksCollection.updateOne(
+                    { task_id: taskId },
+                    { status: payload }
+                );
+                // 
+                break;
+            case PutType.GENERAL:
+                performUpdate = await tasksCollection.updateOne(
+                    { task_id: taskId },
+                    { 
+                        title: payload.title,
+                        shortDesc: payload.shortDesc,
+                        desc: payload.desc,
+                        priorityLevel: payload.priorityLevel,
+                        status: payload.status,
+                        assigneeCount: payload.assigneeCount,
+                        assigneeList: payload.assigneeList,
+                        last_update: payload.last_update,                    
+                    }
+                );
+                break;
+            default: 
+                throw new Error("Invalid PUT type");
+        }
+
+        if (performUpdate.matchedCount === 0) throw new Error("task does not exist!");
+
+        apiResponse= {
+            status: 200,
+            data: null,
+            message: "Task updated successfully! ✨✔🚀",
+            type: AuthResponseType.NoError
+        }
+
+
+        return NextResponse.json(apiResponse);
+
+    } catch (error) {
+        apiResponse = {
+            status: 400,
+            message: `${error}`,
+            type: AuthResponseType.InvalidError
+        }
+
+        return NextResponse.json(apiResponse);
+    }
+
+
 }

@@ -59,3 +59,8 @@ export enum PopupType {
     NewTask = "newTask",
     EditTask = "editTask",
 }
+
+export enum PutType {
+    GENERAL = "general",
+    STATUS = "status",
+}
