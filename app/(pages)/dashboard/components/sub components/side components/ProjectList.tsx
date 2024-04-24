@@ -46,7 +46,7 @@ export default function ProjectList() {
                 performFunction={()=>{}} 
                 placeholder="find project"
             />}
-            <div className="flex-1 h-full overflow-y-auto flex flex-col gap-1 relative">
+            <div className="flex-1 h-full overflow-y-auto flex flex-col gap-1 relative mt-3">
                 <p className="text-sm opacity-50 sticky top-0 my-2">Projects</p>
                 <ShowElement.when isTrue={projectsLoading === loadingState.SUCCESS && projectListDisplay.length > 0}>
                     {projectListDisplay.map((project) => (

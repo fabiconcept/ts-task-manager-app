@@ -28,7 +28,7 @@ export default function SearchFeature( { performFunction, placeholder }: SearchP
                 placeholder={`${placeholder}`} 
                 value={searchString}
                 onChange={handleSearchTextUpdate}
-                className="flex-1 max-w-[30rem] p-2 px-4 rounded-md opacity-50 focus:opacity-100 placeholder-shown:border-transparent border dark:border-white/50 border-black/50 outline-none"
+                className="flex-1 max-w-[30rem] p-2 px-4 rounded-md opacity-50 focus:opacity-100 placeholder-shown:border-white/50 border dark:border-theme-main/50 border-theme-main outline-none"
             />
         </form>
     )

@@ -38,8 +38,8 @@ export default function SideBar() {
     return (
         <div className="relative group z-[40]">
             <section className={clsx(
-                "h-screen flex flex-col gap-6 py-6 overflow-hidden shadow-md border-r border-transparent group-hover:dark:border-white/10 group-hover:border-black/10",
-                collapseSide ? "w-0 opacity-30 p-1" : "xl:w-[20rem] sm:w-[15rem] w-full p-4"
+                "h-screen flex flex-col gap-6 py-6 overflow-hidden shadow-md border-r border-transparent bg-white/5",
+                collapseSide ? "w-0 opacity-10 p-1 group-hover:dark:border-white/10 group-hover:border-black/10" : "xl:w-[20rem] sm:w-[15rem] w-full p-4 dark:border-white/10 border-black/10"
             )}>
                 <ShowElement.when isTrue={loading === loadingState.SUCCESS}>
                     <NameTag />

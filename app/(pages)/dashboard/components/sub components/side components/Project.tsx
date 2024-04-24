@@ -11,7 +11,10 @@ export default function Project({ data }: { data: TaskerProject }) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        if(!urlParam.project_id) return;
+        if(!urlParam.project_id) {
+            setIsOpen(false);
+            return;
+        };
         setIsOpen(urlParam.project_id === data.project_id);
     }, [urlParam, data]);
 
@@ -24,7 +27,7 @@ export default function Project({ data }: { data: TaskerProject }) {
             <div className="flex-1 flex flex-col">
                 <p className="text-sm font-semibold max-w-[80%] truncate">{data.title}</p>
                 <ShowElement.when isTrue={data.membersCount > 0}>
-                    {<span className="opacity-40 text-sm">{data.membersCount}  {`${isOpen}`} member{data.membersCount > 1 ? "s" : ""}</span>}
+                    {<span className="opacity-40 text-sm">{data.membersCount} member{data.membersCount > 1 ? "s" : ""}</span>}
                 </ShowElement.when>
                 <ShowElement.when isTrue={data.membersCount === 0}>
                     {<span className="opacity-40 text-sm">No member</span>}
