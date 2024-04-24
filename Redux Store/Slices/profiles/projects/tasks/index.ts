@@ -1,7 +1,7 @@
 import { loadingState, Priority, TaskerStatus } from "@/lib/Enums";
-import { TaskerProjectTask, TaskerProjectTaskWithId } from "@/lib/Interfaces";
+import { TaskerProjectTask } from "@/lib/Interfaces";
 import { RootState } from "@/Redux Store";
-import { $fetchProjectTasks } from "@/Redux Store/Thunk";
+import { $fetchProjectTasks, $updateTaskStatus } from "@/Redux Store/Thunk";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const dummyData: TaskerProjectTask[] = [
@@ -77,13 +77,17 @@ interface InitialState {
     errorMsg: string,
     tasksList: TaskerProjectTask[],
     current_Project: string,
+    updating: loadingState,
+    updateError: string
 }
 
 const initialState: InitialState = {
-    loading: loadingState.PENDING,
+    loading: loadingState.IDLE,
     errorMsg: "",
     tasksList: [],
-    current_Project: ''
+    current_Project: '',
+    updating: loadingState.IDLE,
+    updateError: ""
 }
 
 const tasksListSlice = createSlice({
@@ -116,6 +120,30 @@ const tasksListSlice = createSlice({
             state.tasksList = tasksList;
             state.current_Project = project_id;
         });
+
+        builder.addCase($updateTaskStatus.pending, (state)=>{
+            state.updating = loadingState.PENDING;
+            state.updateError = "";
+        });
+
+        builder.addCase($updateTaskStatus.rejected, (state, action) => { 
+            state.updating = loadingState.FAILED;
+            state.updateError = "Failed to update last task!";
+        });
+
+        builder.addCase($updateTaskStatus.fulfilled, (state, action) => { 
+            state.updating = loadingState.SUCCESS;
+            state.updateError = "";
+
+            const prevTaskList = state.tasksList;
+
+            const updatedTaskList = prevTaskList.map((task)=>{
+                if(task.task_id === action.payload.taskId) return ({...task, status: action.payload.newStatus})
+                return task;
+            });
+
+            state.tasksList = updatedTaskList;
+        });
     }
 });
 
@@ -126,3 +154,5 @@ export const echoTasksListLoading = (state: RootState) => state.tasksList.loadin
 export const echoTasksListError = (state: RootState) => state.tasksList.errorMsg;
 export const echoTasksListResponse = (state: RootState) => state.tasksList.tasksList; 
 export const echoTasksListCurrentProject = (state: RootState) => state.tasksList.current_Project; 
+export const echoTasksListUpdatingState = (state: RootState) => state.tasksList.updating; 
+export const echoTasksListUpdatingError = (state: RootState) => state.tasksList.updateError; 

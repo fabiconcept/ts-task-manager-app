@@ -1,20 +1,27 @@
 "use client"
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import { FaEllipsis } from 'react-icons/fa6';
 import { CiClock1 } from 'react-icons/ci';
 import ActiveMember from '@/app/(pages)/dashboard/components/sub components/Elements/ActiveMember';
-import { motion, AnimatePresence, useAnimation, Variants } from "framer-motion";
+import { motion, useAnimation, Variants } from "framer-motion";
+import { TaskerProjectTask } from '@/lib/Interfaces';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/Redux Store';
+import { $updateTaskStatus } from '@/Redux Store/Thunk';
+import { PutType, TaskerStatus } from '@/lib/Enums';
 
 type ItemsType = {
     id: UniqueIdentifier;
     title: string;
+    inGroup: string,
+    taskItem: TaskerProjectTask
 };
 
-const Items = ({ id, title }: ItemsType) => {
+const Items = ({ id, title, inGroup, taskItem }: ItemsType) => {
     const {
         attributes,
         listeners,
@@ -28,6 +35,8 @@ const Items = ({ id, title }: ItemsType) => {
             type: 'item',
         },
     });
+
+    const dispatch = useDispatch<AppDispatch>();
     const [expanded, setExpanded] = useState<boolean>(false);
     const controls = useAnimation();
 
@@ -43,8 +52,24 @@ const Items = ({ id, title }: ItemsType) => {
     const handleToggle = () => {
         setExpanded(!expanded);
     }
+    
+    useEffect(() => {
 
-    React.useEffect(() => {
+        if(!inGroup) return;
+        if(inGroup == "avoid") return;
+
+        const tempWait = setTimeout(() => {
+            if(inGroup == taskItem.status) return;
+            dispatch($updateTaskStatus({taskId: taskItem.task_id, putType: PutType.STATUS, payload: inGroup as TaskerStatus}));
+        }, 5000);
+
+        return () => {
+            clearTimeout(tempWait);
+        }
+
+    }, [inGroup, taskItem, dispatch]);
+
+    useEffect(() => {
         if (expanded) {
             controls.start('open');
             return;

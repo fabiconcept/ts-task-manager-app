@@ -1,5 +1,5 @@
-import { UserAccountDetails } from "@/lib/Interfaces";
-import { fetchProjectTasks, getProfiles, getProjects, getUserData } from "@/lib/functions";
+import { PutPayload_General, PutPayload_Status } from "@/lib/Interfaces";
+import { fetchProjectTasks, getProfiles, getProjects, getUserData, updateTaskStatus } from "@/lib/functions";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Users Data Operations
@@ -33,5 +33,16 @@ export const $fetchProjectTasks = createAsyncThunk(
     async (key: string) => {
         const response = await fetchProjectTasks(key);
         return response;
+    }
+);
+
+export const $updateTaskStatus = createAsyncThunk(
+    "tasksList/updateTaskStatus",
+    async (payload: PutPayload_Status) => {
+        await updateTaskStatus(payload);
+        return {
+            taskId: payload.taskId,
+            newStatus: payload.payload
+        };
     }
 );

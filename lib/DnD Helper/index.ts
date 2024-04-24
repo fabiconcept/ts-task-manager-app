@@ -12,12 +12,12 @@ function findValueOfItems(id: UniqueIdentifier | undefined, type: "container" | 
     }
 }
 
-const findItemTitle = (id: UniqueIdentifier | undefined, containers:ContainerGroup[]) => {
+const findItemActiveItem = (id: UniqueIdentifier | undefined, containers:ContainerGroup[]) => {
     const container = findValueOfItems(id, 'item', containers);
-    if (!container) return '';
+    if (!container) return undefined;
     const item = container.items.find((item) => item.id === id);
-    if (!item) return '';
-    return item.title;
+    if (!item) return undefined;
+    return item;
 };
 
-export { findValueOfItems, findItemTitle }
+export { findValueOfItems, findItemActiveItem }

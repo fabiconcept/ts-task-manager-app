@@ -1,5 +1,5 @@
 import { SortBy } from "../Enums";
-import { TaskerProfile, TaskerProject, TaskerProjectTask, UserAccountDetails} from "../Interfaces";
+import { PutPayload_General, PutPayload_Status, TaskerProfile, TaskerProject, TaskerProjectTask, UserAccountDetails} from "../Interfaces";
 import { TeamMember, ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
 import { CompanyTag } from "../Types/dashboard";
 
@@ -289,4 +289,21 @@ export async function fetchTask(taskId: string): Promise<TaskerProjectTask> {
     }
 
     return response.data;
+}
+// fetch a particular Task
+export async function updateTaskStatus(putBody: PutPayload_Status): Promise<void> {
+    const sendRequest = await fetch("/api/dashboard/taskerProfiles/task", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({putBody}),
+    });
+
+    const response: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<null> = await sendRequest.json();
+    const { status, message } = response;
+
+    if (status === 400) {
+        throw new Error(message);
+    }
 }

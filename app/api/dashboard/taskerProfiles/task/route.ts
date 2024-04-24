@@ -118,7 +118,7 @@ export const GET = async () => {
 }
 
 // Create a new task
-export const POST = async (request: Request, response: Response) => {
+export const POST = async (request: Request) => {
     const { payload }: { payload: TaskerProjectTask } = await request.json();
 
     if (!payload) {
@@ -197,7 +197,7 @@ export const POST = async (request: Request, response: Response) => {
 }
 
 export const PUT = async (request: Request) => {
-    const putBody : PutPayload_Status | PutPayload_General = await request.json();
+    const { putBody }: { putBody: PutPayload_Status | PutPayload_General } = await request.json();
 
     const { putType, taskId, payload }= putBody;
 
@@ -245,15 +245,14 @@ export const PUT = async (request: Request) => {
         switch(putType){
             case PutType.STATUS:
                 performUpdate = await tasksCollection.updateOne(
-                    { task_id: taskId },
-                    { status: payload }
+                    { task_id: taskId }, { $set: { status: payload } }
                 );
                 // 
                 break;
             case PutType.GENERAL:
                 performUpdate = await tasksCollection.updateOne(
                     { task_id: taskId },
-                    { 
+                    {$set: { 
                         title: payload.title,
                         shortDesc: payload.shortDesc,
                         desc: payload.desc,
@@ -262,7 +261,7 @@ export const PUT = async (request: Request) => {
                         assigneeCount: payload.assigneeCount,
                         assigneeList: payload.assigneeList,
                         last_update: payload.last_update,                    
-                    }
+                    }}
                 );
                 break;
             default: 
@@ -292,4 +291,4 @@ export const PUT = async (request: Request) => {
     }
 
 
-}
+}   

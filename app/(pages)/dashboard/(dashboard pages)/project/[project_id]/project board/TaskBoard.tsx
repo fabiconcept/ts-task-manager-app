@@ -2,7 +2,7 @@
 
 import { DndContext, DragEndEvent, DragMoveEvent, DragOverlay, DragStartEvent, KeyboardSensor, PointerSensor, UniqueIdentifier, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Container from "./components/Container";
 import { ContainerGroup } from "@/lib/Types";
 import Items from "./components/Item";
@@ -12,9 +12,9 @@ import { AppDispatch } from "@/Redux Store";
 import { loadingState, PopupType, TaskerStatus } from "@/lib/Enums";
 import { openModal } from "@/Redux Store/Slices/Popup Slice";
 import ShowElement from "@/lib/utilities/Show";
-import { findItemTitle, findValueOfItems } from "@/lib/DnD Helper";
+import { findItemActiveItem, findValueOfItems } from "@/lib/DnD Helper";
 import { useSelector } from "react-redux";
-import { echoTasksListResponse, echoTasksListLoading, echoTasksListError, echoTasksListCurrentProject } from "@/Redux Store/Slices/profiles/projects/tasks";
+import { echoTasksListResponse, echoTasksListLoading, echoTasksListError, echoTasksListCurrentProject, echoTasksListUpdatingState, echoTasksListUpdatingError } from "@/Redux Store/Slices/profiles/projects/tasks";
 import { $fetchProjectTasks } from "@/Redux Store/Thunk";
 import { TaskerProjectTaskWithId } from "@/lib/Interfaces";
 
@@ -60,6 +60,14 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
     const tasksListLoading = useSelector(echoTasksListLoading);
     const tasksListError = useSelector(echoTasksListError);
     const tasksListCurrentProject = useSelector(echoTasksListCurrentProject);
+    const tasksListUpdatingState = useSelector(echoTasksListUpdatingState);
+    const tasksListUpdatingError = useSelector(echoTasksListUpdatingError);
+
+    const activeItem = useMemo(()=>{
+        if(!activeId) return undefined;
+
+        return findItemActiveItem(activeId, containers);
+    }, [activeId, containers]);
 
     useEffect(() => {
         if(!project_id) return;
@@ -346,6 +354,12 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
                     <span className={"font-semibold"}>New task</span>
                 </div>
             </div>
+            <ShowElement.when isTrue={tasksListUpdatingState === loadingState.FAILED}>
+                <p className="text-red-600">{tasksListUpdatingError}</p>
+            </ShowElement.when>
+            <ShowElement.when isTrue={tasksListUpdatingState === loadingState.PENDING}>
+                <p className="opacity-50 animate-pulse">Updating...</p>
+            </ShowElement.when>
             <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(clamp(20rem,30%,40rem),1fr))]">
                 <DndContext
                     sensors={sensors}
@@ -361,7 +375,7 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
                                     <div className="flex flex-col items-start gap-y-4">
                                         <ShowElement.when isTrue={container.items.length > 0}>
                                             {container.items.map((item) => (
-                                                <Items key={item.id} id={item.id} title={item.title} />
+                                                <Items taskItem={item} key={item.id} id={item.id} title={item.title} inGroup={container.containerName}/>
                                             ))}
                                         </ShowElement.when>
                                         <ShowElement.when isTrue={container.items.length === 0 && tasksListLoading === loadingState.SUCCESS}>
@@ -384,8 +398,8 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
                     </SortableContext>
                     <DragOverlay>
                         {
-                            activeId && activeId.toString().includes("item") && (
-                                <Items key={activeId} id={activeId} title={findItemTitle(activeId, containers)} />
+                            activeId && activeId.toString().includes("item") && activeItem && (
+                                <Items taskItem={activeItem} inGroup="avoid" key={activeId} id={activeId} title={activeItem.title} />
                             )
                         }
                     </DragOverlay>
