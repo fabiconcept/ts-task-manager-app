@@ -14,9 +14,29 @@ import { openModal } from "@/Redux Store/Slices/Popup Slice";
 import ShowElement from "@/lib/utilities/Show";
 import { findItemTitle, findValueOfItems } from "@/lib/DnD Helper";
 import { useSelector } from "react-redux";
-import { echoTasksListResponse, echoTasksListLoading, echoTasksListError } from "@/Redux Store/Slices/profiles/projects/tasks";
+import { echoTasksListResponse, echoTasksListLoading, echoTasksListError, echoTasksListCurrentProject } from "@/Redux Store/Slices/profiles/projects/tasks";
+import { $fetchProjectTasks } from "@/Redux Store/Thunk";
+import { TaskerProjectTaskWithId } from "@/lib/Interfaces";
 
-export default function Home() {
+const emptyContainers: ContainerGroup[] = [
+    {
+        containerName: TaskerStatus.PENDING,
+        id: `container-${TaskerStatus.PENDING}`,
+        items: []
+    },
+    {
+        containerName: TaskerStatus.INPROGRESS,
+        id: `container-${TaskerStatus.INPROGRESS}`,
+        items: []
+    },
+    {
+        containerName: TaskerStatus.COMPLETE,
+        id: `container-${TaskerStatus.COMPLETE}`,
+        items: []
+    },
+]
+
+export default function TaskBoard({ project_id }: { project_id: string }) {
     const dispatch = useDispatch<AppDispatch>();
     const [containers, setContainers] = useState<ContainerGroup[]>([
         {
@@ -39,14 +59,28 @@ export default function Home() {
     const tasksList = useSelector(echoTasksListResponse);
     const tasksListLoading = useSelector(echoTasksListLoading);
     const tasksListError = useSelector(echoTasksListError);
+    const tasksListCurrentProject = useSelector(echoTasksListCurrentProject);
+
+    useEffect(() => {
+        if(!project_id) return;
+
+        dispatch($fetchProjectTasks(project_id));
+    }, [dispatch, project_id]);
 
     useEffect(() => {
         if(tasksList.length === 0) return;
+        
+        if(tasksListCurrentProject !== project_id) {
+            setContainers([...emptyContainers]);
+            return;
+        };
 
         setContainers((prev) => {
+            const emptyItems: TaskerProjectTaskWithId[] = [];
+
             const newContainers = prev.map((container) => ({
                 ...container,
-                items: [...container.items], // Deep copy to avoid mutation
+                items: [...emptyItems], // Deep copy to avoid mutation
             }));
 
             tasksList.forEach((task) => {
@@ -71,7 +105,7 @@ export default function Home() {
 
             return newContainers; // Return the updated containers array
         });
-    }, [tasksList]);
+    }, [tasksList, tasksListCurrentProject, project_id]);
 
     // DND Handlers
     const sensors = useSensors(

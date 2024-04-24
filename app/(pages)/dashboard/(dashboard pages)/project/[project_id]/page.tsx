@@ -1,5 +1,5 @@
 import { FaAngleLeft, FaEllipsisVertical } from "react-icons/fa6";
-import Home from "./project board/Home";
+import TaskBoard from "./project board/TaskBoard";
 import Link from "next/link";
 
 export default function page({ params }: { params: { project_id: string } }) {
@@ -15,7 +15,7 @@ export default function page({ params }: { params: { project_id: string } }) {
                 <h1 className="md:text-4xl sm:text-2xl text-xl text-theme-text">Google&apos;s project board</h1>
                 <p className={"max-w-[clamp(30rem,80%,50rem)] opacity-60"}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur dolorum nostrum perspiciatis, aut amet alias tempore maxime distinctio deserunt officiis?</p>
             </div>
-            <Home />
+            <TaskBoard project_id={params.project_id} />
         </div>
     );
 }

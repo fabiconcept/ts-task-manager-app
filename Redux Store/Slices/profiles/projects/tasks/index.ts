@@ -76,12 +76,14 @@ interface InitialState {
     loading: loadingState,
     errorMsg: string,
     tasksList: TaskerProjectTask[],
+    current_Project: string,
 }
 
 const initialState: InitialState = {
     loading: loadingState.PENDING,
     errorMsg: "",
     tasksList: [],
+    current_Project: ''
 }
 
 const tasksListSlice = createSlice({
@@ -93,7 +95,7 @@ const tasksListSlice = createSlice({
             state.tasksList.push($payload);
          }
     },
-    
+
     extraReducers: (builder) => {
         builder.addCase($fetchProjectTasks.pending, (state)=>{
             state.loading = loadingState.PENDING;
@@ -105,12 +107,14 @@ const tasksListSlice = createSlice({
 
         builder.addCase($fetchProjectTasks.fulfilled, (state, action)=>{
             const payload = action.payload;
-            const tasksList = payload;
+            const tasksList = payload.tasksResult;
+            const project_id = payload.project_id;
 
 
             state.loading = loadingState.SUCCESS;
             state.errorMsg = "";
             state.tasksList = tasksList;
+            state.current_Project = project_id;
         });
     }
 });
@@ -121,3 +125,4 @@ export const $tasksListSlice = tasksListSlice.reducer;
 export const echoTasksListLoading = (state: RootState) => state.tasksList.loading;
 export const echoTasksListError = (state: RootState) => state.tasksList.errorMsg;
 export const echoTasksListResponse = (state: RootState) => state.tasksList.tasksList; 
+export const echoTasksListCurrentProject = (state: RootState) => state.tasksList.current_Project; 

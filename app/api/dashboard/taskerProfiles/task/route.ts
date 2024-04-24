@@ -34,14 +34,13 @@ function findNonMembers(membersList: string[] | undefined, assigneeList: string[
     return nonMembers;
 }
 
+// Fetch all task from a project OR a particular task
 export const GET = async () => {
-    console.log("GET request")
     const headerList = headers();
     const project_from_id = headerList.get("projectId");
     const singleTaskId = headerList.get("taskId");
 
     if (!singleTaskId && !project_from_id) {
-        console.log("Ewoooo")
         apiResponse = {
             status: 400,
             message: "Invalid request - Corrupt task payload 😂😂!",
@@ -52,8 +51,6 @@ export const GET = async () => {
     }
 
     try{
-        console.log("Try Side")
-
         const client = await connectDatabase();
 
         if(!client) {
@@ -64,16 +61,13 @@ export const GET = async () => {
         const tasksCollection = db.collection(collectionName);
 
         if (singleTaskId) {
-            console.log("singleTaskId Side 1")
             const task = await tasksCollection.findOne({
                 task_id: singleTaskId
             });
 
-            console.log("singleTaskId Side 2");
 
             if (!task) throw new Error("task does not exist!");
 
-            console.log("singleTaskId Side 3")
 
             apiResponse= {
                 status: 200,
@@ -82,13 +76,11 @@ export const GET = async () => {
                 type: AuthResponseType.NoError
             }
 
-            console.log("singleTaskId Side 4");
 
             return NextResponse.json(apiResponse);
         }
 
         if (project_from_id) {
-            console.log("project_from_id Side");
 
             const projectCollection: Collection<SelectedProject> = db.collection("TaskerProjects");
 
@@ -101,12 +93,12 @@ export const GET = async () => {
             const taskList = selectedProject.tasksList;
 
             const tasksResult = await tasksCollection.find({
-                task_id: taskList[0]
+                task_id: { $in: taskList }
             }).toArray();
 
             apiResponse= {
                 status: 200,
-                data: tasksResult,
+                data: { tasksResult, project_id: project_from_id },
                 message: "Task list found!",
                 type: AuthResponseType.NoError
             }
@@ -115,7 +107,6 @@ export const GET = async () => {
         }
 
     }catch(error){
-        console.log("Error Side")
         apiResponse = {
             status: 400,
             message: `${error}`,

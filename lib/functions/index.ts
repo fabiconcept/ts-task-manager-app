@@ -252,7 +252,7 @@ export async function createNewtask(payload: TaskerProjectTask): Promise<string>
 }
 
 // fetch all the Tasks for a particular project
-export async function fetchProjectTasks(projectId: string): Promise<TaskerProjectTask[]> {
+export async function fetchProjectTasks(projectId: string): Promise<{ tasksResult: TaskerProjectTask[], project_id: string }> {
     const sendRequest = await fetch("/api/dashboard/taskerProfiles/task", {
         method: "GET",
         headers: {
@@ -261,7 +261,7 @@ export async function fetchProjectTasks(projectId: string): Promise<TaskerProjec
         },
     });
 
-    const response: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProjectTask[]> = await sendRequest.json();
+    const response: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<{ tasksResult: TaskerProjectTask[], project_id: string }> = await sendRequest.json();
     const { status, message } = response;
 
     if (status === 400) {
