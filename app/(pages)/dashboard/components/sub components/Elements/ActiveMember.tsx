@@ -1,9 +1,13 @@
+import ShowElement from "@/lib/utilities/Show";
+import clsx from "clsx";
 import Image from "next/image";
 import { useMemo } from "react";
 
 type UserProp = {
     type: "mid" | "small";
     active?: boolean;
+    initials?: string;
+    avatar?: string;
 }
 
 export default function ActiveMember(props: UserProp) {
@@ -13,14 +17,22 @@ export default function ActiveMember(props: UserProp) {
     const styleClass = props.type === "mid" ? "h-12 w-12" : "h-7 w-7";
     return (
         <div className={`${styleClass} ${activeStatus} relative rounded-full`}>
-            <div className="h-full w-full rounded-full overflow-hidden bg-black grid place-items-center">
-                <Image
-                    src={"https://taskify.sirv.com/dddepth-302.jpg"}
-                    alt="photo"
-                    height={200}
-                    width={200}
-                    className="h-full w-auto object-contain"
-                />
+            <div className={clsx(
+                "h-full w-full rounded-full overflow-hidden bg-black grid place-items-center",
+                !props.avatar ? "bg-theme-main dark:text-theme-white-dark font-semibold" : "bg-white"
+            )}>
+                <ShowElement.when isTrue={props.avatar !== undefined && props.avatar !== ''}>
+                    <Image
+                        src={props.avatar ? props.avatar : ""}
+                        alt="photo"
+                        height={200}
+                        width={200}
+                        className="h-full w-auto object-contain"
+                    />
+                </ShowElement.when>
+                <ShowElement.when isTrue={props.initials !== undefined && props.initials !== '' && !props.avatar}>
+                    <span>{props.initials}</span>
+                </ShowElement.when>
             </div>
         </div>
     )

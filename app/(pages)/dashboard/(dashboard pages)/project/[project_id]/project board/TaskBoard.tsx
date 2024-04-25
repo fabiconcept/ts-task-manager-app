@@ -9,7 +9,7 @@ import Items from "./components/Item";
 import { FaPlus } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/Redux Store";
-import { loadingState, PopupType, TaskerStatus } from "@/lib/Enums";
+import { loadingState, PopupType, Priority, TaskerStatus } from "@/lib/Enums";
 import { openModal } from "@/Redux Store/Slices/Popup Slice";
 import ShowElement from "@/lib/utilities/Show";
 import { findItemActiveItem, findValueOfItems } from "@/lib/DnD Helper";
@@ -17,6 +17,9 @@ import { useSelector } from "react-redux";
 import { echoTasksListResponse, echoTasksListLoading, echoTasksListError, echoTasksListCurrentProject, echoTasksListUpdatingState, echoTasksListUpdatingError } from "@/Redux Store/Slices/profiles/projects/tasks";
 import { $fetchProjectTasks } from "@/Redux Store/Thunk";
 import { TaskerProjectTaskWithId } from "@/lib/Interfaces";
+import { updateTaskerTeam } from "@/Redux Store/Slices/profiles/team";
+import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
+import clsx from "clsx";
 
 const emptyContainers: ContainerGroup[] = [
     {
@@ -55,6 +58,8 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
             items: []
         },
     ]);
+    const activeProfileId = useSelector(echoTaskerProfilesActiveId);
+
     const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
     const tasksList = useSelector(echoTasksListResponse);
     const tasksListLoading = useSelector(echoTasksListLoading);
@@ -62,6 +67,20 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
     const tasksListCurrentProject = useSelector(echoTasksListCurrentProject);
     const tasksListUpdatingState = useSelector(echoTasksListUpdatingState);
     const tasksListUpdatingError = useSelector(echoTasksListUpdatingError);
+    const { profiles } = useSelector(echoTaskerProfilesResponse);
+
+
+    useEffect(() => {
+        const activeProfile = profiles.find((profile) => profile.profile_id === activeProfileId);
+
+        if (!activeProfile) return;
+
+        dispatch(updateTaskerTeam({
+            arr: activeProfile.team,
+            id: activeProfile.owner
+        }));
+
+    }, [profiles, activeProfileId, dispatch]);
 
     const activeItem = useMemo(()=>{
         if(!activeId) return undefined;
@@ -348,7 +367,43 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
 
     return (
         <div className="mt-4 px-4 pb-4 flex flex-col gap-3">
-            <div className="w-full flex justify-end px-2">
+            <div className="w-full flex justify-between items-end gap-4 px-2">
+                <div className="flex gap-4 items-center text-sm">
+                    <div className="flex gap-1 items-center">
+                        <div className={clsx(
+                            "h-2 w-2 bg-theme-main capitalize",
+                            "-hue-rotate-[-170deg]",
+                        )}></div>
+                        <span className="opacity-70">{Priority.HIGH}</span>
+                    </div>
+                    <div className="flex gap-1 items-center">
+                        <div className={clsx(
+                            "h-2 w-2 bg-theme-main capitalize",
+                            "-hue-rotate-[-32deg]"
+                        )}></div>
+                        <span className="opacity-70">{Priority.MEDIUM}</span>
+                    </div>
+                    <div className="flex gap-1 items-center">
+                        <div className={clsx(
+                            "h-2 w-2 bg-theme-main capitalize",
+                            "-hue-rotate-[100deg]"
+                        )}></div>
+                        <span className="opacity-70">{Priority.LOW}</span>
+                    </div>
+                    <div className="flex gap-1 items-center">
+                        <div className={clsx(
+                            "h-2 w-2 bg-theme-main capitalize",
+                        )}></div>
+                        <span className="opacity-70">{Priority.NONE}</span>
+                    </div>
+                    <div className="flex gap-1 items-center">
+                        <div className={clsx(
+                            "h-2 w-2 bg-theme-main capitalize",
+                            "grayscale"
+                        )}></div>
+                        <span className="opacity-70">Not for you</span>
+                    </div>
+                </div>
                 <div onClick={openNewTaskModal} className="rounded-md py-3 px-6 border border-theme-main hover:border-transparent hover:bg-theme-main text-theme-main dark:hover:text-theme-white-dark active:scale-90 cursor-pointer flex items-center justify-center gap-2 active:opacity-50 hover:shadow-xl hover:shadow-white/10">
                     <FaPlus />
                     <span className={"font-semibold"}>New task</span>
