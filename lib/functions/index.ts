@@ -159,19 +159,25 @@ export const performSortingForTeamList = (sortBy: SortBy, arrayToSort: UserAccou
 
 // Projects activity
 // @GET
-export async function getProject(taskerProjectId: string)/*: Promise<{ response: boolean, result: TaskerProject, message: string }>*/ {
-    const sendRequest = await fetch("api/dashboard/Projects", {
-        method: "get",
+export async function getProject(taskerProjectId: string): Promise<TaskerProject> {
+    const sendRequest = await fetch("http://localhost:3000/api/dashboard/Projects", {
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
             "project_key": taskerProjectId,
         }
     });
 
-    const data: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProfile[]> = await sendRequest.json();
+    const response: ValidateAuthResponseWithError | ValidateAuthResponseWithoutError<TaskerProject> = await sendRequest.json();
 
-    const { status, message } = data;
-    console.log({ status, message });
+    const { status, message } = response;
+    
+    
+    if (status === 400) {
+        throw new Error(message);
+    }
+
+    return response.data;
 }
 // @POST
 export async function createProject(payload: TaskerProject)/*: Promise<{ response: boolean, result: TaskerProject, message: string }>*/ {
