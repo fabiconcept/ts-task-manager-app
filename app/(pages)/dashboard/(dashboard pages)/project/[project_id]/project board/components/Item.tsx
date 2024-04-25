@@ -128,9 +128,9 @@ const Items = ({ id, title, inGroup, taskItem }: ItemsType) => {
                 'bg-theme-main/5 dark:shadow-md shadow-[0_5px_25px_rgb(0,0,0,0.25)] rounded-md w-full border relative',
                 isDragging && 'rounded-none border-black opacity-25',
                 openMenu ? "z-10" : "",
-                taskItem.priorityLevel === Priority.HIGH ? "-hue-rotate-[170deg]" : "",
-                taskItem.priorityLevel === Priority.LOW ? "-hue-rotate-[32deg]" : "",
-                taskItem.priorityLevel === Priority.MEDIUM ? "-hue-rotate-[-100deg]" : "",
+                taskItem.priorityLevel === Priority.HIGH ? "-hue-rotate-[-200deg]" : "",
+                taskItem.priorityLevel === Priority.LOW ? "-hue-rotate-[-32deg]" : "",
+                taskItem.priorityLevel === Priority.MEDIUM ? "-hue-rotate-[100deg]" : "",
                 !isDragging && 'dark:custom-radial-gradient custom-radial-gradient backdrop-blur',
                 (isAssignedToUser || isEditor) ? " border-theme-main/25 hover:border-theme-main/80" : "border-theme-main/25 grayscale cursor-default",
             )}
@@ -144,7 +144,7 @@ const Items = ({ id, title, inGroup, taskItem }: ItemsType) => {
                 {/* header content */}
                 <div className={clsx(
                     'flex justify-between items-center relative px-4',
-                    expanded ? "border-b border-b-white/10 py-2 bg-black/25" : "py-4",
+                    expanded ? "border-b border-b-white/10 py-2 bg-black/25 rounded-t-md" : "py-4",
                 )}>
                     <div className={clsx(
                         'relative z-20 text-xl font-semibold flex items-center gap-1 text-theme-main drop-shadow-md',

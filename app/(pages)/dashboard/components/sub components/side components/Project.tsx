@@ -21,7 +21,7 @@ export default function Project({ data }: { data: TaskerProject }) {
     return (
         <Link href={`/dashboard/project/${data.project_id}`} className={clsx(
             "flex items-center px-4 p-2 rounded dark:bg-white/5 bg-black/5 cursor-pointer select-none active:scale-90 active:opacity-50 border",
-            isOpen ? "border-theme-main border-l-[8px]" : "border-transparent hover:border-theme-main"
+            isOpen ? "border-theme-main border-l-[8px]" : "border-white/25 hover:border-theme-main"
             )}
             >
             <div className="flex-1 flex flex-col">

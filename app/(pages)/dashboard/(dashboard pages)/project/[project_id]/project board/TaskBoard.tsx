@@ -369,36 +369,36 @@ export default function TaskBoard({ project_id }: { project_id: string }) {
         <div className="mt-4 px-4 pb-4 flex flex-col gap-3">
             <div className="w-full flex justify-between items-end gap-4 px-2">
                 <div className="flex gap-4 items-center text-sm">
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 capitalize items-center">
                         <div className={clsx(
-                            "h-2 w-2 bg-theme-main capitalize",
+                            "h-3 w-3 rounded bg-theme-main capitalize",
                             "-hue-rotate-[-170deg]",
                         )}></div>
                         <span className="opacity-70">{Priority.HIGH}</span>
                     </div>
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 capitalize items-center">
                         <div className={clsx(
-                            "h-2 w-2 bg-theme-main capitalize",
-                            "-hue-rotate-[-32deg]"
+                            "h-3 w-3 rounded bg-theme-main capitalize",
+                            "-hue-rotate-[100deg]"
                         )}></div>
                         <span className="opacity-70">{Priority.MEDIUM}</span>
                     </div>
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 capitalize items-center">
                         <div className={clsx(
-                            "h-2 w-2 bg-theme-main capitalize",
-                            "-hue-rotate-[100deg]"
+                            "h-3 w-3 rounded bg-theme-main capitalize",
+                            "-hue-rotate-[-32deg]"
                         )}></div>
                         <span className="opacity-70">{Priority.LOW}</span>
                     </div>
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 capitalize items-center">
                         <div className={clsx(
-                            "h-2 w-2 bg-theme-main capitalize",
+                            "h-3 w-3 rounded bg-theme-main capitalize",
                         )}></div>
                         <span className="opacity-70">{Priority.NONE}</span>
                     </div>
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 capitalize items-center">
                         <div className={clsx(
-                            "h-2 w-2 bg-theme-main capitalize",
+                            "h-3 w-3 rounded bg-theme-main capitalize",
                             "grayscale"
                         )}></div>
                         <span className="opacity-70">Not for you</span>
