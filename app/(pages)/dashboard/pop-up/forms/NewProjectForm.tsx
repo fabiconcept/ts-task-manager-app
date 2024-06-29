@@ -119,7 +119,7 @@ export default function NewProjectForm() {
             priority: priorityLevel,
             membersCount: 0,
             membersList: [],
-            status: TaskerStatus.UPCOMING,
+            status: TaskerStatus.PENDING,
             tasksCount: 0,
             tasksList: [],
             created_on: todayString,
