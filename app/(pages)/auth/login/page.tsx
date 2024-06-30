@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import LoginForm from "./components/LoginForm";
 import clsx from "clsx";
@@ -7,7 +8,7 @@ export default function AuthPage() {
     return (
         <main className="overflow-x-hidden relative w-screen h-screen grid place-items-center md:p-4">
             <section className="max-w-[100rem] md:max-h-[60rem] h-full w-full bg-theme-white dark:bg-theme-white-dark md:rounded-3xl grid lg:grid-cols-2">
-            <div className="lg:flex hidden flex-col select-none p-2">
+                <div className="lg:flex hidden flex-col select-none p-2">
                     <div className="flex-1 pointer-events-none rounded-2xl overflow-hidden relative">
                         <Image
                             src={"https://taskify.sirv.com/dddepth-234.jpg"}

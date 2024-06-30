@@ -3,7 +3,7 @@ import store from ".."
 import React from "react"
 
 const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    return(
+    return (
         <Provider store={store}>
             {children}
         </Provider>
