@@ -68,7 +68,7 @@ export default function LoginForm() {
             return;
         }
 
-        if (passwordDebounce.length < 8) {
+        if (passwordDebounce.length < 5) {
             setInputsValid((prev) => ({ ...prev, password: { status: testSwitch.FAILED, errorMessage: "Password too short!" } }));
             return;
         }

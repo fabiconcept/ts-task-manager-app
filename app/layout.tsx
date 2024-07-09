@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import ProviderWrapper from './components/ProviderWrapper';
 import NextTopLoader from 'nextjs-toploader';
+import AuthWrapper from './components/NextAuthProviderWrapper';
 
 const fontName = Quicksand({ subsets: ['latin'] });
 
@@ -24,9 +25,11 @@ export default function RootLayout({
                     position='top-center'
                 />
                 <NextTopLoader color='#00db96' zIndex={9999} />
-                <ProviderWrapper>
-                    {children}
-                </ProviderWrapper>
+                <AuthWrapper>
+                    <ProviderWrapper>
+                        {children}
+                    </ProviderWrapper>
+                </AuthWrapper>
             </body>
         </html>
     )

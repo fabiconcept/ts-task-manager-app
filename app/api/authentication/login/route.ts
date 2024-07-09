@@ -102,6 +102,8 @@ export const POST = async (request: Request) => {
             type: AuthResponseType.UnknownError,
             message: `An error occurred! ${error}`
         }
+
+        console.log(message);
         return NextResponse.json(message);
     }
 }
