@@ -12,6 +12,7 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
+
 interface ReqBody extends Pick<RequestBody, "email" | "password"> {
     exp?: number,
 }
@@ -19,7 +20,8 @@ interface ReqBody extends Pick<RequestBody, "email" | "password"> {
 export default function LoginForm() {
     const errorInputClass = 'bg-red-300/10 border-red-500 focus:border-red-500';
     const generalInputClass= "p-4 flex-1 border outline-none rounded-lg relative";
-    const idleClass = "bg-theme-white/25 dark:border-theme-white/25 border-theme-white-dark/25 focus:border-theme-main"
+    const idleClass = "bg-theme-white/25 dark:border-theme-white/25 border-theme-white-dark/25 focus:border-theme-main";
+
 
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);

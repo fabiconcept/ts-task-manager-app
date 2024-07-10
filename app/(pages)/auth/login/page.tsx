@@ -3,6 +3,7 @@ import Link from "next/link";
 import LoginForm from "./components/LoginForm";
 import clsx from "clsx";
 import Image from "next/image";
+import { LoginWithGitHub } from "@/app/components/Social Login/github";
 
 export default function AuthPage() {
     return (
@@ -49,16 +50,7 @@ export default function AuthPage() {
                                     className="h-auto w-8 pointer-events-none"
                                 />
                             </div>
-                            <div className="p-4 flex-1 border dark:border-white/10 border-black/10 rounded-lg grid place-items-center hover:bg-theme-text/10 active:scale-90 active:opacity-50 cursor-pointer select-none">
-                                <Image
-                                    src={"https://taskify.sirv.com/github-ico.svg"}
-                                    alt="google logo"
-                                    height={512}
-                                    priority
-                                    width={512}
-                                    className="h-auto w-8 pointer-events-none dark:invert"
-                                />
-                            </div>
+                            <LoginWithGitHub />
                         </div>
                     </div>
                 </div>
