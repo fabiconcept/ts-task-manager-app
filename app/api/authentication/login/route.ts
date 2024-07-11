@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 
 interface ReqBody extends Pick<RequestBody, "email" | "password"> {
     exp?: number,
+    type?: "social" | "normal"
 }
 
 let message : ResponseWithError | ResponseWithoutError
@@ -14,7 +15,7 @@ let message : ResponseWithError | ResponseWithoutError
 export const POST = async (request: Request) => {
     const reqBody: ReqBody  = await request.json();
 
-    const { email, password, exp } = reqBody;
+    const { email, password, exp, type } = reqBody;
 
     if (!email) {
         message = {
@@ -25,7 +26,7 @@ export const POST = async (request: Request) => {
         return NextResponse.json(message);
     }
 
-    if (!password) {
+    if ((!type || type === "normal") && !password) {
         message = {
             status: 400,
             type: AuthResponseType.PasswordError,
@@ -59,16 +60,19 @@ export const POST = async (request: Request) => {
             return NextResponse.json(message);
         }
 
-        const checkPassword = comparePassword(password, findUser.password, findUser.userSalt);
-
-        if (!checkPassword) {
-            message = {
-                status: 400,
-                type: AuthResponseType.InvalidError,
-                message: "Email or Password is invalid!"
+        if (type !== "social") {
+            const checkPassword = comparePassword(password, findUser.password, findUser.userSalt);
+    
+            if (!checkPassword) {
+                message = {
+                    status: 400,
+                    type: AuthResponseType.InvalidError,
+                    message: "Email or Password is invalid!"
+                }
+                return NextResponse.json(message);
             }
-            return NextResponse.json(message);
         }
+
         const loginAuthKey = generateSalt();
         const loginExpTime = (new Date()).getTime() + (exp ? exp : (60 * 60 * 1000));
         

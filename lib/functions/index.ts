@@ -1,5 +1,5 @@
 import { SortBy } from "../Enums";
-import { PutPayload_General, PutPayload_Status, TaskerProfile, TaskerProject, TaskerProjectTask, UserAccountDetails} from "../Interfaces";
+import { PutPayload_Status, TaskerProfile, TaskerProject, TaskerProjectTask, UserAccountDetails} from "../Interfaces";
 import { TeamMember, ValidateAuthResponseWithError, ValidateAuthResponseWithoutError } from "../Types";
 import { CompanyTag } from "../Types/dashboard";
 
