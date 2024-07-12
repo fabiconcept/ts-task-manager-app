@@ -1,19 +1,18 @@
 import * as React from 'react';
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, } from "next-auth/react";
 import Image from 'next/image';
 import { ResponseWithError, ResponseWithoutError } from '@/lib/Types';
 import { useRouter } from 'next/navigation';
 import { performLogin } from '@/lib/session';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
-export interface ILoginWithGitHubProps {
-}
-
-export function LoginWithGitHub(props: ILoginWithGitHubProps) {
+export function LoginWithGitHub() {
     const { data: session, status } = useSession();
     const [isLoading, setIsLoading] = React.useState(false);
     const router = useRouter();
+    const linkToDashboardRef = React.useRef<HTMLAnchorElement>(null)
 
     
     React.useEffect(() => {
@@ -54,35 +53,33 @@ export function LoginWithGitHub(props: ILoginWithGitHubProps) {
             .then((data: ResponseWithError | ResponseWithoutError) => {
                 const { status, message, type } = data;
 
-                console.log({
-                    status,
-                    message,
-                    type
-                })
-
                 if (status === 400) {
-                    // const userName = loginProp.name;
-                    // const userImage = loginProp.image ?? "";
+                    const userName = loginProp.name;
+                    const userImage = loginProp.image ?? "";
 
-                    // if (!userName) throw new Error("No username found.");
-                    // if (type === 5) {
-                    //     const signUp_Promise = handleSignUpAction(payload.email, userName, userImage);
-                    //     toast.promise(signUp_Promise, {
-                    //         error: "Failed to create account!",
-                    //         loading: "Setting up your new account",
-                    //         success: "Account created with GitHub.",
-                    //     });
+                    if (!userName) throw new Error("No username found.");
+                    if (type === 5) {
+                        const signUp_Promise = handleSignUpAction(payload.email, userName, userImage);
+                        toast.promise(signUp_Promise, {
+                            error: "Failed to create account!",
+                            loading: "Setting up your new account",
+                            success: "Account created with GitHub.",
+                        });
                         
-                    //     return;
-                    // }
+                        return;
+                    }
 
-                    // throw new Error("Oops! Something went wrong.");
+                    throw new Error("Oops! Something went wrong.");
                 } else {
-                    toast.loading("Continuing with GitHub");
                     performLogin(`${message.userId} ${message.auth}`, "Login successful", expirationDate);
 
                     setTimeout(() => {
-                        router.push("/dashboard");
+                        if (!linkToDashboardRef.current) {
+                            router.push("/dashboard");
+                            return;
+                        };
+
+                        linkToDashboardRef.current.click();
                     }, 1000);
                 }
             })
@@ -125,7 +122,12 @@ export function LoginWithGitHub(props: ILoginWithGitHubProps) {
                             message.toast
                         );
                         setTimeout(() => {
-                            router.push("/dashboard");
+                            if (!linkToDashboardRef.current) {
+                                router.push("/dashboard");
+                                return;
+                            };
+
+                            linkToDashboardRef.current.click();
                         }, 1000);
                     }
                 });
@@ -138,7 +140,9 @@ export function LoginWithGitHub(props: ILoginWithGitHubProps) {
     }, []);
 
     const handleButtonClick = () =>{
+        console.log("CLicked");
         if (status === "loading") return; 
+        if (status === "authenticated") return; 
         signIn('github');
     }
 
@@ -166,7 +170,7 @@ export function LoginWithGitHub(props: ILoginWithGitHubProps) {
                     />
                 </span>}
             </button>
-            <button onClick={()=>signOut()}>logout</button>
+            <Link href="/dashboard" ref={linkToDashboardRef} hidden></Link>
         </>
     );
 }
