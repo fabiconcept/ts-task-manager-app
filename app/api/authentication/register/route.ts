@@ -12,7 +12,7 @@ let response: ResponseWithoutError<{toast: string, token: string}> | ResponseWit
 
 export const POST = async (request: Request) => {
     const reqBody: RequestBody = await request.json();
-    const { email, name, password } = reqBody;
+    const { email, name, password, type, avatar } = reqBody;
 
     if (!validateEmail(email)) {
         response = {
@@ -23,7 +23,7 @@ export const POST = async (request: Request) => {
         return NextResponse.json(response);
     }
     
-    if (!validateFullName(name)[0]) {
+    if ((!type || type === "normal") && !validateFullName(name)[0]) {
         response = {
             status: 400,
             type: AuthResponseType.NameError,
@@ -32,7 +32,7 @@ export const POST = async (request: Request) => {
         return NextResponse.json(response);
     }
     
-    if (!validatePassword(password)[0]) {
+    if ((!type || type === "normal") && !validatePassword(password)[0]) {
         response = {
             status: 400,
             type: AuthResponseType.PasswordError,
@@ -65,7 +65,7 @@ export const POST = async (request: Request) => {
             profile_id: generateUniqueId(),
             name: cleanName,
             bio: "",
-            avatar: "",
+            avatar: avatar ?? "",
             owner: UserId,
             ownerEmail: cleanEmail,
             team: [
@@ -90,30 +90,45 @@ export const POST = async (request: Request) => {
             exp: loginExpTime
         }
 
-        const hashedPassword = hashPassword(password, userSalt);
+        let payload: UserAccount;
 
-        const payload = {
-            userId: UserId,
-            name: cleanName,
-            email: cleanEmail,
-            password: hashedPassword,
-            userSalt: userSalt,
-            authentication: authentication,
-        } satisfies UserAccount;
+        if (type != "social") {
+            const hashedPassword = hashPassword(password, userSalt);
+
+            payload = {
+                userId: UserId,
+                name: cleanName,
+                email: cleanEmail,
+                password: hashedPassword,
+                userSalt: userSalt,
+                authentication: authentication,
+            };
+
+
+            // check if email exist
+            const emailExist = await accountsCollection.findOne({ email: payload.email });
+
+            if (emailExist) {
+                response = {
+                    status: 400,
+                    type: AuthResponseType.EmailError,
+                    message: "User already exist!"
+                }
+                return NextResponse.json(response);
+            }
+        } else {
+            payload = {
+                userId: UserId,
+                name: cleanName,
+                email: cleanEmail,
+                password: "",
+                userSalt: userSalt,
+                authentication: authentication,
+            };
+        }
+
 
         const splitName = payload.name.split(" ");
-
-        // check if email exist
-        const emailExist = await accountsCollection.findOne({email: payload.email});
-
-        if (emailExist) {
-            response = {
-                status: 400,
-                type: AuthResponseType.EmailError,
-                message: "User already exist!"
-            }
-            return NextResponse.json(response);
-        }
 
         // Create user account
         await accountsCollection.insertOne(payload);
@@ -123,7 +138,7 @@ export const POST = async (request: Request) => {
         const accountsDetailsPayload: UserAccountDetails = {
             userId: payload.userId,
             displayName: `${splitName[0][0]}${splitName[1][0]}`,
-            profileAvatar: "",
+            profileAvatar: avatar ?? "",
             name: payload.name,
             email: payload.email,
             defaultProject: myTaskerProfile.profile_id,
@@ -152,16 +167,16 @@ export const POST = async (request: Request) => {
             emailData.subject,
             emailData.emailBody,
         )
-            .then(response => {
-                if (response.ok) {
-                    console.log('Email sent successfully!');
-                } else {
-                    console.error('Error sending email:', response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error sending email:', error);
-            });
+        .then(response => {
+            if (response.ok) {
+                console.log('Email sent successfully!');
+            } else {
+                console.error('Error sending email:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Error sending email:', error);
+        });
         
         response = { 
             status: 200, 

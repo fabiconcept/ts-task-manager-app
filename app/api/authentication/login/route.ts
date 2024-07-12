@@ -59,8 +59,18 @@ export const POST = async (request: Request) => {
             }
             return NextResponse.json(message);
         }
+        
 
         if (type !== "social") {
+            if (findUser && !findUser.password) {
+                message = {
+                    status: 400,
+                    type: AuthResponseType.EmailError,
+                    message: "You can only use social login."
+                }
+                return NextResponse.json(message);
+            }
+            
             const checkPassword = comparePassword(password, findUser.password, findUser.userSalt);
     
             if (!checkPassword) {

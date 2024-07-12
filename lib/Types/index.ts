@@ -9,6 +9,8 @@ export type RequestBody = {
     name: string;
     email: string;
     password: string;
+    type?: "normal" | "social",
+    avatar?: string
 }
 
 export type SessionState = {

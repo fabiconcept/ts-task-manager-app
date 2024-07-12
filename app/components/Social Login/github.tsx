@@ -5,19 +5,35 @@ import { ResponseWithError, ResponseWithoutError } from '@/lib/Types';
 import { useRouter } from 'next/navigation';
 import { performLogin } from '@/lib/session';
 import clsx from 'clsx';
+import toast from 'react-hot-toast';
 
 export interface ILoginWithGitHubProps {
 }
 
 export function LoginWithGitHub(props: ILoginWithGitHubProps) {
-    const { data, status } = useSession();
+    const { data: session, status } = useSession();
+    const [isLoading, setIsLoading] = React.useState(false);
     const router = useRouter();
 
+    
+    React.useEffect(() => {
+        if (status != "authenticated") return;
+        if (!session.user) return;
+        if (!session.user.email) return;
+        if (isLoading) return;
 
-    const handleLoginAction = React.useCallback(async (email: string) => {
+
+        handleLoginAction(session.user);
+    }, [session, status]);
+
+    const handleLoginAction = React.useCallback(async (loginProp: { name?: string | null, email?: string | null, image?: string | null }) => {
+        if (isLoading) return;
+        if (!loginProp.email) return;
+        setIsLoading(true);
+
         const expirationDate = 1;
         const payload = {
-            email: email,
+            email: loginProp.email,
             type: "social",
             exp: expirationDate * (60 * 60 * 1000),
         };
@@ -36,38 +52,95 @@ export function LoginWithGitHub(props: ILoginWithGitHubProps) {
                 return res.json();
             })
             .then((data: ResponseWithError | ResponseWithoutError) => {
-                const { status, message } = data;
+                const { status, message, type } = data;
+
+                console.log({
+                    status,
+                    message,
+                    type
+                })
 
                 if (status === 400) {
+                    // const userName = loginProp.name;
+                    // const userImage = loginProp.image ?? "";
 
+                    // if (!userName) throw new Error("No username found.");
+                    // if (type === 5) {
+                    //     const signUp_Promise = handleSignUpAction(payload.email, userName, userImage);
+                    //     toast.promise(signUp_Promise, {
+                    //         error: "Failed to create account!",
+                    //         loading: "Setting up your new account",
+                    //         success: "Account created with GitHub.",
+                    //     });
+                        
+                    //     return;
+                    // }
+
+                    // throw new Error("Oops! Something went wrong.");
                 } else {
-                    // performLogin(`${message.userId} ${message.auth}`, "Login successful", expirationDate);
+                    toast.loading("Continuing with GitHub");
+                    performLogin(`${message.userId} ${message.auth}`, "Login successful", expirationDate);
 
-                    // setTimeout(() => {
-                    //     router.push("/dashboard");
-                    // }, 1000);
-
-                    console.log(message);
-
+                    setTimeout(() => {
+                        router.push("/dashboard");
+                    }, 1000);
                 }
             })
             .catch((error) => {
+                toast.error("Oops! Something went wrong.");
                 console.error(error);
+                setIsLoading(false);
+            });
+    }, []);
+
+    const handleSignUpAction = React.useCallback(async(email: string, name: string, image: string)=>{
+        const payload = {
+            email,
+            name,
+            avatar: image,
+            type: "social"
+        };
+        try {
+            await fetch("/api/authentication/register", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             })
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error("Something went wrong!");
+                    }
+                    return res.json();
+                })
+                .then((data: ResponseWithError | ResponseWithoutError<{ toast: string, token: string }>) => {
+                    const { status, message } = data;
+
+                    if (status === 400) {
+                        throw new Error(message ?? "An error occurred");
+                    } else {
+                        performLogin(
+                            `${message.token}`,
+                            message.toast
+                        );
+                        setTimeout(() => {
+                            router.push("/dashboard");
+                        }, 1000);
+                    }
+                });
+
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+            throw new Error(`${error}`);
+        }
     }, []);
 
     const handleButtonClick = () =>{
         if (status === "loading") return; 
         signIn('github');
     }
-
-    React.useEffect(() => {
-        if (status != "authenticated") return;
-        if (!data.user) return;
-        if (!data.user.email) return;
-
-        handleLoginAction(data.user.email);
-    }, [data, status]);
 
     return (
         <>
