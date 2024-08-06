@@ -2,6 +2,7 @@ import Link from "next/link";
 import SignupForm from "./components/SignupForm";
 import clsx from "clsx";
 import Image from "next/image";
+import { LoginWithGitHub } from "@/app/components/Social Login/github";
 
 export default function AuthPage() {
     return (
@@ -44,23 +45,7 @@ export default function AuthPage() {
                         </div>
                     </div>
                 </div>
-                <div className="lg:flex hidden flex-col select-none p-2">
-                    <div className="flex-1 pointer-events-none rounded-2xl overflow-hidden relative">
-                        <Image
-                            src={"https://taskify.sirv.com/dddepth-222.jpg"}
-                            alt="google logo"
-                            priority
-                            height={1024}
-                            width={1024}
-                            className="h-full w-auto object-cover pointer-events-none dark:invert"
-                        />
-                        <div className="absolute top-0 left-0 bg-black/50 h-full w-full text-white text-5xl p-12 grid place-items-center text-center">
-                            <span>
-                            Welcome to Task Manager! Let&apos;s get you started.
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <LoginWithGitHub/>
             </section>
         </main>
     )
