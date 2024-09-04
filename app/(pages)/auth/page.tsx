@@ -32,20 +32,27 @@ export default function AuthPage() {
                                     className="h-auto w-8 pointer-events-none"
                                 />
                             </div>
-                            <div className="p-4 flex-1 border dark:border-white/10 border-black/10 rounded-lg grid place-items-center hover:bg-theme-text/10 active:scale-90 active:opacity-50 cursor-pointer select-none">
-                                <Image
-                                    src={"https://taskify.sirv.com/github-ico.svg"}
-                                    alt="google logo"
-                                    height={512}
-                                    priority
-                                    width={512}
-                                    className="h-auto w-8 pointer-events-none dark:invert"
-                                />
-                            </div>
+                            <LoginWithGitHub />
                         </div>
                     </div>
                 </div>
-                <LoginWithGitHub/>
+                <div className="lg:flex hidden flex-col select-none p-2">
+                    <div className="flex-1 pointer-events-none rounded-2xl overflow-hidden relative">
+                        <Image
+                            src={"https://taskify.sirv.com/dddepth-222.jpg"}
+                            alt="google logo"
+                            priority
+                            height={1024}
+                            width={1024}
+                            className="h-full w-auto object-cover pointer-events-none dark:invert"
+                        />
+                        <div className="absolute top-0 left-0 bg-black/50 h-full w-full text-white text-5xl p-12 grid place-items-center text-center">
+                            <span>
+                            Welcome to Task Manager! Let&apos;s get you started.
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
     )
