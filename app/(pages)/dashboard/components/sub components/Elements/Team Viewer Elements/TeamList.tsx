@@ -57,12 +57,14 @@ export default function TeamList() {
                       }
                 >
                     <div className={clsx(
-                        'opacity-60 hover:opacity-100 rounded-md h-[10rem] peer-active:opacity-40 peer-active:scale-90 relative overflow-hidden grid place-items-center')}
-                        title="Add new Member"
-                        onClick={addTeamMember}
+                        'rounded-md h-[10rem] peer-active:opacity-40 peer-active:scale-90 relative overflow-hidden grid place-items-center')}
                     >
-                        <div className='h-[4rem] w-[4rem] rounded-full overflow-hidden grid place-items-center border text-lg hover:scale-105 active:scale-90 bg-theme-main text-theme-white-dark cursor-pointer'>
-                            <FaPlus />
+                        <div 
+                            className='h-[4rem] w-[4rem] active:opacity-40 group rounded-full overflow-hidden grid place-items-center border text-lg hover:scale-105 active:scale-90 bg-theme-main text-theme-white-dark cursor-pointer'
+                            title="Add new Member"
+                            onClick={addTeamMember}
+                        >
+                            <FaPlus className="group-active:rotate-12 group-hover:scale-125" />
                         </div>
                     </div>
                 </ShowElement.when>

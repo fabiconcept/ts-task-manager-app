@@ -24,9 +24,7 @@ export default function SideBar() {
     const user = useSelector(echoUserData);
     const projectsList = useSelector(echoProjectListResponse);
 
-
     const dispatch = useDispatch<AppDispatch>();
-
 
     const [collapseSide, setCollapseSide] = useState(false);
 

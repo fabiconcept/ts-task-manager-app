@@ -11,6 +11,7 @@ import NewProjectForm from "./forms/NewProjectForm";
 import InviteTeammate from "./forms/InviteTeammate";
 import EditProfile from "./forms/EditProfile";
 import NewTaskForm from "./forms/NewTaskForm";
+import { useKeyboardShortcut } from "@/lib/Hooks/useKeyboardShortcut";
 
 interface PopContext  {
     setCanClose: Dispatch<SetStateAction<boolean>>,
@@ -31,7 +32,6 @@ export default function PopUpDiv() {
 
     const dispatch = useDispatch<AppDispatch>();
 
-
     const handleCloseModal = () => {
         if (!canClose) return;
         
@@ -41,6 +41,16 @@ export default function PopUpDiv() {
             setModalState(true);
         }, 300);
     }
+
+    useKeyboardShortcut({
+        shortcuts: [
+            {
+                key: "Escape",
+                isSpecialKey: true
+            }
+        ],
+        onTrigger: handleCloseModal
+    })
 
     return (
         <popContext.Provider value={{setCanClose, handleCloseModal, setIsDragingOver, popUpType}}>
