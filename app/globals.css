@@ -86,13 +86,13 @@ body {
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 10px;
+  width: 3px;
   border-radius: 1rem;
   cursor: grab;
 }
 
 *::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgb(var(--foreground-rgb), 0.2);
 }
 
 *::-webkit-scrollbar-thumb {

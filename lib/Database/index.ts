@@ -8,6 +8,7 @@ let clientPromise: Promise<MongoClient>;
 const connectDatabase = async () => {
     try {
         if (!clientPromise) {
+            console.log(MONGO_URI)
             client = new MongoClient(MONGO_URI);
             clientPromise = client.connect();
         }

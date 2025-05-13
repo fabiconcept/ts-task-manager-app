@@ -4,7 +4,7 @@ import ShowElement from '@/lib/utilities/Show';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState, useContext, useMemo, FormEvent } from 'react';
-import { FaFolderPlus, FaHeading, FaFileLines, FaUserPlus, FaX, FaTriangleExclamation } from 'react-icons/fa6';
+import { FaPlus, FaHeading, FaFileLines, FaUserPlus, FaX, FaTriangleExclamation } from 'react-icons/fa6';
 import { echoTaskerProfilesActiveId, echoTaskerProfilesResponse } from "@/Redux Store/Slices/profiles";
 import { AppDispatch } from "@/Redux Store";
 import { useDispatch, useSelector } from "react-redux";
@@ -238,7 +238,7 @@ export default function NewTaskForm() {
 
     return (
         <form onSubmit={watchSubmit} className={clsx("flex flex-col gap-6 h-full")}>
-            <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10"> <span className="opacity-50 text-theme-main"><FaFolderPlus /></span> {!!(popUpType === PopupType.NewTask) && "New"} {!!(popUpType === PopupType.EditTask) && "Edit"} task</div>
+            <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10"> <span className="opacity-50 text-theme-main"><FaPlus /></span> {!!(popUpType === PopupType.NewTask) && "New"} {!!(popUpType === PopupType.EditTask) && "Edit"} task</div>
             <div className={"flex flex-1 overflow-y-auto flex-col gap-6 pb-6"}>
                 <div className={clsx("flex flex-col gap-3")}>
                     <span className="flex items-center gap-2 opacity-70">

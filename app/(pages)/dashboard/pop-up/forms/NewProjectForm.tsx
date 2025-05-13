@@ -7,7 +7,7 @@ import { generateUniqueId, realEscapeString } from "@/lib/utilities";
 import { echoTaskerProfilesActiveId, updateProjectsCount } from "@/Redux Store/Slices/profiles";
 import clsx from "clsx";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useContext, useEffect, useRef, useState } from "react";
-import { FaFileLines, FaHeading, FaPlus, FaTriangleExclamation } from "react-icons/fa6";
+import { FaFileLines, FaHeading, FaFolderPlus, FaTriangleExclamation } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { popContext } from "../PopUpDiv";
 import Image from "next/image";
@@ -168,7 +168,7 @@ export default function NewProjectForm() {
 
     return (
         <form onSubmit={watchSubmit} className={clsx("flex flex-col gap-6 h-full")}>
-            <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10"> <span className="opacity-50 text-theme-main"><FaPlus /></span> New project</div>
+            <div className="flex items-center gap-2 text-xl font-semibold pb-4 border-b dark:border-b-white/10 border-b-black/10"> <span className="opacity-50 text-theme-main"><FaFolderPlus /></span> New project</div>
             <div className={"flex flex-1 overflow-y-auto flex-col gap-6 pb-6"}>
                 <div className={clsx("flex flex-col gap-3")}>
                     <span className="flex items-center gap-2 opacity-70">

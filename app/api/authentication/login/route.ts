@@ -1,7 +1,7 @@
 import connectDatabase from "@/lib/Database";   
 import { AuthResponseType } from "@/lib/Enums";
 import { RequestBody, ResponseWithError, ResponseWithoutError } from "@/lib/Types";
-import { comparePassword, generateSalt, hashPassword } from "@/lib/encryption";
+import { comparePassword, generateSalt } from "@/lib/encryption";
 import { realEscapeString } from "@/lib/utilities";
 import { NextResponse } from "next/server";
 

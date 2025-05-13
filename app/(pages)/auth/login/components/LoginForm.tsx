@@ -120,7 +120,7 @@ export default function LoginForm() {
                     case AuthResponseType.InvalidError:
                         setInputsValid((prev) => ({ ...prev, 
                             password: { status: testSwitch.FAILED, errorMessage: "Invalid credentials!" },
-                        }));
+                        })); 
                         break;
                     default:
                         setInputsValid((prev) => ({ ...prev, 
